@@ -1,6 +1,11 @@
 [build]
 publish = "_site"
-functions = "netlify/functions"
+
+[functions]
+directory = "netlify/functions"
 
 [dev]
-functions = "netlify/functions"
+framework = "#custom"
+command = "bundle exec jekyll serve"
+targetPort = 4000
+port = 8888

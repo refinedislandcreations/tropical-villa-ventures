@@ -10,7 +10,15 @@
       href="{{ '/assets/css/output.css' | relative_url }}"
     />
   </head>
-  <body>
-    {{ content }}
+  <body class="bg-gray-50 text-gray-900">
+    <header class="p-6 bg-white shadow">
+      <div class="max-w-6xl mx-auto flex justify-between">
+        <a href="/" class="font-bold text-xl"> TVV Villas </a>
+
+        <a href="/villas/" class="text-gray-600"> Browse Villas </a>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-8">{{ content }}</main>
   </body>
 </html>
