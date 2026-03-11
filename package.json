@@ -1,0 +1,27 @@
+{
+  "name": "tropical-villa-ventures",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev:css": "npx @tailwindcss/cli -i ./assets/css/input.css -o ./assets/css/output.css --watch",
+    "build:css": "npx @tailwindcss/cli -i ./assets/css/input.css -o ./assets/css/output.css --minify",
+    "dev": "concurrently \"npm run dev:css\" \"bundle exec jekyll serve\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/refinedislandcreations/tropical-villa-ventures.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/refinedislandcreations/tropical-villa-ventures/issues"
+  },
+  "homepage": "https://github.com/refinedislandcreations/tropical-villa-ventures#readme",
+  "description": "",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.1",
+    "concurrently": "^9.2.1",
+    "tailwindcss": "^4.2.1"
+  }
+}
