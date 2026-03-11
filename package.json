@@ -5,7 +5,7 @@
   "scripts": {
     "dev:css": "npx @tailwindcss/cli -i ./assets/css/input.css -o ./assets/css/output.css --watch",
     "build:css": "npx @tailwindcss/cli -i ./assets/css/input.css -o ./assets/css/output.css --minify",
-    "dev": "concurrently \"npm run dev:css\" \"bundle exec jekyll serve\""
+    "dev": "concurrently \"npm run dev:css\" \"netlify dev\""
   },
   "repository": {
     "type": "git",
