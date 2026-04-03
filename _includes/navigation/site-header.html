@@ -1,0 +1,187 @@
+<header
+  role="banner"
+  class="w-full fixed top-0 z-50 h-[70px] md:h-[82px] flex items-center"
+>
+  <div
+    class="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center h-full"
+  >
+    <div class="flex justify-between items-center w-full">
+      <!-- Logo -->
+      <div class="flex-shrink-0">
+        <a href="{{ '/' | relative_url }}" aria-label="Home">
+          <img
+            src="{{ '/assets/images/logo/tvv-logo.png' | relative_url }}"
+            alt="Mayo Resort Logo"
+            class="h-[4rem] w-auto"
+            loading="eager"
+            width="auto"
+            height="64"
+          />
+        </a>
+      </div>
+
+      <!-- Desktop Menu -->
+      <nav
+        class="hidden lg:flex space-x-8 items-center h-full"
+        aria-label="Main Navigation"
+        role="navigation"
+      >
+        {% for item in site.data.navigation.main_nav %} {% if item.submenu %}
+        <!-- Dropdown Menu -->
+        <div class="relative group h-full flex items-center" data-dropdown>
+          <button
+            class="inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D06223] focus-visible:ring-offset-2 rounded"
+            aria-expanded="false"
+            aria-haspopup="true"
+            data-dropdown-button
+          >
+            <span
+              class="uppercase font-heading font-bold tracking-normal text-white text-sm sm:text-base md:text-lg"
+            >
+              {{ item.title }}
+            </span>
+            <svg
+              class="w-4 h-4 ml-2 transform transition-transform duration-300 ease-in-out group-hover:rotate-180 text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          <div
+            class="absolute uppercase font-heading font-bold tracking-normal left-0 top-full py-2 bg-opacity-80 border-none rounded-none shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out transform scale-95 group-hover:scale-100 origin-top z-20 text-base whitespace-nowrap"
+            style="margin-top: 27px; background-color: #d06223cc"
+            role="menu"
+            data-dropdown-menu
+          >
+            {% for subitem in item.submenu %}
+            <a
+              href="{{ subitem.url | relative_url }}"
+              class="block px-6 py-2 text-white hover:text-black transition-colors duration-200 text-sm sm:text-base"
+              role="menuitem"
+              >{{ subitem.title }}</a
+            >
+            {% endfor %}
+          </div>
+        </div>
+        {% elsif item.is_button %}
+        <!-- Book Now Button -->
+        <a
+          href="{{ item.url | relative_url }}"
+          class="ml-4 inline-block uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm sm:text-base"
+          aria-label="Book now"
+          >{{ item.title }}</a
+        >
+        {% else %}
+        <!-- Single Link -->
+        <a
+          href="{{ item.url | relative_url }}"
+          class="px-3 py-2 uppercase font-heading font-bold tracking-normal transition-colors duration-300 ease-in-out text-white hover:text-[#D06223] text-sm sm:text-base focus-visible:text-[#D06223] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D06223] rounded"
+          >{{ item.title }}</a
+        >
+        {% endif %} {% endfor %}
+      </nav>
+
+      <!-- Mobile Hamburger -->
+      <div class="lg:hidden flex items-center space-x-4 z-50">
+        <button
+          id="mobile-menu-button"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          class="focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D06223] focus-visible:ring-offset-2 rounded relative w-8 h-8 flex flex-col justify-between py-1"
+        >
+          <span
+            class="hamburger-line top h-1 w-full rounded transition-all duration-300 ease-in-out origin-center bg-white"
+          ></span>
+          <span
+            class="hamburger-line middle h-1 w-full rounded transition-all duration-300 ease-in-out bg-white"
+          ></span>
+          <span
+            class="hamburger-line bottom h-1 w-full rounded transition-all duration-300 ease-in-out origin-center bg-white"
+          ></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <nav
+      id="mobile-menu"
+      class="fixed inset-0 z-40 flex flex-col p-6 xl:hidden transform translate-x-full transition-transform duration-500 ease-in-out overflow-y-auto bg-gradient-to-r from-[#AF431D] to-[#D06223CC] backdrop-blur-[1px]"
+      aria-label="Mobile Navigation"
+      role="navigation"
+      hidden
+    >
+      <div
+        class="flex flex-col space-y-6 mt-20 uppercase font-bold w-full max-w-xl mx-auto min-h-[calc(100vh-3rem)]"
+      >
+        {% for item in site.data.navigation.main_nav %} {% if item.submenu %}
+        <!-- Dropdown Menu -->
+        <details class="dropdown" data-mobile-dropdown>
+          <summary
+            class="cursor-pointer py-2 flex items-center justify-between appearance-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded"
+            aria-expanded="false"
+          >
+            <span
+              class="uppercase font-heading font-bold tracking-normal text-white text-base sm:text-lg"
+              >{{ item.title }}</span
+            >
+            <svg
+              class="w-4 h-4 ml-2 transform transition-transform duration-300 ease-in-out text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div
+            class="dropdown-content overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out opacity-0 max-h-0 uppercase font-heading font-bold tracking-normal text-white"
+          >
+            <ul class="pl-4 space-y-2 mt-2" role="menu">
+              {% for subitem in item.submenu %}
+              <li>
+                <a
+                  href="{{ subitem.url | relative_url }}"
+                  class="block pb-2 hover:text-black transition-colors duration-200 text-sm sm:text-base"
+                  role="menuitem"
+                  >{{ subitem.title }}</a
+                >
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </details>
+        {% elsif item.is_button %}
+        <div class="text-left">
+          <a
+            href="{{ item.url | relative_url }}"
+            class="inline-block uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm sm:text-base"
+            aria-label="Book now"
+            >{{ item.title }}</a
+          >
+        </div>
+        {% else %}
+        <a
+          href="{{ item.url | relative_url }}"
+          class="block py-2 uppercase font-heading font-bold tracking-normal text-white hover:text-black transition-colors duration-200 text-base sm:text-lg focus-visible:text-[#D06223] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded"
+          >{{ item.title }}</a
+        >
+        {% endif %} {% endfor %}
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script src="/assets/js/navigation.js" defer></script>

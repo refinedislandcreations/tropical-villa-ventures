@@ -4,21 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>{{ page.title }}</title>
+    <!-- Output TailwindCSS -->
     <link
       rel="stylesheet"
       href="{{ '/assets/css/output.css' | relative_url }}"
     />
+
+    <!-- Custom Styles -->
+    <link
+      rel="stylesheet"
+      href="{{ '/assets/css/style.css' | relative_url }}"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>{{ page.title }}</title>
   </head>
-  <body class="bg-gray-50 text-gray-900">
-    <header class="p-6 bg-white shadow">
-      <div class="max-w-6xl mx-auto flex justify-between">
-        <a href="/" class="font-bold text-xl"> TVV Villas </a>
+  <body>
+    {% include navigation/site-header.html %}
 
-        <a href="/villas/" class="text-gray-600"> Browse Villas </a>
-      </div>
-    </header>
+    <main>{{ content }}</main>
 
-    <main class="max-w-6xl mx-auto p-8">{{ content }}</main>
+    {% include navigation/site-footer.html %}
   </body>
 </html>
