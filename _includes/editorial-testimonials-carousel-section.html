@@ -1,0 +1,150 @@
+<!-- _includes/editorial-testimonials-carousel-section.html -->
+<section class="bg-[#f3f3f1] py-24 lg:py-32 overflow-hidden">
+  <div class="mx-auto max-w-screen-2xl px-6 lg:px-8">
+    <!-- Title -->
+    <div class="mb-16 lg:mb-20">
+      <h2
+        class="testimonial-split-title font-heading text-5xl md:text-6xl font-extralight uppercase tracking-wide text-neutral-900"
+      >
+        {{ include.section.title }}
+      </h2>
+    </div>
+
+    <!-- Carousel -->
+    <div class="overflow-hidden">
+      <div id="testimonial-track" class="flex items-stretch">
+        {% for item in include.section.items %}
+        <div
+          class="testimonial-slide min-w-full md:min-w-1/2 lg:min-w-1/3 px-6"
+        >
+          <article
+            class="h-full min-h-[260px] flex flex-col justify-between border-r border-[#B55322] pr-10"
+          >
+            <div>
+              <h3
+                class="mb-6 font-heading text-4xl md:text-5xl font-extralight uppercase tracking-wide text-neutral-900"
+              >
+                {{ item.headline }}
+              </h3>
+
+              <p
+                class="max-w-md text-base md:text-lg leading-8 text-neutral-700 font-body"
+              >
+                {{ item.quote }}
+              </p>
+            </div>
+
+            <p
+              class="w-full text-right text-sm tracking-wide text-neutral-600 font-body"
+            >
+              {{ item.author }} · {{ item.date }}
+            </p>
+          </article>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof gsap !== "undefined" && typeof SplitText !== "undefined") {
+      gsap.registerPlugin(SplitText, ScrollTrigger);
+
+      document.fonts.ready.then(() => {
+        const testimonialTitle = document.querySelector(
+          ".testimonial-split-title",
+        );
+        if (testimonialTitle) {
+          gsap.set(testimonialTitle, { opacity: 1 });
+
+          SplitText.create(testimonialTitle, {
+            type: "words,lines",
+            linesClass: "line",
+            autoSplit: true,
+            mask: "lines",
+            onSplit: (self) => {
+              gsap.from(self.lines, {
+                scrollTrigger: {
+                  trigger: testimonialTitle,
+                  start: "top 80%",
+                  toggleActions: "play reverse play reverse",
+                },
+                duration: 1.2,
+                yPercent: 100,
+                opacity: 0,
+                stagger: 0.1,
+                ease: "power2.out",
+              });
+            },
+          });
+        }
+
+        ScrollTrigger.refresh();
+      });
+    }
+  });
+</script>
+
+<script>
+  (function () {
+    "use strict";
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initTestimonialSlider);
+    } else {
+      initTestimonialSlider();
+    }
+
+    function initTestimonialSlider() {
+      if (typeof gsap === "undefined") {
+        setTimeout(initTestimonialSlider, 100);
+        return;
+      }
+
+      const track = document.getElementById("testimonial-track");
+      if (!track) return;
+
+      const originalSlides = Array.from(track.children);
+      if (!originalSlides.length) return;
+
+      const slidesPerView =
+        window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+
+      const slidesToClone = Math.min(slidesPerView, originalSlides.length);
+      for (let i = 0; i < slidesToClone; i++) {
+        track.appendChild(originalSlides[i].cloneNode(true));
+      }
+
+      const allSlides = Array.from(track.children);
+      const slideWidth = 100 / slidesPerView;
+      const totalWidth = allSlides.length * slideWidth;
+      const duration = allSlides.length * 8;
+
+      gsap.set(track, { x: "0%" });
+
+      const tl = gsap.timeline({ repeat: -1, ease: "none" });
+      tl.to(track, {
+        x: `-${totalWidth - slidesPerView * slideWidth}%`,
+        duration,
+        ease: "none",
+      });
+
+      track.addEventListener("mouseenter", () => tl.pause());
+      track.addEventListener("mouseleave", () => tl.resume());
+    }
+  })();
+</script>
+
+<style>
+  .testimonial-split-title .line {
+    display: block;
+    overflow: hidden;
+    line-height: 1.2;
+  }
+
+  #testimonial-track > div {
+    flex-shrink: 0;
+  }
+</style>
