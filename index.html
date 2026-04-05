@@ -8,6 +8,40 @@ hero:
     - "Located in Ungasan, our villas provide the perfect base to explore the Bukit Peninsula — from beautiful beaches and beach clubs to local cafés and hidden spots waiting to be discovered."
     - "Whether you're traveling with family, friends, or as a couple, our villas offer a calm and welcoming place to enjoy Bali at your own pace."
   background_image: "/assets/images/hero-image.jpg"
+
+featured_villas:
+  title: "Our Villas"
+  description: >
+    Our villas are designed for comfort, privacy, and a relaxed stay in Bali.
+    Located in Ungasan, they offer a calm place to unwind while being close to
+    the beaches, restaurants, and beach clubs of the Bukit Peninsula.
+  button: "See All Villas"
+  items:
+    - name: Villa Indah
+      url: /villa-indah
+      image: /assets/images/villas/villa-indah.webp
+      description: A cozy tropical retreat with a private pool and lush garden surroundings.
+    - name: Villa Asmara
+      url: /villa-asmara
+      image: /assets/images/villas/villa-asmara.webp
+      description: A peaceful Bali villa with warm interiors and tropical gardens.
+    - name: Villa Sinar Maluku
+      url: /villa-sinar-maluku
+      image: /assets/images/villas/villa-sinar-maluku.webp
+      description: Elegant tropical comfort with bright open spaces.
+    - name: Villa Senang
+      url: /villa-senang
+      image: /assets/images/villas/villa-senang.webp
+      description: Designed for comfort and easy living.
+    - name: Villa Matahari
+      url: /villa-matahari
+      image: /assets/images/villas/villa-matahari.webp
+      description: Sun-filled interiors and calm surroundings.
+    - name: Villa Raya
+      url: /villa-raya
+      image: /assets/images/villas/villa-raya.webp
+      description: Spacious tropical living with timeless Balinese touches.
 ---
 
-{% include hero-section.html hero=page.hero %}
+{% include hero-section.html section=page.hero %} {% include villa-card.html
+section=page.featured_villas %}
