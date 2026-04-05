@@ -7,14 +7,14 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-14">
       <div class="lg:col-span-4">
         <h2
-          class="text-5xl md:text-6xl font-extralight tracking-wide text-[#231F20] uppercase"
+          class="text-5xl md:text-6xl font-extralight tracking-wide text-[#231F20] uppercase font-heading"
         >
           {{ section_data.title }}
         </h2>
       </div>
 
       <div class="lg:col-span-6">
-        <p class="text-[#231F20]/85 leading-9 text-lg max-w-3xl">
+        <p class="text-[#231F20]/85 leading-9 text-lg max-w-3xl font-body">
           {{ section_data.description }}
         </p>
       </div>
@@ -22,7 +22,7 @@
       <div class="lg:col-span-2 lg:flex lg:justify-end">
         <a
           href="{{ section_data.button_url | default: '/villas' | relative_url }}"
-          class="inline-flex rounded-xl bg-[#9D8B2F] px-8 py-4 text-white text-lg font-semibold uppercase tracking-wide hover:scale-105 transition-transform duration-300"
+          class="inline-flex rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-bold uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-center min-w-[120px] text-white"
         >
           {{ section_data.button }}
         </a>
@@ -52,12 +52,12 @@
               </div>
               <div class="pt-4 sm:pt-6 text-white">
                 <h3
-                  class="text-2xl sm:text-3xl md:text-4xl font-extralight uppercase tracking-wide mb-2 sm:mb-3"
+                  class="text-2xl sm:text-3xl md:text-4xl font-extralight uppercase tracking-wide mb-2 sm:mb-3 font-heading"
                 >
                   {{ villa.name }}
                 </h3>
                 <p
-                  class="text-sm sm:text-base leading-6 sm:leading-8 text-white/90 max-w-[90%]"
+                  class="text-sm sm:text-base leading-6 sm:leading-8 text-white/90 max-w-[90%] font-body"
                 >
                   {{ villa.description }}
                 </p>
@@ -109,54 +109,7 @@
 
     <!-- Scroll indicators -->
     <div class="lg:hidden flex justify-center mt-4 text-[#231F20]/50 text-sm">
-      <span class="inline-flex items-center gap-2">
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 19l-7-7 7-7"
-          ></path>
-        </svg>
-        <span>Swipe to explore villas</span>
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5l7 7-7 7"
-          ></path>
-        </svg>
-      </span>
-    </div>
-
-    <div class="hidden lg:flex justify-center mt-8 text-[#231F20]/50 text-sm">
-      <span class="inline-flex items-center gap-2">
-        <span>Scroll down to explore villas</span>
-        <svg
-          class="w-4 h-4 animate-bounce"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 14l-7 7m0 0l-7-7m7 7V3"
-          ></path>
-        </svg>
-      </span>
+      <span>Swipe to explore villas</span>
     </div>
   </div>
 </section>
