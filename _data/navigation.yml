@@ -2,22 +2,22 @@ main_nav:
   - title: Villas
     url: "/villas.html"
     submenu:
-      - title: Tropical Villa Asmara
-        url: "/villas.html#tropical-villa-asmara"
-      - title: Tropical Villa Indah
-        url: "/villas.html#tropical-villa-indah"
-      - title: Tropical Villa Sinar Maluku
-        url: "/villas.html#tropical-villa-sinar-maluku"
-      - title: Tropical Villa Senang
-        url: "/villas.html#tropical-villa-senang"
-      - title: Tropical Villa Matahari
-        url: "/villas.html#tropical-villa-matahari"
-      - title: Tropical Villa Raya
-        url: "/villas.html#tropical-villa-raya"
+      - title: Villa Asmara
+        url: "/villas.html#villa-asmara"
+      - title: Villa Indah
+        url: "/villas.html#villa-indah"
+      - title: Villa Sinar Maluku
+        url: "/villas.html#villa-sinar-maluku"
+      - title: Villa Senang
+        url: "/villas.html#villa-senang"
+      - title: Villa Matahari
+        url: "/villas.html#villa-matahari"
+      - title: Villa Raya
+        url: "/villas.html#villa-raya"
   - title: Services
     url: "/services.html"
-  - title: Sorroundings
-    url: "/sorroundings.html"
+  - title: Surroundings
+    url: "/surroundings.html"
   - title: Contact
     url: "/contact.html"
   - title: Book Now

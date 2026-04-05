@@ -1,5 +1,6 @@
+<!-- _includes/navigation/site-footer.html -->
 <footer class="bg-[#AF461A] text-white pt-20 md:pt-24 pb-10 overflow-hidden">
-  <div class="max-w-[96rem] mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Top layout -->
     <div
       class="grid grid-cols-1 md:grid-cols-12 gap-y-12 gap-x-6 lg:gap-x-8 items-start"
@@ -26,12 +27,12 @@
         <!-- Villas -->
         <div class="md:col-span-5 text-center md:text-left">
           <h3
-            class="text-base md:text-lg font-semibold uppercase tracking-wide mb-4"
+            class="text-base md:text-lg font-heading font-bold uppercase tracking-normal mb-4"
           >
             Villas
           </h3>
           <ul
-            class="space-y-2 text-sm md:text-base text-white/90 ml-4 uppercase"
+            class="space-y-2 text-sm md:text-base text-white/90 uppercase font-heading font-bold tracking-normal ml-4"
           >
             <li>
               <a
@@ -83,17 +84,18 @@
           <div class="space-y-3 text-sm md:text-base">
             <a
               href="/services"
-              class="block font-semibold uppercase hover:text-black transition-colors duration-200"
-              >Services</a
+              class="block font-heading font-bold uppercase tracking-normal hover:text-black transition-colors duration-200"
             >
+              Services
+            </a>
             <a
               href="/surroundings"
-              class="block font-semibold uppercase hover:text-black transition-colors duration-200"
+              class="block font-heading font-bold uppercase tracking-normal hover:text-black transition-colors duration-200"
               >Surroundings</a
             >
             <a
               href="/contact"
-              class="block font-semibold uppercase hover:text-black transition-colors duration-200"
+              class="block font-heading font-bold uppercase tracking-normal hover:text-black transition-colors duration-200"
               >Contact</a
             >
 
@@ -116,7 +118,7 @@
             <div class="pt-2 flex xl:hidden justify-center md:justify-start">
               <a
                 href="/book-now"
-                class="inline-block rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-semibold uppercase tracking-wide hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-center min-w-[120px]"
+                class="inline-block rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-bold uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-center min-w-[120px]"
               >
                 Book Now
               </a>
@@ -130,7 +132,7 @@
         >
           <a
             href="/book-now"
-            class="inline-block rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-semibold uppercase tracking-wide hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-center min-w-[120px]"
+            class="inline-block rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-bold uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-center min-w-[120px]"
           >
             Book Now
           </a>
@@ -143,7 +145,7 @@
       <div class="text-center">
         <!-- Policy links -->
         <div
-          class="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-sm md:text-base font-semibold uppercase"
+          class="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-sm md:text-base font-heading font-bold uppercase tracking-normal"
         >
           <a
             href="/privacy-policy"
@@ -159,7 +161,9 @@
         </div>
 
         <!-- Bottom copyright -->
-        <div class="mt-8 text-white/80 text-sm md:text-base leading-relaxed">
+        <div
+          class="mt-8 text-white/80 text-sm md:text-base leading-relaxed font-heading tracking-normal"
+        >
           <p>© {{ 'now' | date: '%Y' }} ALL RIGHTS RESERVED.</p>
           <p class="mt-2">
             DESIGNED AND BUILT BY
