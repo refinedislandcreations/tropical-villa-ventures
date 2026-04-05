@@ -60,9 +60,24 @@ explore_the_area_section:
   button: "Explore the Area"
   button_url: "/explore-the-area"
   image: "/assets/images/villas/villa-raya.webp"
+
+discovery_panels:
+  items:
+    - title: "Our Villas"
+      image: "/assets/images/villas/villa-indah.webp"
+      url: "/villas"
+
+    - title: "Services"
+      image: "/assets/images/villas/villa-asmara.webp"
+      url: "/services"
+
+    - title: "The Area"
+      image: "/assets/images/villas/villa-sinar-maluku.webp"
+      url: "/explore-the-area"
 ---
 
 {% include hero-section.html section=page.hero %} {% include villa-card.html
 section=page.featured_villas %} {% include content-image-section.html
 section=page.services_section %} {% include content-image-reverse-section.html
-section=page.explore_the_area_section %}
+section=page.explore_the_area_section %} {% include
+three-panel-discovery-section.html section=page.discovery_panels %}

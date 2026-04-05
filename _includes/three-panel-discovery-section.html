@@ -1,0 +1,36 @@
+<!-- _includes/three-panel-discovery-section.html -->
+{% assign section_data = include.section %}
+
+<section class="bg-[#f3f3f1] overflow-hidden">
+  <div class="grid grid-cols-1 md:grid-cols-3 min-h-[520px] lg:min-h-[720px]">
+    {% for item in section_data.items %}
+    <a
+      href="{{ item.url | relative_url }}"
+      class="group relative overflow-hidden"
+      aria-label="{{ item.title }}"
+    >
+      <!-- Background Image -->
+      <img
+        src="{{ item.image | relative_url }}"
+        alt="{{ item.title }}"
+        class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+        loading="lazy"
+      />
+
+      <!-- Overlay -->
+      <div
+        class="absolute inset-0 bg-black/25 transition duration-500 group-hover:bg-black/35"
+      ></div>
+
+      <!-- Title -->
+      <div class="absolute inset-x-0 bottom-10 z-10 px-6 md:px-8 lg:px-10">
+        <h2
+          class="font-heading text-4xl md:text-5xl lg:text-6xl font-extralight uppercase tracking-wide text-white"
+        >
+          {{ item.title }}
+        </h2>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
