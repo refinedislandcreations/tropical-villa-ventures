@@ -41,7 +41,28 @@ featured_villas:
       url: /villa-raya
       image: /assets/images/villas/villa-raya.webp
       description: A sophisticated open-concept retreat surrounded by lush gardens and a private pool, offering modern comforts with tropical flair.
+
+services_section:
+  title: "SERVICES"
+  paragraphs:
+    - "To make your stay as comfortable and effortless as possible, a number of services can be arranged during your visit."
+    - "Start your day with breakfast in the villa, unwind with a relaxing in-villa massage, or let us help arrange transport, scooter rentals, or laundry service. Our team is always happy to assist with anything you may need during your stay."
+  button: "View All Services"
+  button_url: "/services"
+  image: "/assets/images/villas/villa-raya.webp"
+
+explore_the_area_section:
+  title: "Explore the Area"
+  paragraphs:
+    - "Our villas are located in Ungasan on Bali’s Bukit Peninsula, an area known for its beautiful beaches, relaxed atmosphere, and stunning ocean views."
+    - "Within a short drive, you can visit Melasti Beach, Pandawa Beach, and Green Bowl, enjoy sunset views from the cliffs of Uluwatu, or spend the afternoon at one of the many beach clubs nearby."
+    - "The area also offers a wide selection of cafés, restaurants, and local warungs where you can enjoy everything from traditional Indonesian dishes to international cuisine."
+  button: "Explore the Area"
+  button_url: "/explore-the-area"
+  image: "/assets/images/villas/villa-raya.webp"
 ---
 
 {% include hero-section.html section=page.hero %} {% include villa-card.html
-section=page.featured_villas %}
+section=page.featured_villas %} {% include content-image-section.html
+section=page.services_section %} {% include content-image-reverse-section.html
+section=page.explore_the_area_section %}
