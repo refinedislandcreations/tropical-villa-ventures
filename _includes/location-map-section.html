@@ -1,0 +1,40 @@
+<!-- _includes/location-map-section.html -->
+{% assign section_data = include.section %} {% assign map_embed =
+section_data.map_embed_url %}
+
+<section class="bg-[#f3f3f1] py-24 lg:py-32 overflow-hidden">
+  <div class="mx-auto max-w-screen-2xl px-6 lg:px-8">
+    <!-- Title -->
+    <div class="mb-10 lg:mb-12">
+      <h2
+        class="font-heading text-5xl md:text-6xl font-extralight uppercase tracking-wide text-neutral-900"
+      >
+        {{ section_data.title }}
+      </h2>
+    </div>
+
+    <!-- Map Frame -->
+    <div
+      class="relative bg-gradient-to-r from-[#7F361C] to-[#D06223] p-4 lg:p-5"
+    >
+      <div class="relative z-10 overflow-hidden bg-white">
+        {% if map_embed %}
+        <iframe
+          src="{{ map_embed }}"
+          class="h-[340px] md:h-[420px] w-full border-0"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+        {% else %}
+        <img
+          src="{{ section_data.image | relative_url }}"
+          alt="{{ section_data.title }}"
+          class="h-[340px] md:h-[420px] w-full object-cover"
+          loading="lazy"
+        />
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
