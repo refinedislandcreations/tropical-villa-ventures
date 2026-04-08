@@ -1,0 +1,96 @@
+<!-- _includes/featured-villa-spotlight-slider-section.html -->
+{% assign section_data = include.section %} {% assign slider_id =
+section_data.title | slugify %} {% assign section_index = include.index |
+default: 1 %} {% assign bg_class = '#F3F0E7' %} {% assign mod = section_index |
+modulo: 2 %} {% if mod == 0 %} {% assign bg_class = '#FCFBF8' %} {% endif %}
+
+<section
+  class="py-24 lg:py-28 overflow-hidden"
+  style="background-color: {{ bg_class }};"
+  id="villa-spotlight-{{ slider_id }}"
+>
+  <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+    <!-- Top row -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-14">
+      <div class="lg:col-span-4">
+        <h2
+          class="text-5xl md:text-6xl font-extralight tracking-wide uppercase font-heading text-[#231F20]"
+        >
+          {{ section_data.title }}
+        </h2>
+        <div
+          class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-lg md:text-xl font-extralight uppercase tracking-wide text-[#231F20]/80 font-heading"
+        >
+          {% if section_data.guests %}<span
+            >{{ section_data.guests }} Guests</span
+          >{% endif %} {% if section_data.bedrooms %}<span
+            class="text-[#8C3B1C]"
+            >•</span
+          ><span>{{ section_data.bedrooms }} Bedrooms</span>{% endif %} {% if
+          section_data.bathrooms %}<span class="text-[#8C3B1C]">•</span
+          ><span>{{ section_data.bathrooms }} Bathrooms</span>{% endif %}
+        </div>
+      </div>
+
+      <div class="lg:col-span-6">
+        <p class="text-[#231F20]/85 leading-9 text-lg max-w-3xl font-body">
+          {{ section_data.description }}
+        </p>
+      </div>
+
+      <div class="lg:col-span-2 lg:flex lg:justify-end">
+        <a
+          href="{{ section_data.button_url | relative_url }}"
+          class="inline-flex rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-bold uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] min-w-[160px] justify-center text-white"
+        >
+          {{ section_data.button }}
+        </a>
+      </div>
+    </div>
+
+    <!-- Manual horizontal image slider -->
+    <div
+      class="overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth pb-4"
+      id="manual-slider-{{ slider_id }}"
+    >
+      <div class="flex gap-4 md:gap-6 w-max">
+        {% for image in section_data.images %}
+        <div class="snap-start shrink-0 w-[82vw] sm:w-[520px] lg:w-[500px]">
+          <img
+            src="{{ image | relative_url }}"
+            alt="{{ section_data.title }} image {{ forloop.index }}"
+            class="w-full h-[260px] sm:h-[340px] lg:h-[380px] object-cover"
+            loading="lazy"
+          />
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="mt-4 text-sm text-[#231F20]/50 text-center lg:hidden">
+      Swipe to explore photos
+    </div>
+  </div>
+</section>
+
+<style>
+  #villa-spotlight-{{ slider_id }} .overflow-x-auto {
+    scrollbar-width: thin;
+    scrollbar-color: #9d8b2f #e9e6de;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #villa-spotlight-{{ slider_id }} .overflow-x-auto::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  #villa-spotlight-{{ slider_id }} .overflow-x-auto::-webkit-scrollbar-track {
+    background: #e9e6de;
+    border-radius: 9999px;
+  }
+
+  #villa-spotlight-{{ slider_id }} .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #9d8b2f;
+    border-radius: 9999px;
+  }
+</style>

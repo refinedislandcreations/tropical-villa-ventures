@@ -1,0 +1,146 @@
+---
+layout: default
+title: Our Villas | Tropical Villa Ventures
+
+hero:
+  title: "Our Villas"
+  paragraphs:
+    - "Discover our collection of private villas in Ungasan, designed for comfort, privacy, and a relaxed stay in Bali."
+    - "Each villa offers its own unique character while providing the same welcoming atmosphere and thoughtful details to make your stay easy and enjoyable. Whether you're traveling with family, friends, or as a couple, our villas offer a peaceful place to unwind while being close to the beaches, restaurants, and beach clubs of the Bukit Peninsula."
+    - "Explore the villas below to find the one that suits your stay."
+  background_image: "/assets/images/hero-image.jpg"
+
+villa_indah:
+  title: "Villa Indah"
+  guests: 4
+  bedrooms: 2
+  bathrooms: 2
+  description: >
+    Villa Indah is a welcoming private villa designed for comfort and a relaxed stay in Bali. Surrounded by tropical greenery, it offers a peaceful space to unwind, whether you're enjoying a quiet morning by the pool or returning after a day exploring the beaches of the Bukit Peninsula.
+  button: "Find Out More"
+  button_url: "/villa-indah"
+  images:
+    - "/assets/images/villas/villa-indah.webp"
+    - "/assets/images/villas/villa-asmara.webp"
+    - "/assets/images/villas/villa-sinar-maluku.webp"
+    - "/assets/images/villas/villa-senang.webp"
+    - "/assets/images/villas/villa-matahari.webp"
+    - "/assets/images/villas/villa-raya.webp"
+
+villa_asmara:
+  title: "Villa Asmara"
+  guests: 4
+  bedrooms: 2
+  bathrooms: 2
+  description: >
+    Villa Asmara offers a calm and comfortable setting for your stay in Ungasan. With its private pool and inviting living spaces, the villa provides a relaxed atmosphere where you can slow down and enjoy Bali at your own pace.
+  button: "Find Out More"
+  button_url: "/villa-asmara"
+  images:
+    - "/assets/images/villas/villa-indah.webp"
+    - "/assets/images/villas/villa-asmara.webp"
+    - "/assets/images/villas/villa-sinar-maluku.webp"
+    - "/assets/images/villas/villa-senang.webp"
+    - "/assets/images/villas/villa-matahari.webp"
+    - "/assets/images/villas/villa-raya.webp"
+
+villa_sinar_maluku:
+  title: "Villa Sinar Maluku"
+  guests: 4
+  bedrooms: 2
+  bathrooms: 2
+  description: >
+    Villa Sinar Maluku is a bright and welcoming villa designed for easy island living. Its private pool and comfortable indoor and outdoor spaces create a relaxed environment where you can enjoy quiet days and warm tropical evenings.
+  button: "Find Out More"
+  button_url: "/villa-sinar-maluku"
+  images:
+    - "/assets/images/villas/villa-indah.webp"
+    - "/assets/images/villas/villa-asmara.webp"
+    - "/assets/images/villas/villa-sinar-maluku.webp"
+    - "/assets/images/villas/villa-senang.webp"
+    - "/assets/images/villas/villa-matahari.webp"
+    - "/assets/images/villas/villa-raya.webp"
+
+villa_senang:
+  title: "Villa Senang"
+  guests: 4
+  bedrooms: 2
+  bathrooms: 2
+  description: >
+    Villa Senang is a charming private villa designed for a relaxing stay in Bali. With its beautiful garden and comfortable amenities, it offers a perfect retreat for those seeking a peaceful and enjoyable vacation.
+  button: "Find Out More"
+  button_url: "/villa-senang"
+  images:
+    - "/assets/images/villas/villa-indah.webp"
+    - "/assets/images/villas/villa-asmara.webp"
+    - "/assets/images/villas/villa-sinar-maluku.webp"
+    - "/assets/images/villas/villa-senang.webp"
+    - "/assets/images/villas/villa-matahari.webp"
+    - "/assets/images/villas/villa-raya.webp"
+
+villa_matahari:
+  title: "Villa Matahari"
+  guests: 4
+  bedrooms: 2
+  bathrooms: 2
+  description: >
+    Villa Matahari is a warm and welcoming villa where guests can enjoy the calm atmosphere of Ungasan. With a private pool and comfortable living areas, it offers the perfect place to relax and enjoy your time in Bali.
+  button: "Find Out More"
+  button_url: "/villa-matahari"
+  images:
+    - "/assets/images/villas/villa-indah.webp"
+    - "/assets/images/villas/villa-asmara.webp"
+    - "/assets/images/villas/villa-sinar-maluku.webp"
+    - "/assets/images/villas/villa-senang.webp"
+    - "/assets/images/villas/villa-matahari.webp"
+    - "/assets/images/villas/villa-raya.webp"
+
+villa_raya:
+  title: "Villa Raya"
+  guests: 4
+  bedrooms: 2
+  bathrooms: 2
+  description: >
+    Villa Raya offers a spacious and comfortable setting designed for relaxed stays in Bali. The villa combines privacy, tropical surroundings, and easy access to the beaches and beach clubs of Uluwatu.
+  button: "Find Out More"
+  button_url: "/villa-raya"
+  images:
+    - "/assets/images/villas/villa-indah.webp"
+    - "/assets/images/villas/villa-asmara.webp"
+    - "/assets/images/villas/villa-sinar-maluku.webp"
+    - "/assets/images/villas/villa-senang.webp"
+    - "/assets/images/villas/villa-matahari.webp"
+    - "/assets/images/villas/villa-raya.webp"
+---
+
+{% include hero-section.html section=page.hero %}
+
+<div id="villa-indah">
+  {% include featured-villa-spotlight-slider-section.html
+  section=page.villa_indah index=1 %}
+</div>
+
+<div id="villa-asmara">
+  {% include featured-villa-spotlight-slider-section.html
+  section=page.villa_asmara index=2 %}
+</div>
+
+<div id="villa-sinar-maluku">
+  {% include featured-villa-spotlight-slider-section.html
+  section=page.villa_sinar_maluku index=3 %}
+</div>
+
+<div id="villa-senang">
+  {% include featured-villa-spotlight-slider-section.html
+  section=page.villa_senang index=4 %}
+</div>
+
+<div id="villa-matahari">
+  {% include featured-villa-spotlight-slider-section.html
+  section=page.villa_matahari index=5 %}
+</div>
+
+<div id="villa-raya">
+  {% include featured-villa-spotlight-slider-section.html
+  section=page.villa_raya index=6 %}
+</div>
