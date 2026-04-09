@@ -1,0 +1,20 @@
+<!-- _includes/bali-location-map-section.html -->
+{% assign section_data = include.section %} {% assign map_embed =
+section_data.map_embed %}
+
+<section class="bg-[#FCFBF8] py-16 md:py-20">
+  <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+    <!-- Gradient frame all sides -->
+    <div class="bg-gradient-to-r from-[#8C3B1C] to-[#D96A27] p-4 md:p-5">
+      <div class="bg-white">
+        <div class="aspect-[16/9] w-full overflow-hidden">
+          <iframe
+            src="{{ map_embed }}"
+            class="w-full h-[175%]"
+            style="border: 0"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
