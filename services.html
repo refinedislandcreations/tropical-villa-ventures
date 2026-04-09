@@ -1,0 +1,61 @@
+---
+layout: default
+title: Our Villas | Tropical Villa Ventures
+
+hero:
+  title: "Services"
+  paragraphs:
+    - "To make your stay as comfortable and effortless as possible, a number of services can be arranged during your visit. From breakfast in the villa to relaxing massage treatments and transport around the island, our team is always happy to assist with anything you may need during your stay."
+  background_image: "/assets/images/hero-image.jpg"
+
+services_section:
+  items:
+    - title: "Breakfast"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: "Start your day with a delicious breakfast served directly in your villa. Enjoy a relaxed morning by the pool while your breakfast is prepared and delivered to you."
+      popup:
+        subtitle: "Breakfast Menu"
+        paragraphs:
+          - "Choose from continental, healthy bowls, fresh tropical fruit, and Indonesian breakfast options."
+        menu:
+          - name: "Continental Breakfast"
+            price: "IDR 120K"
+          - name: "Healthy Bowl"
+            price: "IDR 95K"
+
+    - title: "In-Villa Massage"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: "Unwind and relax with a soothing massage in the comfort of your villa. Massage treatments can be arranged during your stay so you can enjoy a spa experience without leaving your private space."
+      popup:
+        subtitle: "Spa Menu"
+        paragraphs:
+          - "Available from 60 to 120 minutes with Balinese and deep tissue options."
+        menu:
+          - name: "Balinese Massage"
+            price: "IDR 250K"
+          - name: "Deep Tissue"
+            price: "IDR 300K"
+
+    - title: "Transport & Airport Transfers"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: "Airport transfers can be arranged for your arrival and departure. If you would like to explore the island, private drivers can also be arranged for day trips and excursions."
+
+    - title: "Scooter & Car Rental"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: "Scooters and cars can be arranged for guests who prefer to explore Bali independently. Our team will be happy to assist with the rental process."
+
+    - title: "Laundry Service"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: "Laundry service is available during your stay. Clothes can be collected and returned the following day."
+
+    - title: "Private Nanny"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: "For families traveling with children, experienced nannies can be arranged so parents can enjoy some time out while their children are cared for at the villa."
+      popup:
+        subtitle: "Nanny Service"
+        paragraphs:
+          - "Hourly and full-day nanny services available with advance booking."
+---
+
+{% include hero-section.html section=page.hero %} {% include
+services-grid-popup-section.html section=page.services_section %}

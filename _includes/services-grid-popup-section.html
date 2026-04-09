@@ -1,0 +1,139 @@
+<!-- _includes/services-grid-popup-section.html -->
+{% assign section_data = include.section %}
+
+<section class="bg-[#F3F0E7] py-20 md:py-28">
+  <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-12"
+    >
+      {% for item in section_data.items %}
+      <article class="group">
+        {% assign has_popup = item.popup and item.popup != blank %} {% if
+        has_popup %}
+        <button
+          type="button"
+          data-modal-target="service-modal-{{ forloop.index }}"
+          class="w-full text-left"
+        >
+          {% endif %}
+
+          <div class="overflow-hidden">
+            <img
+              src="{{ item.image | relative_url }}"
+              alt="{{ item.title }}"
+              class="w-full h-[260px] md:h-[300px] object-cover transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="pt-6">
+            <h3
+              class="text-3xl font-extralight uppercase tracking-wide text-[#231F20] font-heading"
+            >
+              {{ item.title }}
+            </h3>
+            <p class="mt-3 text-base leading-8 text-[#231F20]/80 font-body">
+              {{ item.description }}
+            </p>
+          </div>
+
+          {% if has_popup %}
+        </button>
+        {% endif %}
+      </article>
+
+      {% if has_popup %}
+      <!-- Modal -->
+      <div
+        id="service-modal-{{ forloop.index }}"
+        class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/60 p-6"
+      >
+        <div
+          class="relative w-full max-w-2xl bg-white rounded-2xl p-8 md:p-10 shadow-2xl"
+        >
+          <button
+            type="button"
+            data-modal-close="service-modal-{{ forloop.index }}"
+            class="absolute top-4 right-4 text-2xl leading-none text-[#231F20]/60 hover:text-[#231F20]"
+          >
+            ×
+          </button>
+
+          <h3
+            class="text-4xl font-extralight uppercase tracking-wide text-[#231F20] font-heading"
+          >
+            {{ item.title }}
+          </h3>
+
+          {% if item.popup.subtitle %}
+          <p
+            class="mt-3 text-sm uppercase tracking-[0.2em] text-[#8C3B1C] font-heading"
+          >
+            {{ item.popup.subtitle }}
+          </p>
+          {% endif %}
+
+          <div
+            class="mt-6 space-y-4 text-base md:text-lg leading-8 text-[#231F20]/80 font-body"
+          >
+            {% for paragraph in item.popup.paragraphs %}
+            <p>{{ paragraph }}</p>
+            {% endfor %}
+          </div>
+
+          {% if item.popup.menu %}
+          <div class="mt-8 border-t border-[#231F20]/10 pt-6 space-y-3">
+            {% for menu_item in item.popup.menu %}
+            <div class="flex justify-between gap-4 text-[#231F20]">
+              <span>{{ menu_item.name }}</span>
+              {% if menu_item.price %}<span>{{ menu_item.price }}</span>{% endif
+              %}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %} {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    function initServiceModals() {
+      document.querySelectorAll("[data-modal-target]").forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+          const id = trigger.getAttribute("data-modal-target");
+          const modal = document.getElementById(id);
+          if (modal) modal.classList.remove("hidden");
+          if (modal) modal.classList.add("flex");
+        });
+      });
+
+      document.querySelectorAll("[data-modal-close]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-modal-close");
+          const modal = document.getElementById(id);
+          if (modal) modal.classList.add("hidden");
+          if (modal) modal.classList.remove("flex");
+        });
+      });
+
+      document.querySelectorAll('[id^="service-modal-"]').forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+          }
+        });
+      });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initServiceModals);
+    } else {
+      initServiceModals();
+    }
+  })();
+</script>
