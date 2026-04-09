@@ -1,0 +1,113 @@
+{% assign section_data = include.section %}
+
+<section class="bg-[#F3F0E7] py-20 md:py-28">
+  <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      <!-- LEFT: Form + Contact Info -->
+      <div class="lg:col-span-5 space-y-12">
+        <!-- Title -->
+        <h2
+          class="text-5xl md:text-6xl font-extralight uppercase tracking-wide text-[#231F20] font-heading"
+        >
+          {{ section_data.title }}
+        </h2>
+
+        <!-- Form -->
+        <form
+          action="{{ section_data.form_action | default: '#' }}"
+          method="POST"
+          class="space-y-6"
+        >
+          <!-- Name -->
+          <div class="grid grid-cols-3 items-center gap-6">
+            <label class="text-sm uppercase tracking-[0.2em] text-[#231F20]/70">
+              Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              required
+              class="col-span-2 w-full border-b border-[#231F20]/40 bg-transparent py-2 outline-none"
+            />
+          </div>
+
+          <!-- Email -->
+          <div class="grid grid-cols-3 items-center gap-6">
+            <label class="text-sm uppercase tracking-[0.2em] text-[#231F20]/70">
+              E-mail
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              class="col-span-2 w-full border-b border-[#231F20]/40 bg-transparent py-2 outline-none"
+            />
+          </div>
+
+          <!-- Phone -->
+          <div class="grid grid-cols-3 items-center gap-6">
+            <label class="text-sm uppercase tracking-[0.2em] text-[#231F20]/70">
+              Phone Number
+            </label>
+            <input
+              type="text"
+              name="phone"
+              class="col-span-2 w-full border-b border-[#231F20]/40 bg-transparent py-2 outline-none"
+            />
+          </div>
+
+          <!-- Message -->
+          <div class="space-y-3">
+            <label
+              class="block text-sm uppercase tracking-[0.2em] text-[#231F20]/70"
+            >
+              Your Message
+            </label>
+            <textarea
+              name="message"
+              rows="4"
+              required
+              class="w-full border border-[#231F20]/40 bg-transparent p-3 outline-none resize-none"
+            ></textarea>
+          </div>
+
+          <!-- Button -->
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="rounded-xl bg-[#9D8B2F] px-8 py-3 text-sm font-bold uppercase tracking-widest text-white hover:bg-[#8B7A28] transition"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+
+        <!-- Contact Info -->
+        <div class="text-sm text-[#231F20]/80 space-y-2">
+          <p><strong>Company name:</strong> PT. Tropical Villa Ventures</p>
+          <p><strong>Email:</strong> management@tvvbali.com</p>
+          <p><strong>Phone number:</strong> +62 8158819533</p>
+          <p>
+            <strong>Address:</strong> Jalan Toya Ning I, Puri Bendesa Villa
+            Asmara No. 71
+          </p>
+        </div>
+
+        <p class="text-sm uppercase tracking-widest text-[#231F20]/60">
+          Follow us on Instagram
+        </p>
+      </div>
+
+      <!-- RIGHT: Map -->
+      <div class="lg:col-span-7 h-[500px] lg:h-full">
+        <iframe
+          src="{{ section_data.map_embed }}"
+          class="w-full h-full"
+          style="border: 0"
+          allowfullscreen=""
+          loading="lazy"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>
