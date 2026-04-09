@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Our Villas | Tropical Villa Ventures
+title: Surroundings | Tropical Villa Ventures
 
 hero:
   title: "Explore the Area"
@@ -11,7 +11,48 @@ hero:
 
 bali_location_map:
   map_embed: "https://www.google.com/maps?q=-8.82862606798535,115.1577147194042&z=10&output=embed"
+
+beaches_section:
+  title: "Beaches"
+  description: >
+    The Bukit Peninsula is home to some of Bali’s most beautiful beaches, known for their clear water, white sand, and dramatic limestone cliffs. Within a short drive from the villas, you can discover several stunning beaches perfect for swimming, relaxing, or enjoying the sunset.
+  items:
+    - name: "Melasti Beach"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: >
+        Nearest to our villas, Melasti Beach offers a long stretch of soft white sand and some of the cleanest, bluest waters of the Indian Ocean. Enjoy a day at one of the beach clubs with great views and music.
+
+    - name: "Green Bowl Beach"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: >
+        This hidden gem is known for its seclusion and peaceful atmosphere. Please be careful you will need to climb many stairs down a cliff.
+
+    - name: "Pandawa Beach"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: >
+        Known for its crystal-clear waters, soft white sand, dramatic limestone cliffs, and calm waves, making it perfect for swimming, kayaking, and sunbathing.
+
+    - name: "Dreamland Beach"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: >
+        Famous for its big waves, golden sand, and expansive views, it's a favorite among surfers and sunbathers alike.
+
+    - name: "Padang Padang Beach"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: >
+        Known for its picturesque scenery and vibrant surf culture, this beach is perfect for both surfing and relaxing.
+
+    - name: "Thomas Beach"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: >
+        A quieter, less crowded beach with clear waters and soft sand, great for swimming, sunbathing, and beginner surfers.
+
+    - name: "Suluban Beach"
+      image: "/assets/images/villas/villa-indah.webp"
+      description: >
+        Accessible through a cave, this beach is known for dramatic cliffs and tidal pools—great for surfing and photography.
 ---
 
 {% include hero-section.html section=page.hero %} {% include
-bali-location-map-section.html section=page.bali_location_map %}
+bali-location-map-section.html section=page.bali_location_map %} {% include
+explore-slider-section.html section=page.beaches_section %}
