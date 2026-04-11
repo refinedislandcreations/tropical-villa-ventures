@@ -1,0 +1,33 @@
+{% assign section_data = include.section %}
+
+<section class="bg-[#F3F0E7] pb-16 md:pb-20">
+  <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+    <!-- Images -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for image in section_data.images %}
+      <div
+        class="{% if forloop.index > 1 %} hidden md:block {% endif %} {% if forloop.index > 2 %} md:hidden lg:block {% endif %} {% if forloop.index > 3 %} hidden {% endif %}"
+      >
+        <img
+          src="{{ image | relative_url }}"
+          alt="Villa image"
+          class="w-full h-[260px] md:h-[320px] lg:h-[360px] object-cover"
+          loading="lazy"
+        />
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Button -->
+    {% if section_data.button %}
+    <div class="mt-10">
+      <a
+        href="{{ section_data.button_url | default: '#' }}"
+        class="inline-flex uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm sm:text-base cursor-pointer"
+      >
+        {{ section_data.button }}
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>

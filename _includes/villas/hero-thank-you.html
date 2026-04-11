@@ -1,0 +1,41 @@
+{% assign section_data = include.section %} {% assign bg_image =
+section_data.background_image | default: '/assets/images/hero-image.jpg' %}
+
+<section class="relative min-h-screen overflow-hidden">
+  <!-- Background -->
+  <div class="absolute inset-0">
+    <img
+      src="{{ bg_image | relative_url }}"
+      alt="{{ section_data.title }}"
+      class="w-full h-full object-cover"
+      loading="eager"
+    />
+  </div>
+
+  <!-- Bottom Gradient Overlay -->
+  <div class="absolute inset-x-0 bottom-0">
+    <div
+      class="bg-gradient-to-t from-[#AF431D]/90 via-[#D06223CC]/80 to-transparent md:bg-gradient-to-t md:from-[#AF431D]/90 md:via-[#D06223CC]/80 md:to-transparent lg:bg-gradient-to-r lg:from-[#AF431D]/90 lg:to-[#D06223CC]/80 pt-20 pb-20 md:pt-24 md:pb-16"
+    >
+      <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+        <div class="text-white space-y-6">
+          <!-- Title -->
+          <h1
+            class="text-4xl sm:text-5xl md:text-6xl font-extralight uppercase tracking-wide font-heading leading-tight"
+          >
+            {{ section_data.title }}
+          </h1>
+
+          <!-- Paragraphs -->
+          <div
+            class="space-y-3 text-sm md:text-base text-white/90 font-body leading-relaxed"
+          >
+            {% for paragraph in section_data.paragraphs %}
+            <p>{{ paragraph }}</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

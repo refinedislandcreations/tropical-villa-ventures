@@ -1,0 +1,105 @@
+{% assign section_data = include.section %} {% assign bg_image =
+section_data.background_image | default: '/assets/images/hero-image.jpg' %}
+
+<section class="relative min-h-screen overflow-hidden">
+  <!-- Background -->
+  <div class="absolute inset-0">
+    <img
+      src="{{ bg_image | relative_url }}"
+      alt="{{ section_data.title }}"
+      class="w-full h-full object-cover"
+      loading="eager"
+    />
+  </div>
+
+  <!-- Content Wrapper (with gradient background) -->
+  <div class="absolute inset-x-0 bottom-0">
+    <div
+      class="bg-gradient-to-t from-[#AF431D]/90 via-[#D06223CC]/80 to-transparent md:bg-gradient-to-t md:from-[#AF431D]/90 md:via-[#D06223CC]/80 md:to-transparent lg:bg-gradient-to-r lg:from-[#AF431D]/90 lg:to-[#D06223CC]/80 pt-20 pb-20 md:pt-24 md:pb-16"
+    >
+      <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 items-end">
+          <!-- LEFT -->
+          <div class="lg:col-span-7 text-white space-y-4 md:space-y-6">
+            <h1
+              class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extralight uppercase tracking-wide font-heading"
+            >
+              {{ section_data.title }}
+            </h1>
+
+            <p
+              class="max-w-xl text-white/90 font-body leading-relaxed text-sm sm:text-base"
+            >
+              {{ section_data.description }}
+            </p>
+
+            <p
+              class="uppercase tracking-widest text-white/80 font-body text-xs sm:text-sm"
+            >
+              {% if section_data.meta.guests %} {{ section_data.meta.guests }}
+              Guests {% endif %} {% if section_data.meta.bedrooms %}
+              <span class="mx-1 sm:mx-2">•</span>{{ section_data.meta.bedrooms
+              }} Bedrooms {% endif %} {% if section_data.meta.bathrooms %}
+              <span class="mx-1 sm:mx-2">•</span>{{ section_data.meta.bathrooms
+              }} Bathrooms {% endif %}
+            </p>
+          </div>
+
+          <!-- RIGHT -->
+          <div class="lg:col-span-5">
+            <div
+              class="bg-white/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 md:p-8 shadow-xl"
+            >
+              <div
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-end"
+              >
+                <div class="text-center space-y-2">
+                  <p class="text-xs sm:text-sm text-[#231F20]/60 font-body">
+                    Check In
+                  </p>
+                  <input
+                    type="date"
+                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent outline-none py-1 text-[#231F20] text-sm sm:text-base"
+                  />
+                </div>
+
+                <div class="text-center space-y-2">
+                  <p class="text-xs sm:text-sm text-[#231F20]/60 font-body">
+                    Check Out
+                  </p>
+                  <input
+                    type="date"
+                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent outline-none py-1 text-[#231F20] text-sm sm:text-base"
+                  />
+                </div>
+
+                <div class="text-center space-y-2">
+                  <p class="text-xs sm:text-sm text-[#231F20]/60 font-body">
+                    Guests
+                  </p>
+                  <select
+                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent outline-none py-1 text-[#231F20] text-sm sm:text-base"
+                  >
+                    {% for i in (1..10) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div
+                  class="flex items-end justify-center sm:col-span-2 lg:col-span-1"
+                >
+                  <button
+                    class="uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-3 sm:px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-xs sm:text-sm w-full"
+                  >
+                    Book Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
