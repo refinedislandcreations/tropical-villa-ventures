@@ -3,17 +3,17 @@ main_nav:
     url: "/villas-page.html"
     submenu:
       - title: Villa Indah
-        url: "/villas-page.html#villa-indah"
+        url: "/villa-indah.html"
       - title: Villa Asmara
-        url: "/villas-page.html#villa-asmara"
+        url: "/villa-asmara.html"
       - title: Villa Sinar Maluku
-        url: "/villas-page.html#villa-sinar-maluku"
+        url: "/villa-sinar-maluku.html"
       - title: Villa Senang
-        url: "/villas-page.html#villa-senang"
+        url: "/villa-senang.html"
       - title: Villa Matahari
-        url: "/villas-page.html#villa-matahari"
+        url: "/villa-matahari.html"
       - title: Villa Raya
-        url: "/villas-page.html#villa-raya"
+        url: "/villa-raya.html"
   - title: Services
     url: "/services.html"
   - title: Surroundings
