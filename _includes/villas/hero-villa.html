@@ -1,5 +1,7 @@
+<!-- _includes/villas/hero-villa.html -->
 {% assign section_data = include.section %} {% assign bg_image =
-section_data.background_image | default: '/assets/images/hero-image.jpg' %}
+section_data.background_image | default: '/assets/images/hero-image.jpg' %} {%
+assign max_guests = section_data.meta.guests | default: 10 %}
 
 <section class="relative min-h-screen overflow-hidden">
   <!-- Background -->
@@ -80,7 +82,7 @@ section_data.background_image | default: '/assets/images/hero-image.jpg' %}
                   <select
                     class="w-full text-center border-b border-[#231F20]/30 bg-transparent outline-none py-1 text-[#231F20] text-sm sm:text-base"
                   >
-                    {% for i in (1..10) %}
+                    {% for i in (1..max_guests) %}
                     <option value="{{ i }}">{{ i }}</option>
                     {% endfor %}
                   </select>
