@@ -92,12 +92,57 @@ gallery_cta:
 location_section:
   title: "Where To Find Villa Indah"
   map_embed_url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3347.813511642713!2d115.15456850463353!3d-8.828802620264453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd25b81586555c9%3A0x2a62e34bbd99211!2sTropical%20Villa%20Indah!5e0!3m2!1sen!2sid!4v1775440836650!5m2!1sen!2sid"
+
+faq_section:
+  title: "FAQs"
+
+  groups:
+    - category: "Arrival & Check-In"
+      items:
+        - question: "What time is check-in?"
+          answer: "Check-in is between 2 PM and 5 PM. If you plan to arrive later, self check-in is available after 5 PM."
+
+        - question: "What time is check-out?"
+          answer: "Check-out is before 11 AM."
+
+        - question: "Do I need to provide identification when checking in?"
+          answer: "Yes, passport or ID is required."
+
+        - question: "Can you arrange airport transfers?"
+          answer: "Yes, airport pickup and drop-off can be arranged."
+
+    - category: "The Villa"
+      items:
+        - question: "Is WiFi available in the villa?"
+          answer: "Yes, high-speed WiFi is included."
+
+        - question: "Is the villa private?"
+          answer: "Yes, the villa is fully private."
+
+        - question: "Is the pool safe for children?"
+          answer: "Children should always be supervised near the pool."
+
+        - question: "Is there air conditioning?"
+          answer: "Yes, all bedrooms are air-conditioned."
+
+    - category: "Services During Your Stay"
+      items:
+        - question: "Is breakfast included?"
+          answer: "Breakfast can be arranged upon request."
+
+        - question: "Can I request a nanny?"
+          answer: "Yes, private nanny services are available."
+
+        - question: "Do you offer in-villa massage?"
+          answer: "Yes, massage and spa services are available."
 ---
 
 {% include villas/hero-villa.html section=page.hero %} {% include
 content-image-reverse-section.html section=page.stay_at_villa_section %} {%
 include villas/gallery-section.html section=page.gallery %} {% include
-content-image-section.html section=page.features_section %} {% include
-location-map-section.html section=page.location_section %} {% include
-editorial-testimonials-carousel-section.html section=page.testimonials_section
-%} {% include villas/gallery-with-cta.html section=page.gallery_cta %}
+content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"
+%} {% include location-map-section.html section=page.location_section %} {%
+include editorial-testimonials-carousel-section.html
+section=page.testimonials_section %} {% include villas/gallery-with-cta.html
+section=page.gallery_cta %} {% include villas/faq-section.html
+section=page.faq_section %}

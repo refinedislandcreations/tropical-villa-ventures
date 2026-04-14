@@ -1,0 +1,121 @@
+<!-- _includes/faq-section.html -->
+{% assign faq = include.section %}
+
+<section class="bg-[#FCFBF8] py-20 md:py-28">
+  <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
+    <!-- Main title -->
+    <h2
+      class="text-5xl md:text-7xl font-extralight uppercase tracking-wide text-[#231F20] font-heading"
+    >
+      {{ faq.title }}
+    </h2>
+
+    <!-- FAQ groups -->
+    <div class="mt-8 md:mt-16 space-y-24">
+      {% for group in faq.groups %}
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        <!-- Left category -->
+        <div class="lg:col-span-4">
+          <h3
+            class="text-3xl md:text-4xl font-extralight uppercase tracking-wide text-[#231F20] font-heading"
+          >
+            {{ group.category }}
+          </h3>
+        </div>
+
+        <!-- Right accordion -->
+        <div class="lg:col-span-8">
+          <div class="space-y-0">
+            {% for item in group.items %}
+            <div class="border-b border-[#AF431D] faq-item" data-faq-item>
+              <button
+                type="button"
+                class="faq-toggle w-full py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B64919] focus-visible:ring-offset-2 rounded-lg transition-all duration-300 ease-out cursor-pointer"
+                aria-expanded="false"
+              >
+                <span
+                  class="text-base md:text-lg font-semibold text-[#231F20] font-body transition-all duration-300 ease-out hover:text-[#B64919] block"
+                >
+                  {{ item.question }}
+                </span>
+              </button>
+
+              <div
+                class="faq-answer overflow-hidden transition-all duration-400 ease-out"
+                style="max-height: 0; opacity: 0"
+              >
+                <div class="pb-5 pr-10">
+                  <p
+                    class="text-sm md:text-base leading-8 text-[#231F20]/80 font-body"
+                  >
+                    {{ item.answer }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const faqItems = document.querySelectorAll("[data-faq-item]");
+
+    faqItems.forEach((item) => {
+      const toggle = item.querySelector(".faq-toggle");
+      const answer = item.querySelector(".faq-answer");
+
+      if (!toggle || !answer) return;
+
+      toggle.addEventListener("click", function () {
+        const isOpen = toggle.getAttribute("aria-expanded") === "true";
+
+        // Close all other items in the same group
+        const group = item.closest(".space-y-0");
+        const allItems = group.querySelectorAll("[data-faq-item]");
+
+        allItems.forEach((otherItem) => {
+          const otherToggle = otherItem.querySelector(".faq-toggle");
+          const otherAnswer = otherItem.querySelector(".faq-answer");
+
+          if (
+            otherItem !== item &&
+            otherToggle?.getAttribute("aria-expanded") === "true"
+          ) {
+            // Close other open item
+            otherToggle.setAttribute("aria-expanded", "false");
+            otherAnswer.style.maxHeight = "0px";
+            otherAnswer.style.opacity = "0";
+          }
+        });
+
+        // Toggle current item
+        if (!isOpen) {
+          // Open
+          toggle.setAttribute("aria-expanded", "true");
+          answer.style.maxHeight = answer.scrollHeight + "px";
+          answer.style.opacity = "1";
+        } else {
+          // Close
+          toggle.setAttribute("aria-expanded", "false");
+          answer.style.maxHeight = "0px";
+          answer.style.opacity = "0";
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  /* Ensure smooth transitions for FAQ answers */
+  .faq-answer {
+    transition-property: max-height, opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: max-height, opacity;
+  }
+</style>
