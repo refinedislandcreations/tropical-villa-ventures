@@ -109,18 +109,6 @@ section_data.background_image | default: '/assets/images/hero-image.jpg' %}
             <p>{{ paragraph }}</p>
             {% endfor %}
           </div>
-
-          {% elsif section_data.button_text and section_data.button_url %}
-          <!-- Simple CTA Button for Mobile/Tablet -->
-          <div class="pt-4">
-            <a
-              href="{{ section_data.button_url | relative_url }}"
-              class="inline-block w-full text-center uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-6 py-3 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm sm:text-base shadow-lg"
-            >
-              {{ section_data.button_text }}
-            </a>
-          </div>
-          {% endif %}
         </div>
       </div>
     </div>

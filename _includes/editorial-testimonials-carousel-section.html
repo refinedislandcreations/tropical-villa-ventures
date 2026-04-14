@@ -1,5 +1,5 @@
 <!-- _includes/editorial-testimonials-carousel-section.html -->
-<section class="bg-[#F3F0E7] py-24 lg:py-32 overflow-hidden">
+<section class="bg-[#F3F0E7] section overflow-hidden">
   <div class="mx-auto max-w-screen-2xl px-6 lg:px-8">
     <!-- Title -->
     <div class="mb-16 lg:mb-20">
@@ -48,103 +48,188 @@
 </section>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    if (typeof gsap !== "undefined" && typeof SplitText !== "undefined") {
-      gsap.registerPlugin(SplitText, ScrollTrigger);
-
-      document.fonts.ready.then(() => {
-        const testimonialTitle = document.querySelector(
-          ".testimonial-split-title",
-        );
-        if (testimonialTitle) {
-          gsap.set(testimonialTitle, { opacity: 1 });
-
-          SplitText.create(testimonialTitle, {
-            type: "words,lines",
-            linesClass: "line",
-            autoSplit: true,
-            mask: "lines",
-            onSplit: (self) => {
-              gsap.from(self.lines, {
-                scrollTrigger: {
-                  trigger: testimonialTitle,
-                  start: "top 80%",
-                  toggleActions: "play reverse play reverse",
-                },
-                duration: 1.2,
-                yPercent: 100,
-                opacity: 0,
-                stagger: 0.1,
-                ease: "power2.out",
-              });
-            },
-          });
-        }
-
-        ScrollTrigger.refresh();
-      });
-    }
-  });
-</script>
-
-<script>
   (function () {
     "use strict";
 
+    // Wait for GSAP and ScrollTrigger to be ready
+    function waitForGSAP() {
+      if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
+        initTestimonialSlider();
+        initTitleAnimation();
+      } else {
+        setTimeout(waitForGSAP, 100);
+      }
+    }
+
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initTestimonialSlider);
+      document.addEventListener("DOMContentLoaded", waitForGSAP);
     } else {
-      initTestimonialSlider();
+      waitForGSAP();
+    }
+
+    function initTitleAnimation() {
+      const testimonialTitle = document.querySelector(
+        ".testimonial-split-title",
+      );
+      if (!testimonialTitle) return;
+
+      // Split the title into lines using GSAP
+      const lines = testimonialTitle.innerText.split("\n");
+
+      // Clear original content and wrap each line
+      const originalText = testimonialTitle.innerText;
+      testimonialTitle.innerHTML = originalText
+        .split(" ")
+        .map(
+          (word) =>
+            `<span class="word" style="display:inline-block; opacity:0; transform:translateY(30px);">${word}</span>`,
+        )
+        .join(" ");
+
+      // Animate each word
+      gsap.to(testimonialTitle.querySelectorAll(".word"), {
+        scrollTrigger: {
+          trigger: testimonialTitle,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+        duration: 0.8,
+        y: 0,
+        opacity: 1,
+        stagger: 0.03,
+        ease: "power2.out",
+      });
     }
 
     function initTestimonialSlider() {
-      if (typeof gsap === "undefined") {
-        setTimeout(initTestimonialSlider, 100);
-        return;
-      }
-
       const track = document.getElementById("testimonial-track");
       if (!track) return;
 
       const originalSlides = Array.from(track.children);
       if (!originalSlides.length) return;
 
-      const slidesPerView =
-        window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-
-      const slidesToClone = Math.min(slidesPerView, originalSlides.length);
-      for (let i = 0; i < slidesToClone; i++) {
-        track.appendChild(originalSlides[i].cloneNode(true));
+      // Get slides per view based on screen size
+      function getSlidesPerView() {
+        if (window.innerWidth >= 1024) return 3;
+        if (window.innerWidth >= 768) return 2;
+        return 1;
       }
 
-      const allSlides = Array.from(track.children);
-      const slideWidth = 100 / slidesPerView;
-      const totalWidth = allSlides.length * slideWidth;
-      const duration = allSlides.length * 8;
+      let slidesPerView = getSlidesPerView();
+      let isPlaying = true;
+      let animation;
 
-      gsap.set(track, { x: "0%" });
+      // Clone slides for infinite effect
+      function setupClones() {
+        // Clear existing clones
+        const originalCount = originalSlides.length;
+        const clonesToAdd = slidesPerView;
 
-      const tl = gsap.timeline({ repeat: -1, ease: "none" });
-      tl.to(track, {
-        x: `-${totalWidth - slidesPerView * slideWidth}%`,
-        duration,
-        ease: "none",
+        // Remove any existing clones
+        while (track.children.length > originalSlides.length) {
+          track.removeChild(track.lastChild);
+        }
+
+        // Add new clones
+        for (let i = 0; i < clonesToAdd; i++) {
+          track.appendChild(
+            originalSlides[i % originalSlides.length].cloneNode(true),
+          );
+        }
+      }
+
+      // Create animation
+      function createAnimation() {
+        if (animation) animation.kill();
+
+        const allSlides = Array.from(track.children);
+        const slideWidth = 100 / slidesPerView;
+        const totalSlides = allSlides.length;
+        const totalWidth = totalSlides * slideWidth;
+
+        // Calculate duration based on number of slides (slower for more slides)
+        const duration = totalSlides * 3;
+
+        // Set initial position
+        gsap.set(track, { x: "0%" });
+
+        // Create animation
+        animation = gsap.to(track, {
+          x: `-${totalWidth - slidesPerView * slideWidth}%`,
+          duration: duration,
+          ease: "none",
+          repeat: -1,
+          modifiers: {
+            x: gsap.utils.unitize((x) => parseFloat(x) % totalWidth),
+          },
+        });
+      }
+
+      // Handle resize
+      let resizeTimeout;
+      function handleResize() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          const newSlidesPerView = getSlidesPerView();
+          if (newSlidesPerView !== slidesPerView) {
+            slidesPerView = newSlidesPerView;
+            setupClones();
+            createAnimation();
+            if (!isPlaying) animation.pause();
+          }
+        }, 250);
+      }
+
+      // Pause on hover
+      track.addEventListener("mouseenter", () => {
+        if (animation && isPlaying) {
+          animation.pause();
+          isPlaying = false;
+        }
       });
 
-      track.addEventListener("mouseenter", () => tl.pause());
-      track.addEventListener("mouseleave", () => tl.resume());
+      track.addEventListener("mouseleave", () => {
+        if (animation && !isPlaying) {
+          animation.resume();
+          isPlaying = true;
+        }
+      });
+
+      // Initialize
+      setupClones();
+      createAnimation();
+
+      // Add resize listener
+      window.addEventListener("resize", handleResize);
+
+      // Refresh ScrollTrigger
+      ScrollTrigger.refresh();
     }
   })();
 </script>
 
 <style>
-  .testimonial-split-title .line {
-    display: block;
-    overflow: hidden;
-    line-height: 1.2;
+  .testimonial-split-title .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  /* Fallback if JS doesn't load */
+  .testimonial-split-title {
+    opacity: 1;
   }
 
   #testimonial-track > div {
     flex-shrink: 0;
+  }
+
+  /* Smooth hover pause/resume */
+  #testimonial-track {
+    cursor: grab;
+  }
+
+  #testimonial-track:active {
+    cursor: grabbing;
   }
 </style>
