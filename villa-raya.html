@@ -1,0 +1,136 @@
+---
+layout: default
+title: Villa Raya | Tropical Villa Ventures
+
+hero:
+  title: "Villa Raya"
+  description: "A luxurious 2-bedroom tropical villa in Ungasan featuring a private pool, open living spaces, and modern Balinese design, perfect for a relaxing island escape."
+  meta:
+    guests: 4
+    bedrooms: 2
+    bathrooms: 2
+  background_image: "/assets/images/villas/villa-raya/villa-raya-twilight-pool-exterio.webp"
+
+stay_at_villa_section:
+  title: "Your Stay at Villa Raya"
+  paragraphs:
+    - "Villa Raya is a stylish tropical villa designed with modern comfort and Balinese touches, offering a peaceful and elegant island retreat."
+    - "The villa features 2 king bedrooms, a spacious open living area, and a fully equipped kitchen, flowing seamlessly into a lush garden with a private pool, sun loungers, and a gazebo."
+    - "Located in Ungasan, just minutes from Melasti Beach, Uluwatu, restaurants, and beach clubs, Villa Raya offers the perfect balance of relaxation and convenience."
+  button: "Book Now"
+  button_url: "/book-now"
+  image: "/assets/images/villas/villa-raya/villa-raya-king-bedroom-ensuite.webp"
+
+gallery:
+  images:
+    - /assets/images/villas/villa-raya/villa-raya-bali-pool-deck-loungers.webp
+    - /assets/images/villas/villa-raya/villa-raya-modern-architecture-pool-view.webp
+    - /assets/images/villas/villa-raya/villa-raya-outdoor-dining-terrace.webp
+    - /assets/images/villas/villa-raya/villa-raya-king-bedroom-ensuite.webp
+    - /assets/images/villas/villa-raya/villa-raya-bedroom-wicker-lighting.webp
+    - /assets/images/villas/villa-raya/villa-raya-luxury-ensuite-bathroom.webp
+    - /assets/images/villas/villa-raya/villa-raya-bedroom-wardrobe-vanity.webp
+    - /assets/images/villas/villa-raya/villa-raya-bedroom-poolside-access.webp
+    - /assets/images/villas/villa-raya/villa-raya-scandi-living-room-kitchen.webp
+
+features_section:
+  title: "KEY FEATURES"
+  features:
+    - "Private swimming pool"
+    - "Open-concept living area"
+    - "Fully equipped kitchen"
+    - "High-speed WiFi"
+    - "Smart TV with Netflix"
+    - "Air-conditioned king bedrooms"
+    - "Outdoor dining and gazebo"
+    - "Easy access to Melasti Beach and Uluwatu"
+  button: "BOOK NOW"
+  button_url: "/booking"
+  image: "/assets/images/villas/villa-raya/villa-raya-poolside-sun-loungers.webp"
+
+testimonials_section:
+  title: "Testimonials"
+  items:
+    - headline: "Amazing stay"
+      quote: "Everything was perfect, the villa is beautiful, clean and very comfortable. Highly recommended."
+      author: "Tea"
+      date: "February 2026"
+
+    - headline: "Beautiful villa"
+      quote: "Havre de paix, maison bien équipée. Very peaceful and relaxing stay."
+      author: "Valerie"
+      date: "February 2026"
+
+    - headline: "Great experience"
+      quote: "Fantastic stay, everything was handled perfectly and the staff were very helpful."
+      author: "Svrkota"
+      date: "January 2026"
+
+    - headline: "Clean and comfortable"
+      quote: "Чисто и красиво. Очень уютная вилла и внимательный персонал."
+      author: "Mariia"
+      date: "September 2025"
+
+    - headline: "Perfect villa"
+      quote: "A beautiful villa with great design, pool, and very comfortable beds."
+      author: "Montserrat"
+      date: "September 2025"
+
+    - headline: "Highly recommend"
+      quote: "Loved the pool and outdoor area. Everything was perfect from start to finish."
+      author: "Emma"
+      date: "September 2025"
+
+gallery_cta:
+  images:
+    - /assets/images/villas/villa-raya/villa-raya-living-room-entertainment.webp
+    - /assets/images/villas/villa-raya/villa-raya-evening-dining-patio.webp
+    - /assets/images/villas/villa-raya/villa-raya-minimalist-kitchen-design.webp
+  button: "Book Now"
+  button_url: "/contact"
+
+location_section:
+  title: "Where To Find Villa Raya"
+  map_embed_url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1971.276730766738!2d115.15702143879983!3d-8.827951147370035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd25bb5db45b65b%3A0x3f7205e5724f182!2sTropical%20Villa%20Raya!5e0!3m2!1sen!2sid!4v1776634345336!5m2!1sen!2sid"
+
+faq_section:
+  title: "FAQs"
+
+  groups:
+    - category: "Arrival & Check-In"
+      items:
+        - question: "What time is check-in?"
+          answer: "Check-in is between 2 PM and 5 PM. Late check-in can be arranged upon request."
+
+        - question: "What time is check-out?"
+          answer: "Check-out is before 11 AM."
+
+        - question: "Is airport transfer available?"
+          answer: "Yes, airport transfers can be arranged upon request."
+
+    - category: "The Villa"
+      items:
+        - question: "Is Villa Raya private?"
+          answer: "Yes, the villa is fully private."
+
+        - question: "Does the villa have WiFi?"
+          answer: "Yes, high-speed WiFi is available throughout the villa."
+
+        - question: "Is housekeeping included?"
+          answer: "Yes, daily housekeeping is included."
+
+    - category: "Services During Stay"
+      items:
+        - question: "Can I request additional services?"
+          answer: "Yes, transport, scooter rental, massages, and meals can be arranged."
+---
+
+{% include villas/hero-villa.html section=page.hero %} {% include
+content-image-reverse-section.html section=page.stay_at_villa_section %} {%
+include villas/gallery-section.html section=page.gallery %} {% include
+content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"
+%} {% include location-map-section.html section=page.location_section %} {%
+include editorial-testimonials-carousel-section.html
+section=page.testimonials_section %} {% include villas/gallery-with-cta.html
+section=page.gallery_cta %} {% include villas/faq-section.html
+section=page.faq_section %}
