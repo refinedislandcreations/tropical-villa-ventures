@@ -1,0 +1,129 @@
+---
+layout: default
+title: Villa Senang | Tropical Villa Ventures
+
+hero:
+  title: "Villa Senang"
+  description: "A joyful tropical retreat in Bali where modern comfort meets traditional charm, surrounded by lush gardens and a private pool for a truly relaxing stay."
+  meta:
+    guests: 4
+    bedrooms: 2
+    bathrooms: 2
+  background_image: "/assets/images/villas/villa-senang/villa-senang-dusk-poolside-loungers.webp"
+
+stay_at_villa_section:
+  title: "Your Stay at Villa Senang"
+  paragraphs:
+    - "Villa Senang means ‘joy’ in Bahasa, offering a warm and cheerful tropical escape designed for comfort, privacy, and relaxation."
+    - "The villa features 2 identical bedrooms, a cozy living area, and a fully equipped kitchen, opening to a beautiful outdoor space with a private pool, lush garden, and a gazebo at its center."
+    - "Located in a peaceful area of Bali, Villa Senang offers quiet surroundings while still being within reach of beaches, restaurants, and local attractions."
+  button: "Book Now"
+  button_url: "/book-now"
+  image: "/assets/images/villas/villa-senang/villa-senang-boho-chic-bedroom.webp"
+
+gallery:
+  images:
+    - /assets/images/villas/villa-senang/villa-senang-terrace-bougainvillea.webp
+    - /assets/images/villas/villa-senang/villa-senang-sunset-infinity-pool.webp
+    - /assets/images/villas/villa-senang/villa-senang-pool-bali-bale-gazebo.webp
+    - /assets/images/villas/villa-senang/villa-senang-boho-chic-bedroom.webp
+    - /assets/images/villas/villa-senang/villa-senang-natural-stone-bathroom.webp
+    - /assets/images/villas/villa-senang/villa-senang-living-room-blue-sofa.webp
+    - /assets/images/villas/villa-senang/villa-senang-king-bedroom-white-decor.webp
+    - /assets/images/villas/villa-senang/villa-senang-modern-ensuite-bathroom.webp
+    - /assets/images/villas/villa-senang/villa-senang-indoor-dining-area.webp
+
+features_section:
+  title: "KEY FEATURES"
+  features:
+    - "Private swimming pool with tropical garden"
+    - "Central gazebo surrounded by greenery"
+    - "Fully equipped kitchen"
+    - "High-speed WiFi"
+    - "Air-conditioned bedrooms"
+    - "Comfortable indoor living space"
+    - "Outdoor dining and lounge area"
+    - "Peaceful and private location"
+  button: "BOOK NOW"
+  button_url: "/booking"
+  image: "/assets/images/villas/villa-senang/villa-senang-poolside-loungers-bali.webp"
+
+testimonials_section:
+  title: "Testimonials"
+  items:
+    - headline: "Beautiful stay"
+      quote: "Sehr schöne Lage, ruhig, villa geschmackvoll eingerichtet, toller Pool und sehr bequeme Betten. Wir würden wiederkommen!"
+      author: "Kerstin"
+      date: "April 2026"
+
+    - headline: "Comfortable and practical"
+      quote: "The villa is beautiful and very well designed. Two identical bedrooms and a great outdoor terrace made our stay very comfortable."
+      author: "Danielle"
+      date: "January 2026"
+
+    - headline: "Perfect stay"
+      quote: "Alles war super, wir hatten eine tolle Zeit. Sehr privat und entspannend."
+      author: "Ana"
+      date: "January 2026"
+
+    - headline: "Peaceful and amazing"
+      quote: "Sehr schöne gepflegte Anlage, toller Pool und ruhige Lage. Absolut empfehlenswert!"
+      author: "Heino"
+      date: "October 2025"
+
+gallery_cta:
+  images:
+    - /assets/images/villas/villa-senang/villa-senang-outdoor-dining-pavilion.webp
+    - /assets/images/villas/villa-senang/villa-senang-ornate-balinese-door.webp
+    - /assets/images/villas/villa-senang/villa-senang-pool-gazebo-bridge.webp
+  button: "Book Now"
+  button_url: "/contact"
+
+location_section:
+  title: "Where To Find Villa Senang"
+  map_embed_url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1971.2728406088163!2d115.15667013879984!3d-8.828679147375063!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd25b7f1b8d1c69%3A0x855daf5f1e623e23!2sTropical%20Villa%20Senang!5e0!3m2!1sen!2sid!4v1776631939663!5m2!1sen!2sid"
+
+faq_section:
+  title: "FAQs"
+
+  groups:
+    - category: "Arrival & Check-In"
+      items:
+        - question: "What time is check-in?"
+          answer: "Check-in is between 2 PM and 5 PM. Late check-in can be arranged upon request."
+
+        - question: "What time is check-out?"
+          answer: "Check-out is before 11 AM."
+
+        - question: "Can airport transfer be arranged?"
+          answer: "Yes, airport transfers are available upon request."
+
+    - category: "The Villa"
+      items:
+        - question: "Is Villa Senang private?"
+          answer: "Yes, the villa is fully private."
+
+        - question: "Is there WiFi?"
+          answer: "Yes, high-speed WiFi is available."
+
+        - question: "Is the area quiet?"
+          answer: "Yes, the villa is located in a peaceful and quiet environment."
+
+    - category: "Services During Stay"
+      items:
+        - question: "Is cleaning included?"
+          answer: "Yes, daily housekeeping is included."
+
+        - question: "Can transport be arranged?"
+          answer: "Yes, scooter rental, car hire, and transport services are available."
+---
+
+{% include villas/hero-villa.html section=page.hero %} {% include
+content-image-reverse-section.html section=page.stay_at_villa_section %} {%
+include villas/gallery-section.html section=page.gallery %} {% include
+content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"
+%} {% include location-map-section.html section=page.location_section %} {%
+include editorial-testimonials-carousel-section.html
+section=page.testimonials_section %} {% include villas/gallery-with-cta.html
+section=page.gallery_cta %} {% include villas/faq-section.html
+section=page.faq_section %}
