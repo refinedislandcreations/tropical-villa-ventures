@@ -1,3 +1,4 @@
+<!-- _includes/services-grid-popup-section.html -->
 {% assign section_data = include.section %}
 
 <section class="bg-[#F3F0E7] section">
@@ -61,14 +62,14 @@
             <button
               type="button"
               data-modal-close="service-modal-{{ forloop.index }}"
-              class="absolute top-4 right-4 text-2xl text-[#231F20]/60 hover:text-[#231F20]"
+              class="absolute top-4 right-4 text-2xl text-[#231F20]/60 hover:text-[#231F20] transition-colors duration-300"
             >
               ×
             </button>
 
             <!-- Title -->
             <h3
-              class="text-4xl font-extralight uppercase tracking-wide text-[#231F20] font-heading"
+              class="text-4xl font-extralight uppercase tracking-wide text-[#231F20] font-heading pr-8"
             >
               {{ item.popup.title }}
             </h3>
@@ -106,19 +107,46 @@
                 <!-- HEADER -->
                 <button
                   type="button"
-                  class="w-full flex items-center justify-between text-left"
-                  data-section-toggle
+                  class="w-full flex items-center justify-between text-left group"
+                  data-section-toggle="{{ forloop.parentloop.index }}-{{ forloop.index }}"
                 >
                   <h4
-                    class="text-2xl uppercase font-heading tracking-wide text-[#231F20]"
+                    class="text-2xl uppercase font-heading tracking-wide text-[#231F20] transition-colors duration-300 group-hover:text-[#B64919]"
                   >
                     {{ section.title }}
                   </h4>
-                  <span class="text-xl">+</span>
+                  <span
+                    class="accordion-icon text-2xl text-[#B64919] transition-transform duration-300"
+                  >
+                    <svg
+                      class="w-6 h-6 transition-transform duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                        class="arrow-down"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 15l7-7 7 7"
+                        class="arrow-up hidden"
+                      />
+                    </svg>
+                  </span>
                 </button>
 
                 <!-- CONTENT -->
-                <div class="hidden mt-4 section-content">
+                <div
+                  class="section-content mt-4 overflow-hidden"
+                  style="max-height: 0; opacity: 0"
+                >
                   <!-- GRID -->
                   {% if section.type == "grid" %}
                   <div class="grid md:grid-cols-3 gap-8 text-sm">
@@ -206,6 +234,7 @@
           const modal = document.getElementById(trigger.dataset.modalTarget);
           modal?.classList.remove("hidden");
           modal?.classList.add("flex");
+          document.body.style.overflow = "hidden";
         });
       });
 
@@ -214,6 +243,7 @@
           const modal = document.getElementById(btn.dataset.modalClose);
           modal?.classList.add("hidden");
           modal?.classList.remove("flex");
+          document.body.style.overflow = "";
         });
       });
 
@@ -222,6 +252,7 @@
           if (e.target === modal) {
             modal.classList.add("hidden");
             modal.classList.remove("flex");
+            document.body.style.overflow = "";
           }
         });
       });
@@ -233,16 +264,123 @@
   })();
 </script>
 
-<!-- ACCORDION -->
+<!-- GSAP ACCORDION SCRIPT - FIXED -->
 <script>
-  document.addEventListener("click", function (e) {
-    const toggle = e.target.closest("[data-section-toggle]");
-    if (!toggle) return;
+  (function () {
+    function waitForGSAP() {
+      if (typeof gsap !== "undefined") {
+        initAccordions();
+      } else {
+        setTimeout(waitForGSAP, 100);
+      }
+    }
 
-    const content = toggle.parentElement.querySelector(".section-content");
-    const icon = toggle.querySelector("span");
+    function initAccordions() {
+      const accordionButtons = document.querySelectorAll(
+        "[data-section-toggle]",
+      );
 
-    content.classList.toggle("hidden");
-    icon.textContent = content.classList.contains("hidden") ? "+" : "−";
-  });
+      accordionButtons.forEach((button) => {
+        const content = button
+          .closest(".border-b")
+          .querySelector(".section-content");
+        const iconSpan = button.querySelector(".accordion-icon");
+
+        if (!content || !iconSpan) return;
+
+        // Set initial state
+        gsap.set(content, { maxHeight: 0, opacity: 0, overflow: "hidden" });
+
+        // Make sure arrows are visible initially
+        const arrowDown = iconSpan.querySelector(".arrow-down");
+        const arrowUp = iconSpan.querySelector(".arrow-up");
+
+        if (arrowDown && arrowUp) {
+          gsap.set(arrowDown, { display: "block", rotation: 0 });
+          gsap.set(arrowUp, { display: "none", rotation: 0 });
+          arrowDown.classList.remove("hidden");
+          arrowUp.classList.add("hidden");
+        }
+
+        button.addEventListener("click", (e) => {
+          e.preventDefault();
+          const isOpen = parseFloat(content.style.maxHeight) > 0;
+
+          if (isOpen) {
+            // Close animation - faster
+            gsap.to(content, {
+              maxHeight: 0,
+              opacity: 0,
+              duration: 0.25,
+              ease: "power2.inOut",
+              clearProps: "overflow",
+            });
+
+            // Switch to arrow down immediately
+            if (arrowDown && arrowUp) {
+              gsap.to(arrowUp, {
+                rotation: 180,
+                duration: 0.15,
+                ease: "back.out",
+                onComplete: () => {
+                  gsap.set(arrowUp, { display: "none" });
+                  gsap.set(arrowDown, { display: "block", rotation: 0 });
+                  arrowUp.classList.add("hidden");
+                  arrowDown.classList.remove("hidden");
+                },
+              });
+            }
+          } else {
+            // Open animation - faster
+            const scrollHeight = content.scrollHeight;
+            gsap.to(content, {
+              maxHeight: scrollHeight,
+              opacity: 1,
+              duration: 0.3,
+              ease: "power2.out",
+              overflow: "visible",
+            });
+
+            // Switch to arrow up immediately
+            if (arrowDown && arrowUp) {
+              gsap.to(arrowDown, {
+                rotation: -180,
+                duration: 0.15,
+                ease: "back.out",
+                onComplete: () => {
+                  gsap.set(arrowDown, { display: "none" });
+                  gsap.set(arrowUp, { display: "block", rotation: 0 });
+                  arrowDown.classList.add("hidden");
+                  arrowUp.classList.remove("hidden");
+                },
+              });
+            }
+          }
+        });
+      });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", waitForGSAP);
+    } else {
+      waitForGSAP();
+    }
+  })();
 </script>
+
+<style>
+  .accordion-icon svg {
+    transition: all 0.3s ease;
+  }
+
+  .section-content {
+    transition:
+      max-height 0.4s ease-out,
+      opacity 0.3s ease-out;
+  }
+
+  /* Ensure smooth modal animations */
+  #service-modal-* {
+    transition: opacity 0.3s ease;
+  }
+</style>
