@@ -1,26 +1,168 @@
 ---
-permalink: /404.html
 layout: default
-title: 404 Not Found
+title: Page Not Found | Tropical Villa Ventures
+permalink: /404.html
 ---
 
-<style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
+<style>
+  .error-code {
+    font-size: 8rem;
     line-height: 1;
-    letter-spacing: -1px;
+    background: linear-gradient(135deg, #af431d 0%, #d06223 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  @media (min-width: 640px) {
+    .error-code {
+      font-size: 10rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .error-code {
+      font-size: 12rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .error-code {
+      font-size: 14rem;
+    }
+  }
+
+  .floating-icon {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
   }
 </style>
 
-<div class="container">
-  <h1>404</h1>
+<section
+  class="min-h-screen bg-[#F3F0E7] flex items-center justify-center py-20 md:py-28"
+>
+  <div class="max-w-3xl mx-auto px-6 lg:px-8 text-center">
+    <!-- Error Code -->
+    <div class="error-code font-heading font-extralight tracking-wider mb-4">
+      404
+    </div>
 
-  <p><strong>Page not found :(</strong></p>
-  <p>The requested page could not be found.</p>
-</div>
+    <!-- Main Title -->
+    <h1
+      class="text-3xl sm:text-4xl md:text-5xl font-extralight uppercase tracking-wide text-[#231F20] font-heading mb-4 leading-[1.1] md:leading-[0.95]"
+    >
+      Page Not Found
+    </h1>
+
+    <!-- Description -->
+    <p
+      class="text-sm md:text-base leading-snug md:leading-snug text-[#231F20]/70 max-w-md mx-auto mb-8 font-body"
+    >
+      Oops! It seems you've wandered off the path. The page you're looking for
+      doesn't exist or has been moved.
+    </p>
+
+    <!-- Divider -->
+    <div
+      class="w-16 h-px bg-gradient-to-r from-transparent via-[#AF431D]/30 to-transparent mx-auto mb-8"
+    ></div>
+
+    <!-- Suggested Links -->
+    <div class="space-y-3 mb-10">
+      <p
+        class="text-xs sm:text-sm uppercase tracking-widest text-[#231F20]/50 font-body mb-4"
+      >
+        You might want to try:
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/"
+          class="inline-flex items-center justify-center gap-2 bg-[#8B8635] text-white px-6 py-3 rounded-xl hover:bg-[#6B682A] transition-all duration-300 hover:scale-105 active:scale-95 font-heading font-medium text-sm uppercase tracking-widest"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            />
+          </svg>
+          Return Home
+        </a>
+        <a
+          href="/our-villas.html"
+          class="inline-flex items-center justify-center gap-2 border border-[#231F20]/20 text-[#231F20] px-6 py-3 rounded-xl hover:bg-[#231F20]/5 transition-all duration-300 font-body text-sm"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z"
+            />
+          </svg>
+          Browse Villas
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Links Grid -->
+    <div
+      class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 pt-6 border-t border-[#231F20]/10"
+    >
+      <a
+        href="/services.html"
+        class="text-xs sm:text-sm text-[#231F20]/60 hover:text-[#AF431D] transition-colors duration-300 font-body"
+      >
+        Services
+      </a>
+      <a
+        href="/surroundings.html"
+        class="text-xs sm:text-sm text-[#231F20]/60 hover:text-[#AF431D] transition-colors duration-300 font-body"
+      >
+        Surroundings
+      </a>
+      <a
+        href="/contact.html"
+        class="text-xs sm:text-sm text-[#231F20]/60 hover:text-[#AF431D] transition-colors duration-300 font-body"
+      >
+        Contact
+      </a>
+    </div>
+
+    <!-- Contact Note -->
+    <div class="mt-8 pt-4">
+      <p class="text-xs text-[#231F20]/40 font-body">
+        Need immediate help?
+        <a
+          href="mailto:management@tvvbali.com"
+          class="text-[#AF431D] hover:text-[#D06223] transition-colors duration-300 font-medium"
+        >
+          management@tvvbali.com
+        </a>
+      </p>
+    </div>
+  </div>
+</section>
