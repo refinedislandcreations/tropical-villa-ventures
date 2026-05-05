@@ -17,36 +17,121 @@ title: Booking Confirmed | Tropical Villa Ventures
     display: flex;
     align-items: center;
     justify-content: center;
+    animation: scaleIn 0.4s ease-out;
   }
   .checkmark {
     font-size: 48px;
     color: white;
+  }
+  @keyframes scaleIn {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .booking-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(35, 31, 32, 0.1);
+  }
+  .booking-detail-row:last-child {
+    border-bottom: none;
+  }
+  .booking-detail-label {
+    color: rgba(35, 31, 32, 0.6);
+    font-size: 0.875rem;
+  }
+  .booking-detail-value {
+    font-weight: 600;
+    color: #231F20;
+    text-align: right;
+    font-size: 0.875rem;
+  }
+  .booking-ref {
+    display: inline-block;
+    background: #f0eee6;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: #8B8635;
+    font-weight: 600;
+    letter-spacing: 0.05em;
   }
 </style>
 
 <section
   class="min-h-screen bg-[#F3F0E7] flex items-center justify-center py-20"
 >
-  <div class="max-w-2xl mx-auto px-6 text-center">
-    <div class="bg-white rounded-2xl p-12 shadow-xl">
+  <div class="max-w-2xl mx-auto px-6">
+    <div class="bg-white rounded-2xl p-8 md:p-12 shadow-xl">
+      <!-- Success Icon -->
       <div class="success-checkmark">
         <div class="checkmark-circle mx-auto">
           <span class="checkmark">✓</span>
         </div>
       </div>
+
       <h1
-        class="text-3xl md:text-4xl font-heading font-light text-[#231F20] mb-4"
+        class="text-3xl md:text-4xl font-heading font-light text-[#231F20] mb-2 text-center"
       >
         Booking Confirmed! 🎉
       </h1>
-      <p class="text-[#231F20]/70 mb-8">
-        Thank you for your booking! A confirmation email has been sent to your
-        email address with all the details.
+      <p class="text-[#231F20]/70 mb-6 text-center">
+        Thank you for your booking! Your reservation has been confirmed.
       </p>
-      <div class="space-y-4">
+
+      <!-- Booking Reference -->
+      <div id="refSection" class="text-center mb-8 hidden">
+        <p class="text-sm text-[#231F20]/60 mb-2">Your Booking Reference</p>
+        <span id="bookingRef" class="booking-ref"></span>
+      </div>
+
+      <!-- Booking Details Card -->
+      <div
+        id="bookingDetails"
+        class="hidden bg-[#F3F0E7] rounded-xl p-6 mb-8"
+      >
+        <h3 class="text-lg font-heading text-[#231F20] mb-4 uppercase tracking-wide font-light">
+          Booking Details
+        </h3>
+        <div id="detailRows"></div>
+      </div>
+
+      <!-- What's Next -->
+      <div class="bg-[#8B8635]/10 rounded-xl p-6 mb-8">
+        <h3 class="text-sm font-semibold text-[#8B8635] mb-3 uppercase tracking-wide">
+          What Happens Next
+        </h3>
+        <ul class="space-y-2 text-sm text-[#231F20]/70">
+          <li class="flex gap-2">
+            <span>📧</span>
+            <span>A payment receipt has been sent to your email by our payment provider.</span>
+          </li>
+          <li class="flex gap-2">
+            <span>🏡</span>
+            <span>Your reservation has been created in our booking system. You'll receive check-in details closer to your arrival date.</span>
+          </li>
+          <li class="flex gap-2">
+            <span>💬</span>
+            <span>Our team may reach out to confirm any special requests or travel arrangements.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="text-center text-sm text-[#231F20]/60 mb-8">
+        <p>
+          Questions? Contact us at
+          <a href="mailto:management@tvvbali.com" class="text-[#8B8635] underline">management@tvvbali.com</a>
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a
           href="/"
-          class="inline-block bg-[#8B8635] text-white px-8 py-3 rounded-xl hover:bg-[#6B682A] transition"
+          class="inline-block bg-[#8B8635] text-white px-8 py-3 rounded-xl hover:bg-[#6B682A] transition text-center"
           >Return to Home</a
         >
       </div>
@@ -55,6 +140,77 @@ title: Booking Confirmed | Tropical Villa Ventures
 </section>
 
 <script>
-  // Clear booking data from localStorage after successful booking
-  localStorage.removeItem("bookingData");
+  document.addEventListener("DOMContentLoaded", () => {
+    // Read booking data from localStorage BEFORE clearing
+    const bookingData = JSON.parse(localStorage.getItem("bookingData"));
+
+    // Read booking reference from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookingRef = urlParams.get("ref");
+
+    // Display booking reference
+    if (bookingRef) {
+      const refSection = document.getElementById("refSection");
+      const refEl = document.getElementById("bookingRef");
+      if (refSection && refEl) {
+        refEl.textContent = bookingRef;
+        refSection.classList.remove("hidden");
+      }
+    }
+
+    // Display booking details
+    if (bookingData) {
+      const detailsSection = document.getElementById("bookingDetails");
+      const detailRows = document.getElementById("detailRows");
+
+      if (detailsSection && detailRows) {
+        const formatDate = (dateStr) => {
+          if (!dateStr) return "-";
+          return new Date(dateStr + "T00:00:00").toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+        };
+
+        const checkin = bookingData.checkin;
+        const checkout = bookingData.checkout;
+        const guests = bookingData.guests;
+        const villaName = bookingData.villaName || "Villa";
+
+        // Calculate nights
+        let nights = "-";
+        if (checkin && checkout) {
+          const start = new Date(checkin);
+          const end = new Date(checkout);
+          nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+        }
+
+        const details = [
+          { label: "Villa", value: villaName },
+          { label: "Check-in", value: formatDate(checkin) },
+          { label: "Check-out", value: formatDate(checkout) },
+          { label: "Duration", value: `${nights} night${nights > 1 ? "s" : ""}` },
+          { label: "Guests", value: `${guests} guest${guests > 1 ? "s" : ""}` },
+        ];
+
+        detailRows.innerHTML = details
+          .map(
+            (d) => `
+            <div class="booking-detail-row">
+              <span class="booking-detail-label">${d.label}</span>
+              <span class="booking-detail-value">${d.value}</span>
+            </div>
+          `,
+          )
+          .join("");
+
+        detailsSection.classList.remove("hidden");
+      }
+    }
+
+    // Clear booking data from localStorage after displaying
+    localStorage.removeItem("bookingData");
+  });
 </script>

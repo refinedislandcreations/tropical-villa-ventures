@@ -86,37 +86,63 @@ exports.handler = async (event) => {
       specialRequests: specialRequests || "",
     });
 
+    // Sanitize phone number to E.164 format for Xendit
+    let sanitizedPhone = (phone || "").replace(/[\s\-\(\)]/g, "");
+    if (sanitizedPhone && !sanitizedPhone.startsWith("+")) {
+      // Convert Indonesian numbers: 08xx → +628xx
+      if (sanitizedPhone.startsWith("0")) {
+        sanitizedPhone = "+62" + sanitizedPhone.substring(1);
+      } else {
+        sanitizedPhone = "+" + sanitizedPhone;
+      }
+    }
+
+    // Validate amount
+    const invoiceAmount = Math.round(totalAmount);
+    if (!invoiceAmount || invoiceAmount <= 0 || isNaN(invoiceAmount)) {
+      throw new Error(`Invalid amount: ${totalAmount}. Price calculation may have failed.`);
+    }
+
+    // Build customer object (only include valid fields)
+    const customer = {
+      given_names: firstName || "Guest",
+      email: email,
+    };
+    if (lastName) customer.surname = lastName;
+    if (sanitizedPhone) customer.mobile_number = sanitizedPhone;
+
+    // Build items (only if nights is valid)
+    const validNights = parseInt(nights) || 1;
+    const items = [
+      {
+        name: villaName || "Villa Stay",
+        quantity: validNights,
+        price: Math.round(invoiceAmount / validNights),
+        category: "Accommodation",
+      },
+    ];
+
     // Create Xendit invoice
     const xenditPayload = {
       external_id: externalId,
-      amount: Math.round(totalAmount),
+      amount: invoiceAmount,
       payer_email: email,
       description: description,
       currency: "IDR",
-      success_redirect_url: `${process.env.URL || "https://www.tvvbali.com"}/booking-success.html`,
+      success_redirect_url: `${process.env.URL || "https://www.tvvbali.com"}/booking-success.html?ref=${externalId}`,
       failure_redirect_url: `${process.env.URL || "https://www.tvvbali.com"}/booking-failed.html`,
       invoice_duration: 86400,
-      customer: {
-        given_names: firstName,
-        surname: lastName,
-        email: email,
-        mobile_number: phone,
-      },
+      customer: customer,
       customer_notification_preference: {
         invoice_created: ["email"],
         invoice_reminder: ["email"],
         invoice_paid: ["email"],
         invoice_expired: ["email"],
       },
-      items: [
-        {
-          name: villaName,
-          quantity: nights,
-          price: Math.round(totalAmount / nights),
-          category: "Accommodation",
-        },
-      ],
+      items: items,
     };
+
+    console.log("Xendit payload:", JSON.stringify(xenditPayload, null, 2));
 
     const secretKey = process.env.XENDIT_SECRET_KEY;
     if (!secretKey) {
@@ -152,7 +178,8 @@ exports.handler = async (event) => {
 
     throw new Error(data.message || "Failed to create invoice");
   } catch (error) {
-    console.error("Create invoice error:", error.response?.data || error.message);
+    // Log full error details for debugging
+    console.error("Create invoice error:", JSON.stringify(error.response?.data || error.message, null, 2));
     return {
       statusCode: 500,
       body: JSON.stringify({

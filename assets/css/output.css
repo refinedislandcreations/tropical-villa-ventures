@@ -735,6 +735,9 @@
   .justify-end {
     justify-content: flex-end;
   }
+  .gap-2 {
+    gap: calc(var(--spacing) * 2);
+  }
   .gap-3 {
     gap: calc(var(--spacing) * 3);
   }
@@ -992,6 +995,9 @@
   }
   .bg-\[\#8B8635\] {
     background-color: #8B8635;
+  }
+  .bg-\[\#8B8635\]\/10 {
+    background-color: color-mix(in oklab, #8B8635 10%, transparent);
   }
   .bg-\[\#9D8B2F\] {
     background-color: #9D8B2F;
@@ -1319,6 +1325,9 @@
   }
   .whitespace-nowrap {
     white-space: nowrap;
+  }
+  .text-\[\#8B8635\] {
+    color: #8B8635;
   }
   .text-\[\#8C3B1C\] {
     color: #8C3B1C;
@@ -2102,6 +2111,11 @@
   .md\:p-10 {
     @media (width >= 48rem) {
       padding: calc(var(--spacing) * 10);
+    }
+  }
+  .md\:p-12 {
+    @media (width >= 48rem) {
+      padding: calc(var(--spacing) * 12);
     }
   }
   .md\:px-8 {
