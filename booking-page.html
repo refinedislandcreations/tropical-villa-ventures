@@ -4,15 +4,6 @@ title: Complete Your Booking | Tropical Villa Ventures
 ---
 
 <style>
-  #bookingLoader {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
   .loader-spinner {
     width: 50px;
     height: 50px;
@@ -29,15 +20,6 @@ title: Complete Your Booking | Tropical Villa Ventures
     100% {
       transform: rotate(360deg);
     }
-  }
-  #bookingError {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1001;
-    min-width: 300px;
-    text-align: center;
   }
 </style>
 
@@ -61,7 +43,7 @@ title: Complete Your Booking | Tropical Villa Ventures
       id="bookingError"
       class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg"
     ></div>
-    <div id="bookingLoader" class="hidden">
+    <div id="bookingLoader" style="display:none" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
       <div class="bg-white rounded-lg p-8 text-center shadow-xl">
         <div class="loader-spinner"></div>
         <p class="text-[#231F20]">Processing your booking...</p>

@@ -102,7 +102,16 @@ class VillaBookingManager {
 
   async calculatePrice() {
     if (!this.checkinDate || !this.checkoutDate) return;
-    this.setLoading(true);
+
+    // Show subtle loading in price area only (not the full-screen overlay)
+    const breakdownEl = document.getElementById("priceBreakdown");
+    if (breakdownEl) {
+      breakdownEl.innerHTML = `<div class="text-sm text-white/60">Calculating price...</div>`;
+    }
+    const totalEl = document.getElementById("totalPrice");
+    if (totalEl) {
+      totalEl.innerText = "...";
+    }
 
     try {
       const response = await fetch("/.netlify/functions/calculate-price", {
@@ -126,8 +135,9 @@ class VillaBookingManager {
       }
     } catch (error) {
       console.error("Price calculation error:", error);
-    } finally {
-      this.setLoading(false);
+      if (breakdownEl) {
+        breakdownEl.innerHTML = `<div class="text-sm text-white/60">Unable to load price. Please try again.</div>`;
+      }
     }
   }
 
@@ -290,7 +300,8 @@ class VillaBookingManager {
     this.isLoading = loading;
     const loader = document.getElementById("bookingLoader");
     if (loader) {
-      loader.classList.toggle("hidden", !loading);
+      // Use inline style to guarantee visibility control — avoids CSS specificity issues
+      loader.style.display = loading ? "flex" : "none";
     }
   }
 

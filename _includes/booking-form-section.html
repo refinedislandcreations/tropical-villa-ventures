@@ -15,16 +15,18 @@
       </p>
     </div>
 
-    <!-- Error and Loader -->
+    <!-- Error Toast -->
     <div
       id="bookingError"
-      class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6"
+      class="hidden fixed top-5 left-1/2 -translate-x-1/2 z-[1001] min-w-[300px] bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg text-center"
     ></div>
+    <!-- Full-screen loader — ONLY shown by createBooking() (Pay Now), never during price calculation -->
     <div
       id="bookingLoader"
-      class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      style="display:none"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
     >
-      <div class="bg-white rounded-lg p-6 text-center">
+      <div class="bg-white rounded-lg p-6 text-center shadow-xl">
         <div
           class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B8635] mx-auto mb-4"
         ></div>
@@ -140,7 +142,7 @@
 
           <button
             type="button"
-            onclick="window.bookingManager?.createBooking(getFormData())"
+            onclick="window.bookingManager?.createBooking()"
             class="uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-8 py-3 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm cursor-pointer"
           >
             Pay Now
@@ -238,51 +240,58 @@
 </section>
 
 <script>
-  function getFormData() {
-    return {
-      fullName: document.getElementById("fullName")?.value || "",
-      email: document.getElementById("email")?.value || "",
-      phone: document.getElementById("phone")?.value || "",
-      address: document.getElementById("address")?.value || "",
-      city: document.getElementById("city")?.value || "",
-      specialRequests: document.getElementById("specialRequests")?.value || "",
-    };
-  }
-
-  // Load booking data from localStorage
+  // Populate booking form from localStorage data
   document.addEventListener("DOMContentLoaded", () => {
     const bookingData = JSON.parse(localStorage.getItem("bookingData"));
 
-    if (bookingData) {
-      const { checkin, checkout, guests } = bookingData;
+    if (!bookingData) {
+      window.location.href = "/";
+      return;
+    }
 
-      function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
-      }
+    const { listingId, checkin, checkout, guests, villaName, villaImage } =
+      bookingData;
 
-      const datesDisplay = document.getElementById("datesDisplay");
-      if (datesDisplay) {
-        datesDisplay.innerText = `${formatDate(checkin)} - ${formatDate(checkout)}`;
-      }
+    // Set the hidden listingId if one exists on the page
+    const listingIdInput = document.getElementById("listingId");
+    if (listingIdInput && listingId) {
+      listingIdInput.value = listingId;
+    }
 
-      const guestsDisplay = document.getElementById("guestsDisplay");
-      if (guestsDisplay) {
-        guestsDisplay.innerText = `${guests} guest${guests !== 1 ? "s" : ""}`;
-      }
+    // Set villa display info
+    const villaNameEl = document.getElementById("villaNameDisplay");
+    if (villaNameEl && villaName) {
+      villaNameEl.textContent = villaName;
+    }
 
-      // Initialize booking manager with loaded data
-      const listingIdElement = document.getElementById("listingId");
-      if (listingIdElement && window.bookingManager) {
-        window.bookingManager.checkinDate = checkin;
-        window.bookingManager.checkoutDate = checkout;
-        window.bookingManager.guests = guests;
-        window.bookingManager.calculatePrice();
-      }
+    const villaImageEl = document.getElementById("villaImageDisplay");
+    if (villaImageEl && villaImage) {
+      villaImageEl.src = villaImage;
+      villaImageEl.alt = villaName || "Villa";
+    }
+
+    function formatDate(dateStr) {
+      return new Date(dateStr + "T00:00:00").toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+
+    const datesDisplay = document.getElementById("datesDisplay");
+    if (datesDisplay && checkin && checkout) {
+      datesDisplay.innerText = `${formatDate(checkin)} — ${formatDate(checkout)}`;
+    }
+
+    const guestsDisplay = document.getElementById("guestsDisplay");
+    if (guestsDisplay && guests) {
+      guestsDisplay.innerText = `${guests} guest${guests > 1 ? "s" : ""}`;
+    }
+
+    // Initialize booking manager if not already done
+    if (listingId && typeof VillaBookingManager !== "undefined" && !window.bookingManager) {
+      window.bookingManager = new VillaBookingManager(listingId, 10);
     }
   });
 </script>
+
