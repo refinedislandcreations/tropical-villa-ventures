@@ -1,6 +1,13 @@
 // netlify/functions/xendit-webhook.js
 const axios = require("axios");
-const { getStore } = require("@netlify/blobs");
+
+let blobsAvailable = true;
+let getStore;
+try {
+  ({ getStore } = require("@netlify/blobs"));
+} catch (e) {
+  blobsAvailable = false;
+}
 
 const STORE_NAME = "temp-bookings";
 
@@ -9,6 +16,49 @@ async function getHostawayToken() {
     `${process.env.URL}/.netlify/functions/hostaway-token`,
   );
   return response.data.access_token;
+}
+
+async function getTempBooking(externalId) {
+  // Try Netlify Blobs first
+  if (blobsAvailable && getStore) {
+    try {
+      const store = getStore(STORE_NAME);
+      const raw = await store.get(externalId);
+      if (raw) {
+        const data = JSON.parse(raw);
+        return data.bookingData;
+      }
+    } catch (blobError) {
+      console.warn("Blobs retrieval failed:", blobError.message);
+    }
+  }
+
+  // Fallback: HTTP call to store-temp-booking
+  try {
+    const baseUrl = process.env.URL || "http://localhost:8888";
+    const response = await axios.get(
+      `${baseUrl}/.netlify/functions/store-temp-booking?id=${externalId}`,
+    );
+    if (response.data && response.data.bookingData) {
+      return response.data.bookingData;
+    }
+  } catch (httpError) {
+    console.warn("HTTP fallback retrieval failed:", httpError.message);
+  }
+
+  return null;
+}
+
+async function cleanupTempBooking(externalId) {
+  if (blobsAvailable && getStore) {
+    try {
+      const store = getStore(STORE_NAME);
+      await store.delete(externalId);
+      console.log(`Cleaned up temp booking: ${externalId}`);
+    } catch (e) {
+      console.warn("Blob cleanup failed:", e.message);
+    }
+  }
 }
 
 exports.handler = async (event) => {
@@ -33,26 +83,20 @@ exports.handler = async (event) => {
 
     // Only process PAID status
     if (status === "PAID") {
-      const store = getStore(STORE_NAME);
+      const bookingData = await getTempBooking(external_id);
+
+      if (!bookingData) {
+        console.error(`No stored booking data found for ${external_id}`);
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
+            received: true,
+            warning: "No booking data found",
+          }),
+        };
+      }
 
       try {
-        // Retrieve stored booking data from Netlify Blobs
-        const raw = await store.get(external_id);
-
-        if (!raw) {
-          console.error(`No stored booking data found for ${external_id}`);
-          return {
-            statusCode: 200,
-            body: JSON.stringify({
-              received: true,
-              warning: "No booking data found",
-            }),
-          };
-        }
-
-        const storedData = JSON.parse(raw);
-        const { bookingData } = storedData;
-
         const token = await getHostawayToken();
 
         // Parse guest name
@@ -104,17 +148,15 @@ exports.handler = async (event) => {
           console.log(
             `Reservation created successfully: ${reservationResult.result.id}`,
           );
-
-          // Clean up the temp booking data
-          await store.delete(external_id);
-          console.log(`Cleaned up temp booking for ${external_id}`);
+          // Clean up temp booking
+          await cleanupTempBooking(external_id);
         } else {
           console.error("Failed to create reservation:", reservationResult);
         }
-      } catch (storeError) {
+      } catch (reservationError) {
         console.error(
-          `Error processing booking for ${external_id}:`,
-          storeError.message,
+          `Error creating reservation for ${external_id}:`,
+          reservationError.response?.data || reservationError.message,
         );
       }
     }

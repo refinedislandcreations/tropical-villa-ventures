@@ -1,12 +1,33 @@
 // netlify/functions/store-temp-booking.js
-// Persistent temp storage using Netlify Blobs
-const { getStore } = require("@netlify/blobs");
+// Persistent temp storage with fallback for local development
+
+let blobsAvailable = true;
+let getStore;
+try {
+  ({ getStore } = require("@netlify/blobs"));
+} catch (e) {
+  blobsAvailable = false;
+}
 
 const STORE_NAME = "temp-bookings";
 const TTL_MS = 86400000; // 24 hours
 
+// In-memory fallback for local development (won't persist across restarts)
+const memoryStore = new Map();
+
+async function getBlobStore() {
+  if (blobsAvailable && getStore) {
+    try {
+      return getStore(STORE_NAME);
+    } catch (e) {
+      console.warn("Blob store init failed, using memory fallback:", e.message);
+    }
+  }
+  return null;
+}
+
 exports.handler = async (event) => {
-  const store = getStore(STORE_NAME);
+  const store = await getBlobStore();
 
   // GET request - retrieve stored booking data
   if (event.httpMethod === "GET") {
@@ -20,20 +41,30 @@ exports.handler = async (event) => {
     }
 
     try {
-      const raw = await store.get(id);
+      let data = null;
 
-      if (!raw) {
+      // Try blobs first
+      if (store) {
+        const raw = await store.get(id);
+        if (raw) data = JSON.parse(raw);
+      }
+
+      // Fallback to memory
+      if (!data && memoryStore.has(id)) {
+        data = memoryStore.get(id);
+      }
+
+      if (!data) {
         return {
           statusCode: 404,
           body: JSON.stringify({ error: "Not found" }),
         };
       }
 
-      const data = JSON.parse(raw);
-
       // Check TTL
       if (data.expires && data.expires < Date.now()) {
-        await store.delete(id);
+        if (store) await store.delete(id).catch(() => {});
+        memoryStore.delete(id);
         return {
           statusCode: 404,
           body: JSON.stringify({ error: "Expired" }),
@@ -71,7 +102,18 @@ exports.handler = async (event) => {
         createdAt: new Date().toISOString(),
       };
 
-      await store.set(externalId, JSON.stringify(payload));
+      // Store in blobs if available
+      if (store) {
+        try {
+          await store.set(externalId, JSON.stringify(payload));
+        } catch (blobError) {
+          console.warn("Blob store failed, using memory:", blobError.message);
+          memoryStore.set(externalId, payload);
+        }
+      } else {
+        // Memory fallback for local dev
+        memoryStore.set(externalId, payload);
+      }
 
       return {
         statusCode: 200,
@@ -98,7 +140,8 @@ exports.handler = async (event) => {
     }
 
     try {
-      await store.delete(id);
+      if (store) await store.delete(id).catch(() => {});
+      memoryStore.delete(id);
       return {
         statusCode: 200,
         body: JSON.stringify({ success: true }),
