@@ -40,7 +40,7 @@
             data-dropdown-button
           >
             <span
-              class="uppercase font-heading font-bold tracking-normal text-white text-sm sm:text-base md:text-lg transition-colors duration-300 group-hover:text-white/80"
+              class="uppercase font-heading font-medium tracking-normal text-white text-sm sm:text-base md:text-lg transition-colors duration-300 group-hover:text-white/80"
             >
               {{ item.title }}
             </span>
@@ -59,7 +59,7 @@
             </svg>
           </button>
           <div
-            class="absolute uppercase font-heading font-bold tracking-normal left-0 top-full py-2 bg-opacity-80 border-none rounded-none shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-out transform -translate-y-2 group-hover:translate-y-0 origin-top z-20 text-base whitespace-nowrap"
+            class="absolute uppercase font-heading font-medium tracking-normal left-0 top-full py-2 bg-opacity-80 border-none rounded-none shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-out transform -translate-y-2 group-hover:translate-y-0 origin-top z-20 text-base whitespace-nowrap"
             style="margin-top: 27px; background-color: #d06223cc"
             role="menu"
             data-dropdown-menu
@@ -78,7 +78,7 @@
         <!-- Book Now Button -->
         <a
           href="{{ item.url | relative_url }}"
-          class="ml-4 inline-block uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-out hover:bg-[#6B682A] hover:scale-105 hover:-translate-y-0.5 active:scale-95 active:translate-y-0 text-white rounded-xl text-sm sm:text-base shadow-md hover:shadow-lg"
+          class="ml-4 inline-block uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-out hover:bg-[#6B682A] hover:scale-105 hover:-translate-y-0.5 active:scale-95 active:translate-y-0 text-white rounded-xl text-sm sm:text-base shadow-md hover:shadow-lg"
           aria-label="Book now"
           >{{ item.title }}</a
         >
@@ -86,7 +86,7 @@
         <!-- Single Link -->
         <a
           href="{{ item.url | relative_url }}"
-          class="px-3 py-2 uppercase font-heading font-bold tracking-normal transition-all duration-300 ease-out text-white hover:text-white/80 hover:-translate-y-0.5 text-sm sm:text-base focus-visible:text-[#D06223] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D06223] rounded"
+          class="px-3 py-2 uppercase font-heading font-medium tracking-normal transition-all duration-300 ease-out text-white hover:text-white/80 hover:-translate-y-0.5 text-sm sm:text-base focus-visible:text-[#D06223] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D06223] rounded"
           >{{ item.title }}</a
         >
         {% endif %} {% endfor %}
@@ -132,7 +132,7 @@
   style="display: none"
 >
   <div
-    class="flex flex-col space-y-6 mt-20 uppercase font-bold w-full max-w-xl mx-auto"
+    class="flex flex-col space-y-6 mt-20 uppercase font-heading font-medium w-full max-w-xl mx-auto"
   >
     <div class="flex flex-col space-y-6 w-full">
       {% for item in site.data.navigation.main_nav %} {% if item.submenu %}
@@ -141,7 +141,7 @@
           class="cursor-pointer py-2 flex items-center justify-between appearance-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded transition-all duration-300 hover:translate-x-1"
         >
           <span
-            class="text-white text-base sm:text-lg transition-colors duration-200"
+            class="text-white text-base sm:text-lg transition-colors duration-200 font-medium"
           >
             {{ item.title }}
           </span>
@@ -165,7 +165,7 @@
             <li>
               <a
                 href="{{ subitem.url | relative_url }}"
-                class="block text-white transition-all duration-200 transform hover:translate-x-2 text-sm sm:text-base"
+                class="block text-white transition-all duration-200 transform hover:translate-x-2 text-sm sm:text-base font-medium"
               >
                 {{ subitem.title }}
               </a>
@@ -178,7 +178,7 @@
       {% elsif item.is_button %}
       <a
         href="{{ item.url | relative_url }}"
-        class="inline-block uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-out hover:bg-[#6B682A] hover:scale-105 hover:-translate-y-1 active:scale-95 active:translate-y-0 text-white rounded-xl text-sm sm:text-base shadow-md text-center"
+        class="inline-block uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-out hover:bg-[#6B682A] hover:scale-105 hover:-translate-y-1 active:scale-95 active:translate-y-0 text-white rounded-xl text-sm sm:text-base shadow-md text-center"
       >
         {{ item.title }}
       </a>
@@ -186,7 +186,7 @@
       {% else %}
       <a
         href="{{ item.url | relative_url }}"
-        class="text-white text-base sm:text-lg py-2 transition-all duration-300 hover:translate-x-2 inline-block"
+        class="text-white text-base sm:text-lg py-2 transition-all duration-300 hover:translate-x-2 inline-block font-medium"
       >
         {{ item.title }}
       </a>

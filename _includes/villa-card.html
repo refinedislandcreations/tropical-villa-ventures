@@ -21,7 +21,7 @@
 
       <div class="lg:col-span-2 lg:flex lg:justify-end">
         <a
-          href="{{ section_data.button_url | default: '/villas' | relative_url }}"
+          href="{{ section_data.button_url | default: '/our-villas.html' | relative_url }}"
           class="inline-flex rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-bold uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-center min-w-[120px] text-white"
         >
           {{ section_data.button }}
@@ -29,30 +29,30 @@
       </div>
     </div>
 
-    <!-- Carousel Container -->
+    <!-- Carousel Container - Consistent style across all devices -->
     <div class="relative">
-      <!-- Mobile/Tablet: Touch Swipe Container -->
+      <!-- Single touch swipe container for ALL devices -->
       <div
-        class="lg:hidden overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth pb-4 -mx-6 px-6"
-        id="mobile-carousel-{{ section_data.title | slugify }}"
+        class="overflow-x-auto overflow-y-hidden snap-x snap-mandatory pb-4 -mx-6 px-6"
+        id="villa-carousel-{{ section_data.title | slugify }}"
       >
         <div class="flex gap-6 w-max">
           {% for villa in section_data.items %}
           <article
-            class="villa-card w-[280px] sm:w-[380px] md:w-[480px] shrink-0 snap-start bg-gradient-to-r from-[#8F381B] to-[#D7661F] p-4 sm:p-6"
+            class="villa-card w-[280px] sm:w-[380px] md:w-[480px] lg:w-[540px] shrink-0 snap-start bg-gradient-to-r from-[#8F381B] to-[#D7661F] p-4 sm:p-6"
           >
             <a href="{{ villa.url | relative_url }}" class="block group">
               <div class="overflow-hidden">
                 <img
                   src="{{ villa.image | relative_url }}"
                   alt="{{ villa.name }}"
-                  class="w-full h-[200px] sm:h-[260px] md:h-[300px] object-cover group-hover:scale-105 transition-transform duration-700"
+                  class="w-full h-[200px] sm:h-[260px] md:h-[300px] lg:h-[320px] object-cover group-hover:scale-105 transition-transform duration-700"
                   loading="lazy"
                 />
               </div>
               <div class="pt-4 sm:pt-6 text-white">
                 <h3
-                  class="text-2xl sm:text-3xl md:text-4xl font-extralight uppercase tracking-wide mb-2 sm:mb-3 font-heading"
+                  class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-extralight uppercase tracking-wide mb-2 sm:mb-3 font-heading"
                 >
                   {{ villa.name }}
                 </h3>
@@ -67,48 +67,10 @@
           {% endfor %}
         </div>
       </div>
-
-      <!-- Desktop: GSAP Horizontal Scroll with Pinning -->
-      <div
-        class="hidden lg:block relative overflow-hidden"
-        id="desktop-carousel-{{ section_data.title | slugify }}"
-      >
-        <div
-          class="villa-carousel-track flex gap-6"
-          style="width: max-content; min-width: 100%"
-        >
-          {% for villa in section_data.items %}
-          <article
-            class="villa-card w-[540px] shrink-0 bg-gradient-to-r from-[#8F381B] to-[#D7661F] p-6"
-          >
-            <a href="{{ villa.url | relative_url }}" class="block group">
-              <div class="overflow-hidden">
-                <img
-                  src="{{ villa.image | relative_url }}"
-                  alt="{{ villa.name }}"
-                  class="w-full h-[320px] object-cover group-hover:scale-105 transition-transform duration-700"
-                  loading="lazy"
-                />
-              </div>
-              <div class="pt-6 text-white">
-                <h3
-                  class="text-4xl font-extralight uppercase tracking-wide mb-3"
-                >
-                  {{ villa.name }}
-                </h3>
-                <p class="text-base leading-8 text-white/90 max-w-[90%]">
-                  {{ villa.description }}
-                </p>
-              </div>
-            </a>
-          </article>
-          {% endfor %}
-        </div>
-      </div>
     </div>
 
     <!-- Scroll indicators -->
-    <div class="lg:hidden flex justify-center mt-4 text-[#231F20]/50 text-sm">
+    <div class="flex justify-center mt-4 text-[#231F20]/50 text-sm">
       <span>Swipe to explore villas</span>
     </div>
   </div>
@@ -116,96 +78,21 @@
 
 <script>
   (function () {
-    // ========================
-    // DESKTOP: GSAP Horizontal Scroll with Pinning
-    // ========================
-    function initDesktopCarousel() {
-      if (window.innerWidth < 1024) return;
-      if (!window.gsap || !window.ScrollTrigger) {
-        setTimeout(initDesktopCarousel, 100);
-        return;
-      }
-
-      gsap.registerPlugin(ScrollTrigger);
-
-      const section = document.querySelector("#our-villas");
-      const track = document.querySelector(".villa-carousel-track");
-
-      if (!section || !track) return;
-
-      let animation = null;
-
-      function setup() {
-        if (animation) {
-          animation.scrollTrigger.kill();
-          animation.kill();
-        }
-
-        gsap.set(track, { x: 0, clearProps: "transform" });
-
-        const trackWidth = track.scrollWidth;
-        const container = track.parentElement;
-        const containerWidth = container.clientWidth;
-        const scrollDistance = trackWidth - containerWidth;
-
-        if (scrollDistance <= 0) return;
-
-        animation = gsap.to(track, {
-          x: -scrollDistance,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top top",
-            end: () => `+=${scrollDistance + window.innerHeight * 0.5}`,
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-      }
-
-      setup();
-
-      let resizeTimer;
-      window.addEventListener("resize", () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-          if (window.innerWidth < 1024) {
-            if (animation) {
-              animation.scrollTrigger.kill();
-              animation.kill();
-              animation = null;
-            }
-            gsap.set(track, { x: 0 });
-          } else {
-            setup();
-          }
-          ScrollTrigger.refresh();
-        }, 200);
-      });
-    }
-
-    // ========================
-    // MOBILE/TABLET: Native Touch Swipe
-    // ========================
-    function initMobileSwipe() {
-      if (window.innerWidth >= 1024) return;
-
-      const mobileContainer = document.querySelector(
-        "#our-villas .lg\\:hidden.overflow-x-auto",
+    // Simple mobile-style swipe for all devices
+    function initCarousel() {
+      const carousel = document.querySelector(
+        "#villa-carousel-{{ section_data.title | slugify }}",
       );
-      if (!mobileContainer) return;
+      if (!carousel) return;
 
       // Add momentum scrolling and smooth snapping
-      mobileContainer.style.webkitOverflowScrolling = "touch";
-      mobileContainer.style.scrollBehavior = "smooth";
+      carousel.style.webkitOverflowScrolling = "touch";
+      carousel.style.scrollBehavior = "smooth";
     }
 
-    // Initialize both
+    // Initialize
     function init() {
-      initDesktopCarousel();
-      initMobileSwipe();
+      initCarousel();
     }
 
     if (document.readyState === "loading") {
@@ -214,33 +101,34 @@
       init();
     }
 
-    // Refresh on load
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        if (window.ScrollTrigger) ScrollTrigger.refresh();
-        initMobileSwipe();
-      }, 100);
+    // Re-initialize on window resize to ensure proper behavior
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        initCarousel();
+      }, 200);
     });
   })();
 </script>
 
 <style>
-  /* Mobile swipe smoothness */
-  #our-villas .lg\:hidden.overflow-x-auto {
+  /* Carousel styling - consistent across all devices */
+  #villa-carousel-{{ section_data.title | slugify }} {
     scrollbar-width: thin;
     scrollbar-color: #9d8b2f #e9e6de;
   }
 
-  #our-villas .lg\:hidden.overflow-x-auto::-webkit-scrollbar {
+  #villa-carousel-{{ section_data.title | slugify }}::-webkit-scrollbar {
     height: 4px;
   }
 
-  #our-villas .lg\:hidden.overflow-x-auto::-webkit-scrollbar-track {
+  #villa-carousel-{{ section_data.title | slugify }}::-webkit-scrollbar-track {
     background: #e9e6de;
     border-radius: 10px;
   }
 
-  #our-villas .lg\:hidden.overflow-x-auto::-webkit-scrollbar-thumb {
+  #villa-carousel-{{ section_data.title | slugify }}::-webkit-scrollbar-thumb {
     background: #9d8b2f;
     border-radius: 10px;
   }
@@ -254,14 +142,8 @@
     scroll-snap-align: start;
   }
 
+  /* Smooth scrolling */
   .scroll-smooth {
     scroll-behavior: smooth;
-  }
-
-  /* Hide scrollbar on mobile for cleaner look (optional) */
-  @media (max-width: 1023px) {
-    #our-villas .lg\:hidden.overflow-x-auto {
-      scrollbar-width: thin;
-    }
   }
 </style>
