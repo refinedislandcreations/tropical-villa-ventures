@@ -2,6 +2,9 @@
 layout: default
 title: Villa Raya | Tropical Villa Ventures
 
+hostaway:
+  listing_id: 477120
+
 hero:
   title: "Villa Raya"
   description: "A luxurious 2-bedroom tropical villa in Ungasan featuring a private pool, open living spaces, and modern Balinese design, perfect for a relaxing island escape."
@@ -125,7 +128,8 @@ faq_section:
           answer: "Yes, transport, scooter rental, massages, and meals can be arranged."
 ---
 
-{% include villas/hero-villa.html section=page.hero %} {% include
+{% include villas/hero-villa.html section=page.hero
+listing_id=page.hostaway.listing_id %} {% include
 content-image-reverse-section.html section=page.stay_at_villa_section %} {%
 include villas/gallery-section.html section=page.gallery %} {% include
 content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"

@@ -1,44 +1,81 @@
-<!-- _includes/booking-form-section.html -->
-{% assign data = include.section %}
+---
+layout: default
+title: Complete Your Booking | Tropical Villa Ventures
+---
+
+<style>
+  #bookingLoader {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .loader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #8b8635;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  #bookingError {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1001;
+    min-width: 300px;
+    text-align: center;
+  }
+</style>
 
 <section class="bg-[#F3F0E7] section font-body">
-  <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
-    <!-- Header -->
+  <div class="max-w-screen-2xl mx-auto px-6 lg:px-8 py-16">
     <div class="mb-16">
       <h1
         class="text-5xl md:text-6xl font-extralight uppercase tracking-wide text-[#231F20] mb-6 font-heading"
       >
-        {{ data.title }}
+        Complete Your Booking
       </h1>
       <p class="uppercase tracking-[0.2em] text-sm text-[#231F20]/60">
-        {{ data.subtitle }}
+        Enter your details to secure your stay
       </p>
     </div>
 
-    <!-- Error and Loader -->
+    <!-- Hidden listing ID for booking manager initialization -->
+    <input type="hidden" id="listingId" value="" />
+
     <div
       id="bookingError"
-      class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6"
+      class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg"
     ></div>
-    <div
-      id="bookingLoader"
-      class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-    >
-      <div class="bg-white rounded-lg p-6 text-center">
-        <div
-          class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B8635] mx-auto mb-4"
-        ></div>
-        <p>Processing your booking...</p>
+    <div id="bookingLoader" class="hidden">
+      <div class="bg-white rounded-lg p-8 text-center shadow-xl">
+        <div class="loader-spinner"></div>
+        <p class="text-[#231F20]">Processing your booking...</p>
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
       <!-- LEFT: FORM -->
       <div class="lg:col-span-6 space-y-10">
-        <form id="bookingForm" class="space-y-6">
-          <!-- Full Name -->
+        <div class="space-y-6">
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label class="text-sm text-[#231F20]/80 font-bold">Full Name</label>
+            <label class="text-sm text-[#231F20]/80 font-bold"
+              >Full Name *</label
+            >
             <input
               type="text"
               id="fullName"
@@ -47,10 +84,8 @@
               placeholder="John Doe"
             />
           </div>
-
-          <!-- Email -->
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label class="text-sm text-[#231F20]/80 font-bold">E-mail</label>
+            <label class="text-sm text-[#231F20]/80 font-bold">Email *</label>
             <input
               type="email"
               id="email"
@@ -59,12 +94,8 @@
               placeholder="john@example.com"
             />
           </div>
-
-          <!-- Phone -->
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label class="text-sm text-[#231F20]/80 font-bold"
-              >Phone Number</label
-            >
+            <label class="text-sm text-[#231F20]/80 font-bold">Phone *</label>
             <input
               type="tel"
               id="phone"
@@ -73,8 +104,6 @@
               placeholder="+62 812 3456 7890"
             />
           </div>
-
-          <!-- Address (Optional) -->
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
             <label class="text-sm text-[#231F20]/80 font-bold">Address</label>
             <input
@@ -84,8 +113,6 @@
               placeholder="Optional"
             />
           </div>
-
-          <!-- City (Optional) -->
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
             <label class="text-sm text-[#231F20]/80 font-bold">City</label>
             <input
@@ -95,21 +122,18 @@
               placeholder="Optional"
             />
           </div>
-
-          <!-- Checkbox -->
           <div class="flex items-center gap-3 pt-2">
             <input
               type="checkbox"
               id="newsletter"
               class="w-4 h-4 border border-[#231F20]"
             />
-            <span class="text-sm text-[#231F20]/70">
-              Yes, I'd like to receive exclusive offers & promotions.
-            </span>
+            <span class="text-sm text-[#231F20]/70"
+              >Yes, I'd like to receive exclusive offers & promotions.</span
+            >
           </div>
-        </form>
+        </div>
 
-        <!-- Special Requests -->
         <div class="pt-6 space-y-4">
           <h3
             class="text-xl uppercase tracking-wide text-[#231F20] font-heading"
@@ -119,7 +143,6 @@
           <p class="text-sm text-[#231F20]/60">
             Let us know if you have any additional requests or comments.
           </p>
-
           <textarea
             id="specialRequests"
             rows="4"
@@ -128,20 +151,18 @@
           ></textarea>
         </div>
 
-        <!-- Footer -->
         <div
           class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pt-6"
         >
           <p class="text-xs text-[#231F20]/60 max-w-md">
-            By clicking on this button, I agree to the
+            By clicking this button, I agree to the
             <a href="/privacy-policy" class="underline">Privacy Policy</a> and
             <a href="/terms" class="underline">Terms of Service</a>.
           </p>
-
           <button
             type="button"
-            onclick="window.bookingManager?.createBooking(getFormData())"
-            class="uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-8 py-3 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm cursor-pointer"
+            onclick="window.bookingManager?.createBooking()"
+            class="uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-8 py-3 transition hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm cursor-pointer"
           >
             Pay Now
           </button>
@@ -153,54 +174,46 @@
         <div
           class="bg-[#A6461F] text-white p-10 h-full flex flex-col justify-between"
         >
-          <!-- Top -->
           <div class="space-y-8">
             <div class="flex gap-6 items-start">
               <img
-                src="{{ data.image | relative_url }}"
+                id="villaImageDisplay"
+                src="/assets/images/villas/villa-indah.webp"
                 class="max-w-32 max-h-32 object-cover rounded"
-                alt="{{ data.villa_name }}"
+                alt="Villa"
               />
               <div>
-                <h3 class="text-2xl font-light tracking-wide font-heading">
-                  {{ data.villa_name }}
+                <h3
+                  id="villaNameDisplay"
+                  class="text-2xl font-light tracking-wide font-heading"
+                >
+                  Villa
                 </h3>
                 <div id="tripDetails" class="text-sm text-white/80 mt-2">
                   <p id="datesDisplay">Select dates</p>
-                  <p id="guestsDisplay">{{ data.guests }} guests</p>
+                  <p id="guestsDisplay">- guests</p>
                 </div>
               </div>
             </div>
-
-            <!-- Cancellation -->
             <div class="text-sm space-y-2">
               <p class="font-semibold">Cancellation Policy</p>
               <p>100% refund up to 14 days before arrival</p>
               <p>50% refund up to 7 days before arrival</p>
             </div>
-
             <hr class="border-white/30" />
-
-            <!-- Price Breakdown -->
             <div id="priceBreakdown" class="text-sm space-y-2">
               <p class="font-semibold">Price Details</p>
               <div class="flex justify-between">
-                <span>Loading...</span>
-                <span>-</span>
+                <span>Loading...</span><span>-</span>
               </div>
             </div>
-
             <hr class="border-white/30" />
           </div>
-
-          <!-- Bottom -->
           <div class="text-sm space-y-3 pt-6">
             <div class="flex justify-between font-semibold text-lg">
               <span>Total</span>
               <span id="totalPrice">IDR 0</span>
             </div>
-
-            <!-- Coupon -->
             <div class="space-y-3">
               <button
                 type="button"
@@ -213,7 +226,6 @@
               >
                 + Add a coupon
               </button>
-
               <div id="couponBox" class="hidden flex gap-3">
                 <input
                   id="couponInput"
@@ -229,6 +241,7 @@
                   Apply
                 </button>
               </div>
+              <div id="couponMessage"></div>
             </div>
           </div>
         </div>
@@ -238,51 +251,60 @@
 </section>
 
 <script>
-  function getFormData() {
-    return {
-      fullName: document.getElementById("fullName")?.value || "",
-      email: document.getElementById("email")?.value || "",
-      phone: document.getElementById("phone")?.value || "",
-      address: document.getElementById("address")?.value || "",
-      city: document.getElementById("city")?.value || "",
-      specialRequests: document.getElementById("specialRequests")?.value || "",
-    };
-  }
-
-  // Load booking data from localStorage
+  // Populate booking page dynamically from localStorage data
   document.addEventListener("DOMContentLoaded", () => {
     const bookingData = JSON.parse(localStorage.getItem("bookingData"));
 
-    if (bookingData) {
-      const { checkin, checkout, guests } = bookingData;
+    if (!bookingData) {
+      // No booking data — redirect back to home
+      window.location.href = "/";
+      return;
+    }
 
-      function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
-      }
+    const { listingId, checkin, checkout, guests, villaName, villaImage } =
+      bookingData;
 
-      const datesDisplay = document.getElementById("datesDisplay");
-      if (datesDisplay) {
-        datesDisplay.innerText = `${formatDate(checkin)} - ${formatDate(checkout)}`;
-      }
+    // Set the hidden listingId so bookingManager can initialize
+    const listingIdInput = document.getElementById("listingId");
+    if (listingIdInput) {
+      listingIdInput.value = listingId;
+    }
 
-      const guestsDisplay = document.getElementById("guestsDisplay");
-      if (guestsDisplay) {
-        guestsDisplay.innerText = `${guests} guest${guests !== 1 ? "s" : ""}`;
-      }
+    // Set villa display info
+    const villaNameEl = document.getElementById("villaNameDisplay");
+    if (villaNameEl && villaName) {
+      villaNameEl.textContent = villaName;
+    }
 
-      // Initialize booking manager with loaded data
-      const listingIdElement = document.getElementById("listingId");
-      if (listingIdElement && window.bookingManager) {
-        window.bookingManager.checkinDate = checkin;
-        window.bookingManager.checkoutDate = checkout;
-        window.bookingManager.guests = guests;
-        window.bookingManager.calculatePrice();
-      }
+    const villaImageEl = document.getElementById("villaImageDisplay");
+    if (villaImageEl && villaImage) {
+      villaImageEl.src = villaImage;
+      villaImageEl.alt = villaName || "Villa";
+    }
+
+    // Format and display dates
+    const formatDate = (dateStr) =>
+      new Date(dateStr + "T00:00:00").toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+    const datesDisplay = document.getElementById("datesDisplay");
+    if (datesDisplay && checkin && checkout) {
+      datesDisplay.textContent = `${formatDate(checkin)} — ${formatDate(checkout)}`;
+    }
+
+    const guestsDisplay = document.getElementById("guestsDisplay");
+    if (guestsDisplay && guests) {
+      guestsDisplay.textContent = `${guests} guest${guests > 1 ? "s" : ""}`;
+    }
+
+    // Initialize the booking manager now that listingId is set
+    // booking.js is loaded globally via the layout — it will auto-init
+    // but since the listingId was empty at DOMContentLoaded, we re-initialize
+    if (listingId && typeof VillaBookingManager !== "undefined") {
+      window.bookingManager = new VillaBookingManager(listingId, 10);
     }
   });
 </script>

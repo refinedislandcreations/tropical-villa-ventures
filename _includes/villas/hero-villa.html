@@ -3,7 +3,7 @@
 section_data.background_image | default: '/assets/images/hero-image.jpg' %} {%
 assign max_guests = section_data.meta.guests | default: 10 %}
 
-<section class="relative min-h-screen overflow-hidden">
+<section class="relative min-h-screen overflow-visible">
   <!-- Background -->
   <div class="absolute inset-0">
     <img
@@ -14,87 +14,135 @@ assign max_guests = section_data.meta.guests | default: 10 %}
     />
   </div>
 
-  <!-- Content Wrapper (with gradient background) -->
+  <!-- Content Wrapper -->
   <div class="absolute inset-x-0 bottom-0">
     <div
-      class="bg-gradient-to-t from-[#AF431D]/90 via-[#D06223CC]/80 to-transparent md:bg-gradient-to-t md:from-[#AF431D]/90 md:via-[#D06223CC]/80 md:to-transparent lg:bg-gradient-to-r lg:from-[#AF431D]/90 lg:to-[#D06223CC]/80 pt-20 pb-20 md:pt-24 md:pb-16"
+      class="bg-gradient-to-t from-[#AF431D]/90 via-[#D06223CC]/80 to-transparent lg:bg-gradient-to-r lg:from-[#AF431D]/90 lg:to-[#D06223CC]/80 pt-20 pb-20 overflow-visible"
     >
       <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 items-end">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
           <!-- LEFT -->
-          <div class="lg:col-span-7 text-white space-y-4 md:space-y-6">
+          <div class="lg:col-span-7 text-white space-y-6">
             <h1
-              class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extralight uppercase tracking-wide font-heading"
+              class="text-5xl lg:text-7xl font-extralight uppercase tracking-wide"
             >
               {{ section_data.title }}
             </h1>
-
-            <p
-              class="max-w-xl text-white/90 font-body leading-relaxed text-sm sm:text-base"
-            >
-              {{ section_data.description }}
-            </p>
-
-            <p
-              class="uppercase tracking-widest text-white/80 font-body text-xs sm:text-sm"
-            >
-              {% if section_data.meta.guests %} {{ section_data.meta.guests }}
-              Guests {% endif %} {% if section_data.meta.bedrooms %}
-              <span class="mx-1 sm:mx-2">•</span>{{ section_data.meta.bedrooms
-              }} Bedrooms {% endif %} {% if section_data.meta.bathrooms %}
-              <span class="mx-1 sm:mx-2">•</span>{{ section_data.meta.bathrooms
-              }} Bathrooms {% endif %}
+            <p class="max-w-xl text-white/90">{{ section_data.description }}</p>
+            <p class="uppercase tracking-widest text-white/80 text-sm">
+              {{ section_data.meta.guests }} Guests • {{
+              section_data.meta.bedrooms }} Bedrooms • {{
+              section_data.meta.bathrooms }} Bathrooms
             </p>
           </div>
 
-          <!-- RIGHT -->
+          <!-- RIGHT (BOOKING) -->
           <div class="lg:col-span-5">
             <div
-              class="bg-white/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 md:p-8 shadow-xl"
+              class="bg-white/95 backdrop-blur-md rounded-2xl p-6 md:p-8 shadow-xl relative overflow-visible"
             >
+              <input
+                type="hidden"
+                id="listingId"
+                value="{{ include.listing_id }}"
+              />
+              <input type="hidden" id="maxGuests" value="{{ max_guests }}" />
+              <input
+                type="hidden"
+                id="villaName"
+                value="{{ section_data.title }}"
+              />
+              <input
+                type="hidden"
+                id="villaImage"
+                value="{{ bg_image | relative_url }}"
+              />
+
+              <!-- BOOKING BAR -->
               <div
-                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-end"
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-end"
               >
-                <div class="text-center space-y-2">
-                  <p class="text-xs sm:text-sm text-[#231F20]/60 font-body">
-                    Check In
-                  </p>
+                <div class="text-center">
+                  <p class="text-sm text-[#231F20]/60 mb-2">Check In</p>
                   <input
-                    type="date"
-                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent outline-none py-1 text-[#231F20] text-sm sm:text-base"
+                    id="checkin"
+                    type="text"
+                    readonly
+                    placeholder="Select date"
+                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent py-1 cursor-pointer"
                   />
                 </div>
-
-                <div class="text-center space-y-2">
-                  <p class="text-xs sm:text-sm text-[#231F20]/60 font-body">
-                    Check Out
-                  </p>
+                <div class="text-center">
+                  <p class="text-sm text-[#231F20]/60 mb-2">Check Out</p>
                   <input
-                    type="date"
-                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent outline-none py-1 text-[#231F20] text-sm sm:text-base"
+                    id="checkout"
+                    type="text"
+                    readonly
+                    placeholder="Select date"
+                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent py-1 opacity-50 cursor-pointer"
                   />
                 </div>
-
-                <div class="text-center space-y-2">
-                  <p class="text-xs sm:text-sm text-[#231F20]/60 font-body">
-                    Guests
-                  </p>
+                <div class="text-center">
+                  <p class="text-sm text-[#231F20]/60 mb-2">Guests</p>
                   <select
-                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent outline-none py-1 text-[#231F20] text-sm sm:text-base"
+                    id="guests"
+                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent py-1"
                   >
                     {% for i in (1..max_guests) %}
                     <option value="{{ i }}">{{ i }}</option>
                     {% endfor %}
                   </select>
                 </div>
-
-                <div
-                  class="flex items-end justify-center sm:col-span-2 lg:col-span-1"
-                >
+                <div>
                   <button
-                    class="uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-3 sm:px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-xs sm:text-sm w-full"
+                    id="bookNowBtn"
+                    disabled
+                    class="w-full uppercase bg-[#8B8635] text-white rounded-xl py-3 opacity-50 transition hover:bg-[#6B682A]"
                   >
                     Book Now
+                  </button>
+                </div>
+              </div>
+
+              <!-- CALENDAR POPUP -->
+              <div
+                id="calendarWrapper"
+                class="hidden fixed left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2 z-[1000] bg-white rounded-2xl shadow-2xl p-6 w-[420px] max-w-[90vw]"
+              >
+                <div
+                  class="flex justify-between items-center mb-4 pb-2 border-b"
+                >
+                  <h3 class="font-semibold text-[#231F20]">Select Dates</h3>
+                  <button
+                    id="closeCalendarBtn"
+                    class="text-gray-400 hover:text-gray-600 text-2xl"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div id="calendarLoading" class="text-center py-8">
+                  <div
+                    class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#8B8635] mx-auto mb-2"
+                  ></div>
+                  <p class="text-sm text-gray-500">Loading availability...</p>
+                </div>
+                <div id="calendarContainer" class="hidden"></div>
+                <div
+                  id="calendarError"
+                  class="hidden text-center py-4 text-sm text-red-600"
+                ></div>
+                <div class="flex justify-between mt-4 pt-3 border-t">
+                  <button
+                    id="clearDatesBtn"
+                    class="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    id="confirmDatesBtn"
+                    class="bg-[#8B8635] text-white px-6 py-2 rounded-lg text-sm hover:bg-[#6B682A] transition"
+                  >
+                    Confirm
                   </button>
                 </div>
               </div>
@@ -105,3 +153,530 @@ assign max_guests = section_data.meta.guests | default: 10 %}
     </div>
   </div>
 </section>
+
+<style>
+  .calendar-grid {
+    font-family: "Inter", sans-serif;
+  }
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+  }
+  .calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.375rem;
+    transition: background 0.2s;
+    color: #4b5563;
+  }
+  .calendar-header button:hover {
+    background: #f3f4f6;
+  }
+  .calendar-header h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+  .calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: #6b7280;
+    padding: 0.5rem 0;
+  }
+  .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+  }
+  .calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: white;
+  }
+  .calendar-day:hover:not(.empty):not(.unavailable):not(.past) {
+    background: #f3f4f6;
+  }
+  .calendar-day.selected-start {
+    background: #8b8635;
+    color: white;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .calendar-day.selected-end {
+    background: #8b8635;
+    color: white;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .calendar-day.in-range {
+    background: #e8e6d5;
+    color: #4a4a2a;
+    border-radius: 0;
+  }
+  .calendar-day.unavailable {
+    background: #fef2f2;
+    color: #ef4444;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    position: relative;
+  }
+  .calendar-day.unavailable::after {
+    content: "✕";
+    position: absolute;
+    font-size: 0.7rem;
+    top: 2px;
+    right: 2px;
+    color: #ef4444;
+  }
+  .calendar-day.past {
+    background: #f9fafb;
+    color: #d1d5db;
+    cursor: not-allowed;
+  }
+  .calendar-day.empty {
+    cursor: default;
+    background: transparent;
+  }
+  .calendar-day.today {
+    border: 2px solid #8b8635;
+  }
+  .calendar-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e5e7eb;
+    font-size: 0.7rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+  }
+  .legend-color.available {
+    background: white;
+    border: 1px solid #d1d5db;
+  }
+  .legend-color.unavailable {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+  .legend-color.selected {
+    background: #8b8635;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const listingId = document.getElementById("listingId")?.value;
+    if (!listingId) return;
+
+    let selectedCheckin = null;
+    let selectedCheckout = null;
+    let currentDate = new Date();
+    let availabilityMap = new Map();
+    let isLoading = true;
+    let isCalendarOpen = false;
+
+    const checkinInput = document.getElementById("checkin");
+    const checkoutInput = document.getElementById("checkout");
+    const bookBtn = document.getElementById("bookNowBtn");
+    const calendarWrapper = document.getElementById("calendarWrapper");
+    const calendarContainer = document.getElementById("calendarContainer");
+    const calendarLoading = document.getElementById("calendarLoading");
+    const calendarError = document.getElementById("calendarError");
+    const closeBtn = document.getElementById("closeCalendarBtn");
+    const clearBtn = document.getElementById("clearDatesBtn");
+    const confirmBtn = document.getElementById("confirmDatesBtn");
+
+    async function fetchAvailability() {
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - 1);
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 13);
+
+      try {
+        const response = await fetch(
+          `/.netlify/functions/get-availability?listingId=${listingId}&startDate=${startDate.toISOString().split("T")[0]}&endDate=${endDate.toISOString().split("T")[0]}`,
+        );
+        const data = await response.json();
+        if (data.success) {
+          data.calendar.forEach((day) => {
+            availabilityMap.set(day.date, {
+              available: day.available,
+              price: day.price,
+              minStay: day.minStay,
+            });
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch availability:", error);
+        if (calendarError) {
+          calendarError.textContent =
+            "Failed to load availability. Please try again.";
+          calendarError.classList.remove("hidden");
+        }
+      }
+    }
+
+    function formatDisplayDate(dateStr) {
+      const date = new Date(dateStr + "T00:00:00");
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+
+    // Check if all dates in the range between two dates are available
+    function isRangeFullyAvailable(startDate, endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const current = new Date(start);
+      current.setDate(current.getDate() + 1); // Skip check-in day (already validated)
+
+      while (current < end) {
+        const dateStr = current.toISOString().split("T")[0];
+        const availability = availabilityMap.get(dateStr);
+        if (!availability || !availability.available) {
+          return false;
+        }
+        current.setDate(current.getDate() + 1);
+      }
+      return true;
+    }
+
+    // Get the first unavailable date in a range
+    function getFirstUnavailableInRange(startDate, endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const current = new Date(start);
+      current.setDate(current.getDate() + 1);
+
+      while (current < end) {
+        const dateStr = current.toISOString().split("T")[0];
+        const availability = availabilityMap.get(dateStr);
+        if (!availability || !availability.available) {
+          return dateStr;
+        }
+        current.setDate(current.getDate() + 1);
+      }
+      return null;
+    }
+
+    function renderCalendar() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const startOffset = firstDay.getDay();
+      const daysInMonth = lastDay.getDate();
+      const today = new Date().toISOString().split("T")[0];
+
+      let html = `
+        <div class="calendar-grid">
+          <div class="calendar-header">
+            <button class="prev-month-btn" type="button">&larr;</button>
+            <h4>${firstDay.toLocaleDateString("en-US", { month: "long", year: "numeric" })}</h4>
+            <button class="next-month-btn" type="button">&rarr;</button>
+          </div>
+          <div class="calendar-weekdays">
+            <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+          </div>
+          <div class="calendar-days">
+      `;
+
+      for (let i = 0; i < startOffset; i++) {
+        html += `<div class="calendar-day empty"></div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        const availability = availabilityMap.get(dateStr);
+        const isAvailable = availability?.available === true;
+        const isPast = dateStr < today;
+
+        let dayClass = "calendar-day";
+        let isSelectable = false;
+
+        if (isPast) {
+          dayClass += " past";
+        } else if (!isAvailable) {
+          dayClass += " unavailable";
+        } else {
+          isSelectable = true;
+        }
+
+        if (selectedCheckin && selectedCheckout) {
+          if (dateStr === selectedCheckin) dayClass += " selected-start";
+          else if (dateStr === selectedCheckout) dayClass += " selected-end";
+          else if (dateStr > selectedCheckin && dateStr < selectedCheckout)
+            dayClass += " in-range";
+        } else if (selectedCheckin && dateStr === selectedCheckin) {
+          dayClass += " selected-start";
+        }
+
+        if (dateStr === today && !isPast) dayClass += " today";
+
+        html += `<div class="${dayClass}" data-date="${dateStr}" data-selectable="${isSelectable}">${day}</div>`;
+      }
+
+      html += `</div><div class="calendar-legend">
+        <div class="legend-item"><div class="legend-color available"></div><span>Available</span></div>
+        <div class="legend-item"><div class="legend-color unavailable"></div><span>Booked</span></div>
+        <div class="legend-item"><div class="legend-color selected"></div><span>Selected</span></div>
+      </div></div>`;
+
+      calendarContainer.innerHTML = html;
+
+      // Re-attach event listeners after rendering
+      attachDayClickEvents();
+      attachMonthNavEvents();
+    }
+
+    function attachDayClickEvents() {
+      calendarContainer
+        .querySelectorAll('.calendar-day[data-selectable="true"]')
+        .forEach((day) => {
+          day.addEventListener("click", (e) => {
+            e.stopPropagation();
+            handleDateSelection(day.dataset.date);
+          });
+        });
+    }
+
+    function attachMonthNavEvents() {
+      const prevBtn = calendarContainer.querySelector(".prev-month-btn");
+      const nextBtn = calendarContainer.querySelector(".next-month-btn");
+
+      if (prevBtn) {
+        prevBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          currentDate.setMonth(currentDate.getMonth() - 1);
+          renderCalendar();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          currentDate.setMonth(currentDate.getMonth() + 1);
+          renderCalendar();
+        });
+      }
+    }
+
+    function handleDateSelection(date) {
+      // Clear any previous error
+      if (calendarError) calendarError.classList.add("hidden");
+
+      if (!selectedCheckin || (selectedCheckin && selectedCheckout)) {
+        // Start new selection
+        selectedCheckin = date;
+        selectedCheckout = null;
+      } else if (selectedCheckin && !selectedCheckout) {
+        let newCheckin = selectedCheckin;
+        let newCheckout = date;
+
+        // Swap if checkout is before checkin
+        if (new Date(date) < new Date(selectedCheckin)) {
+          newCheckout = selectedCheckin;
+          newCheckin = date;
+        }
+
+        // Validate that all dates in the range are available
+        if (!isRangeFullyAvailable(newCheckin, newCheckout)) {
+          const blockedDate = getFirstUnavailableInRange(
+            newCheckin,
+            newCheckout,
+          );
+          if (calendarError) {
+            calendarError.textContent = `Cannot book this range — ${formatDisplayDate(blockedDate)} is unavailable. Please select dates without gaps.`;
+            calendarError.classList.remove("hidden");
+          }
+          // Reset selection to the clicked date
+          selectedCheckin = date;
+          selectedCheckout = null;
+        } else {
+          selectedCheckin = newCheckin;
+          selectedCheckout = newCheckout;
+        }
+      }
+      renderCalendar();
+    }
+
+    function confirmSelection() {
+      if (selectedCheckin && selectedCheckout) {
+        checkinInput.value = formatDisplayDate(selectedCheckin);
+        checkoutInput.value = formatDisplayDate(selectedCheckout);
+        checkoutInput.classList.remove("opacity-50");
+        bookBtn.disabled = false;
+        bookBtn.classList.remove("opacity-50");
+        hideCalendar();
+
+        // Store rich booking data including villa info
+        const villaName =
+          document.getElementById("villaName")?.value || "Villa";
+        const villaImage =
+          document.getElementById("villaImage")?.value || "";
+
+        localStorage.setItem(
+          "bookingData",
+          JSON.stringify({
+            listingId: listingId,
+            checkin: selectedCheckin,
+            checkout: selectedCheckout,
+            guests: document.getElementById("guests").value,
+            villaName: villaName,
+            villaImage: villaImage,
+          }),
+        );
+
+        if (window.bookingManager) {
+          window.bookingManager.checkinDate = selectedCheckin;
+          window.bookingManager.checkoutDate = selectedCheckout;
+          window.bookingManager.guests = parseInt(
+            document.getElementById("guests").value,
+          );
+          window.bookingManager.calculatePrice();
+        }
+      } else if (selectedCheckin) {
+        if (calendarError) {
+          calendarError.textContent = "Please select a check-out date.";
+          calendarError.classList.remove("hidden");
+        }
+      }
+    }
+
+    function clearSelection() {
+      selectedCheckin = null;
+      selectedCheckout = null;
+      checkinInput.value = "";
+      checkoutInput.value = "";
+      checkoutInput.classList.add("opacity-50");
+      bookBtn.disabled = true;
+      bookBtn.classList.add("opacity-50");
+      if (calendarError) calendarError.classList.add("hidden");
+      renderCalendar();
+    }
+
+    function showCalendar() {
+      if (isLoading) {
+        calendarLoading.classList.remove("hidden");
+        calendarContainer.classList.add("hidden");
+      } else {
+        calendarLoading.classList.add("hidden");
+        calendarContainer.classList.remove("hidden");
+        renderCalendar();
+      }
+      calendarWrapper.classList.remove("hidden");
+      isCalendarOpen = true;
+    }
+
+    function hideCalendar() {
+      calendarWrapper.classList.add("hidden");
+      isCalendarOpen = false;
+    }
+
+    // Initialize
+    (async () => {
+      await fetchAvailability();
+      isLoading = false;
+      calendarLoading.classList.add("hidden");
+      calendarContainer.classList.remove("hidden");
+      renderCalendar();
+    })();
+
+    // Input click handlers
+    checkinInput.addEventListener("click", showCalendar);
+    checkoutInput.addEventListener("click", showCalendar);
+
+    // Button handlers
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      hideCalendar();
+    });
+    clearBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      clearSelection();
+    });
+    confirmBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      confirmSelection();
+    });
+
+    // Close on outside click - but NOT when clicking inside calendar
+    document.addEventListener("click", (e) => {
+      if (
+        isCalendarOpen &&
+        calendarWrapper &&
+        !calendarWrapper.contains(e.target)
+      ) {
+        // Don't close if clicking on checkin/checkout inputs
+        if (
+          !checkinInput.contains(e.target) &&
+          !checkoutInput.contains(e.target)
+        ) {
+          hideCalendar();
+        }
+      }
+    });
+
+    // Prevent calendar from closing when clicking inside it
+    calendarWrapper.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    // Book button — store data and redirect
+    bookBtn.addEventListener("click", () => {
+      if (selectedCheckin && selectedCheckout) {
+        // Ensure latest data is stored
+        const villaName =
+          document.getElementById("villaName")?.value || "Villa";
+        const villaImage =
+          document.getElementById("villaImage")?.value || "";
+
+        localStorage.setItem(
+          "bookingData",
+          JSON.stringify({
+            listingId: listingId,
+            checkin: selectedCheckin,
+            checkout: selectedCheckout,
+            guests: document.getElementById("guests").value,
+            villaName: villaName,
+            villaImage: villaImage,
+          }),
+        );
+
+        window.location.href = "/booking-page.html";
+      } else {
+        alert("Please select dates");
+      }
+    });
+  });
+</script>

@@ -1,0 +1,60 @@
+---
+layout: default
+title: Booking Confirmed | Tropical Villa Ventures
+---
+
+<style>
+  .success-checkmark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+  }
+  .checkmark-circle {
+    width: 80px;
+    height: 80px;
+    background: #4caf50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .checkmark {
+    font-size: 48px;
+    color: white;
+  }
+</style>
+
+<section
+  class="min-h-screen bg-[#F3F0E7] flex items-center justify-center py-20"
+>
+  <div class="max-w-2xl mx-auto px-6 text-center">
+    <div class="bg-white rounded-2xl p-12 shadow-xl">
+      <div class="success-checkmark">
+        <div class="checkmark-circle mx-auto">
+          <span class="checkmark">✓</span>
+        </div>
+      </div>
+      <h1
+        class="text-3xl md:text-4xl font-heading font-light text-[#231F20] mb-4"
+      >
+        Booking Confirmed! 🎉
+      </h1>
+      <p class="text-[#231F20]/70 mb-8">
+        Thank you for your booking! A confirmation email has been sent to your
+        email address with all the details.
+      </p>
+      <div class="space-y-4">
+        <a
+          href="/"
+          class="inline-block bg-[#8B8635] text-white px-8 py-3 rounded-xl hover:bg-[#6B682A] transition"
+          >Return to Home</a
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Clear booking data from localStorage after successful booking
+  localStorage.removeItem("bookingData");
+</script>

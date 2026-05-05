@@ -2,6 +2,9 @@
 layout: default
 title: Villa Sinar Maluku | Tropical Villa Ventures
 
+hostaway:
+  listing_id: 319474
+
 hero:
   title: "Villa Sinar Maluku"
   description: "A spacious tropical retreat overlooking a majestic cliff, featuring a private pool, lush garden, and Balinese-inspired design for a peaceful island escape."
@@ -118,7 +121,8 @@ faq_section:
           answer: "Yes, transport, scooter rental, and local assistance can be arranged."
 ---
 
-{% include villas/hero-villa.html section=page.hero %} {% include
+{% include villas/hero-villa.html section=page.hero
+listing_id=page.hostaway.listing_id %} {% include
 content-image-reverse-section.html section=page.stay_at_villa_section %} {%
 include villas/gallery-section.html section=page.gallery %} {% include
 content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"

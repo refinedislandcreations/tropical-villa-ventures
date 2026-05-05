@@ -1,0 +1,28 @@
+---
+layout: default
+title: Booking Failed | Tropical Villa Ventures
+---
+
+<style>
+  .error-mark { width: 80px; height: 80px; margin: 0 auto 1.5rem; }
+  .error-circle { width: 80px; height: 80px; background: #f44336; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .error-mark span { font-size: 48px; color: white; }
+</style>
+
+<section class="min-h-screen bg-[#F3F0E7] flex items-center justify-center py-20">
+  <div class="max-w-2xl mx-auto px-6 text-center">
+    <div class="bg-white rounded-2xl p-12 shadow-xl">
+      <div class="error-mark">
+        <div class="error-circle mx-auto">
+          <span>✕</span>
+        </div>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-heading font-light text-[#231F20] mb-4">Payment Failed</h1>
+      <p class="text-[#231F20]/70 mb-8">We couldn't process your payment. Please try again or contact us for assistance.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/booking-page.html" class="inline-block bg-[#8B8635] text-white px-8 py-3 rounded-xl hover:bg-[#6B682A] transition">Try Again</a>
+        <a href="/" class="inline-block border border-[#231F20]/30 text-[#231F20] px-8 py-3 rounded-xl hover:bg-[#231F20]/5 transition">Return to Home</a>
+      </div>
+    </div>
+  </div>
+</section>

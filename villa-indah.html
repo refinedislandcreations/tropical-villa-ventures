@@ -2,6 +2,9 @@
 layout: default
 title: Villa Indah | Tropical Villa Ventures
 
+hostaway:
+  listing_id: 319475
+
 hero:
   title: "Villa Indah"
   description: "A cozy tropical retreat in Ungasan with a private pool and lush garden surroundings, designed for relaxed days and easy island living."
@@ -132,7 +135,8 @@ faq_section:
           answer: "Yes, massage and spa services are available."
 ---
 
-{% include villas/hero-villa.html section=page.hero %} {% include
+{% include villas/hero-villa.html section=page.hero
+listing_id=page.hostaway.listing_id %} {% include
 content-image-reverse-section.html section=page.stay_at_villa_section %} {%
 include villas/gallery-section.html section=page.gallery %} {% include
 content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"

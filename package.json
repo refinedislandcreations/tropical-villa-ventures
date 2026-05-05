@@ -18,10 +18,14 @@
     "url": "https://github.com/refinedislandcreations/tropical-villa-ventures/issues"
   },
   "homepage": "https://github.com/refinedislandcreations/tropical-villa-ventures#readme",
-  "description": "",
   "devDependencies": {
     "@tailwindcss/cli": "^4.2.1",
     "concurrently": "^9.2.1",
     "tailwindcss": "^4.2.1"
-  }
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0",
+    "axios": "^1.15.2"
+  },
+  "description": ""
 }
