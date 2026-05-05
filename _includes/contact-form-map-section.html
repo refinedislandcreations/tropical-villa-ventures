@@ -1,3 +1,4 @@
+<!-- _includes/contact-form-map-section.html -->
 {% assign section_data = include.section %}
 
 <section class="bg-[#F3F0E7] section font-body">
@@ -7,7 +8,7 @@
       <div class="lg:col-span-5 space-y-12">
         <!-- Title -->
         <h2
-          class="text-5xl md:text-6xl font-extralight uppercase tracking-wide text-[#231F20] font-heading"
+          class="text-4xl sm:text-5xl md:text-6xl font-extralight uppercase tracking-wide text-[#231F20] font-heading leading-[1.1] md:leading-[0.95]"
         >
           {{ section_data.title }}
         </h2>
@@ -21,7 +22,7 @@
           <!-- Name -->
           <div class="grid grid-cols-3 items-center gap-6">
             <label
-              class="text-sm font-bold tracking-[0.2em] text-[#231F20]/70 font-body"
+              class="text-xs sm:text-sm font-medium tracking-[0.2em] text-[#231F20]/70 font-body"
             >
               Name
             </label>
@@ -29,14 +30,14 @@
               type="text"
               name="name"
               required
-              class="col-span-2 w-full border-b border-[#231F20]/40 bg-transparent py-2 outline-none"
+              class="col-span-2 w-full border-b border-[#231F20]/40 bg-transparent py-2 outline-none text-sm font-body"
             />
           </div>
 
           <!-- Email -->
           <div class="grid grid-cols-3 items-center gap-6">
             <label
-              class="text-sm font-bold tracking-[0.2em] text-[#231F20]/70 font-body"
+              class="text-xs sm:text-sm font-medium tracking-[0.2em] text-[#231F20]/70 font-body"
             >
               E-Mail
             </label>
@@ -44,28 +45,28 @@
               type="email"
               name="email"
               required
-              class="col-span-2 w-full border-b border-[#231F20]/40 bg-transparent py-2 outline-none"
+              class="col-span-2 w-full border-b border-[#231F20]/40 bg-transparent py-2 outline-none text-sm font-body"
             />
           </div>
 
           <!-- Phone -->
           <div class="grid grid-cols-3 items-center gap-6">
             <label
-              class="text-sm font-bold tracking-[0.2em] text-[#231F20]/70 font-body"
+              class="text-xs sm:text-sm font-medium tracking-[0.2em] text-[#231F20]/70 font-body"
             >
               Phone Number
             </label>
             <input
               type="text"
               name="phone"
-              class="col-span-2 w-full border-b border-[#231F20]/40 bg-transparent py-2 outline-none"
+              class="col-span-2 w-full border-b border-[#231F20]/40 bg-transparent py-2 outline-none text-sm font-body"
             />
           </div>
 
           <!-- Message -->
           <div class="space-y-3">
             <label
-              class="block text-sm font-bold tracking-[0.2em] text-[#231F20]/70 font-body"
+              class="block text-xs sm:text-sm font-medium tracking-[0.2em] text-[#231F20]/70 font-body"
             >
               Your Message
             </label>
@@ -73,7 +74,7 @@
               name="message"
               rows="4"
               required
-              class="w-full border border-[#231F20]/40 bg-transparent p-3 outline-none resize-none"
+              class="w-full border border-[#231F20]/40 bg-transparent p-3 outline-none resize-none text-sm font-body"
             ></textarea>
           </div>
 
@@ -81,7 +82,7 @@
           <div class="flex justify-end">
             <button
               type="submit"
-              class="uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm sm:text-base"
+              class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm sm:text-base"
             >
               Submit
             </button>
@@ -89,18 +90,27 @@
         </form>
 
         <!-- Contact Info -->
-        <div class="text-sm text-[#231F20]/80 space-y-2 font-body">
-          <p><strong>Company name:</strong> PT. Tropical Villa Ventures</p>
-          <p><strong>Email:</strong> management@tvvbali.com</p>
-          <p><strong>Phone number:</strong> +62 8158819533</p>
+        <div
+          class="text-xs sm:text-sm text-[#231F20]/80 space-y-2 font-body leading-snug"
+        >
           <p>
-            <strong>Address:</strong> Jalan Toya Ning I, Puri Bendesa Villa
-            Asmara No. 71
+            <strong class="font-semibold">Company name:</strong> PT. Tropical
+            Villa Ventures
+          </p>
+          <p>
+            <strong class="font-semibold">Email:</strong> management@tvvbali.com
+          </p>
+          <p>
+            <strong class="font-semibold">Phone number:</strong> +62 8158819533
+          </p>
+          <p>
+            <strong class="font-semibold">Address:</strong> Jalan Toya Ning I,
+            Puri Bendesa Villa Asmara No. 71
           </p>
         </div>
 
         <p
-          class="text-sm uppercase tracking-widest text-[#231F20]/60 font-body"
+          class="text-xs uppercase tracking-widest text-[#231F20]/60 font-body"
         >
           Follow us on Instagram
         </p>

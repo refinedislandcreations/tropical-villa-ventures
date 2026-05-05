@@ -16,7 +16,7 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
       <!-- Title -->
       <div class="lg:col-span-4">
         <h2
-          class="text-5xl md:text-6xl font-extralight tracking-wide uppercase text-[#231F20] font-heading"
+          class="text-4xl sm:text-5xl md:text-6xl font-extralight tracking-wide uppercase text-[#231F20] font-heading leading-[1.1] md:leading-[0.95]"
         >
           {{ section_data.title }}
         </h2>
@@ -24,15 +24,17 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
 
       <!-- Description -->
       <div class="lg:col-span-8">
-        <p class="text-[#231F20]/85 leading-9 text-lg max-w-4xl font-body">
+        <p
+          class="text-[#231F20]/85 text-sm md:text-base leading-snug md:leading-snug max-w-4xl font-body"
+        >
           {{ section_data.description }}
         </p>
       </div>
     </div>
 
-    <!-- Manual horizontal slider -->
+    <!-- Manual horizontal slider - REMOVED scroll-smooth -->
     <div
-      class="overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth pb-4"
+      class="overflow-x-auto overflow-y-hidden snap-x snap-mandatory pb-4"
       id="explore-slider-{{ slider_id }}"
     >
       <div class="flex gap-6 w-max">
@@ -47,13 +49,13 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
 
           <div class="pt-5">
             <h3
-              class="text-3xl font-extralight uppercase tracking-wide text-[#231F20] font-heading"
+              class="text-2xl sm:text-3xl font-extralight uppercase tracking-wide text-[#231F20] font-heading leading-[1.2]"
             >
               {{ item.name }}
             </h3>
 
             <p
-              class="mt-3 text-base leading-8 text-[#231F20]/80 max-w-[95%] font-body"
+              class="mt-3 text-sm md:text-base leading-snug md:leading-snug text-[#231F20]/80 max-w-[95%] font-body"
             >
               {{ item.description }}
             </p>
@@ -63,7 +65,9 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
       </div>
     </div>
 
-    <div class="mt-4 text-sm text-[#231F20]/50 text-center lg:hidden">
+    <div
+      class="mt-4 text-xs sm:text-sm text-[#231F20]/50 text-center lg:hidden font-body"
+    >
       Swipe to explore
     </div>
   </div>

@@ -7,14 +7,16 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-14">
       <div class="lg:col-span-4">
         <h2
-          class="text-5xl md:text-6xl font-extralight tracking-wide text-[#231F20] uppercase font-heading"
+          class="text-4xl sm:text-5xl md:text-6xl font-extralight tracking-wide text-[#231F20] uppercase font-heading leading-[1.1] md:leading-[0.95]"
         >
           {{ section_data.title }}
         </h2>
       </div>
 
       <div class="lg:col-span-6">
-        <p class="text-[#231F20]/85 leading-9 text-lg max-w-3xl font-body">
+        <p
+          class="text-[#231F20]/85 text-sm md:text-base leading-snug md:leading-snug max-w-3xl font-body"
+        >
           {{ section_data.description }}
         </p>
       </div>
@@ -22,7 +24,7 @@
       <div class="lg:col-span-2 lg:flex lg:justify-end">
         <a
           href="{{ section_data.button_url | default: '/our-villas.html' | relative_url }}"
-          class="inline-flex rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-bold uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-center min-w-[120px] text-white"
+          class="inline-flex rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-medium uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-center min-w-[120px] text-white"
         >
           {{ section_data.button }}
         </a>
@@ -52,12 +54,12 @@
               </div>
               <div class="pt-4 sm:pt-6 text-white">
                 <h3
-                  class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-extralight uppercase tracking-wide mb-2 sm:mb-3 font-heading"
+                  class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-extralight uppercase tracking-wide mb-2 sm:mb-3 font-heading leading-[1.1]"
                 >
                   {{ villa.name }}
                 </h3>
                 <p
-                  class="text-sm sm:text-base leading-6 sm:leading-8 text-white/90 max-w-[90%] font-body"
+                  class="text-xs sm:text-sm md:text-base leading-snug sm:leading-snug text-white/90 max-w-[90%] font-body"
                 >
                   {{ villa.description }}
                 </p>
@@ -70,7 +72,9 @@
     </div>
 
     <!-- Scroll indicators -->
-    <div class="flex justify-center mt-4 text-[#231F20]/50 text-sm">
+    <div
+      class="flex justify-center mt-4 text-[#231F20]/50 text-xs sm:text-sm font-body"
+    >
       <span>Swipe to explore villas</span>
     </div>
   </div>

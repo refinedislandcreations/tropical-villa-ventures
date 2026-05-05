@@ -10,16 +10,18 @@ bg_color = include.bg_color | default: 'bg-[#FCFBF8]' %}
       <!-- LEFT CONTENT -->
       <div class="max-w-xl lg:pl-8">
         <h2
-          class="mb-10 text-5xl md:text-6xl font-extralight tracking-wide text-neutral-900 font-heading uppercase"
+          class="mb-8 text-4xl sm:text-5xl md:text-6xl font-extralight tracking-wide text-neutral-900 font-heading uppercase leading-[1.1] md:leading-[0.95]"
         >
           {{ section_data.title }}
         </h2>
 
         <!-- FEATURES LIST -->
         {% if section_data.features %}
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-10 mb-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-10 mb-8">
           {% for item in section_data.features %}
-          <p class="text-sm md:text-base text-neutral-700 font-body">
+          <p
+            class="text-sm md:text-base text-neutral-700 font-body leading-snug"
+          >
             {{ item }}
           </p>
           {% endfor %}
@@ -29,7 +31,7 @@ bg_color = include.bg_color | default: 'bg-[#FCFBF8]' %}
         <!-- PARAGRAPHS (fallback if no features) -->
         {% if section_data.paragraphs %}
         <div
-          class="space-y-6 text-base md:text-lg leading-8 md:leading-9 text-neutral-700 font-body"
+          class="space-y-3 md:space-y-4 text-sm md:text-base leading-snug md:leading-snug text-neutral-700 font-body"
         >
           {% for paragraph in section_data.paragraphs %}
           <p>{{ paragraph }}</p>
@@ -41,7 +43,7 @@ bg_color = include.bg_color | default: 'bg-[#FCFBF8]' %}
         {% if section_data.button %}
         <a
           href="{{ section_button_url | relative_url }}"
-          class="mt-8 inline-flex rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-bold uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-white"
+          class="mt-8 inline-flex rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-medium uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-white"
         >
           {{ section_data.button }}
         </a>

@@ -30,11 +30,13 @@
           <!-- Content -->
           <div class="pt-6">
             <h3
-              class="text-3xl font-extralight uppercase tracking-wide text-[#231F20] font-heading"
+              class="text-2xl sm:text-3xl font-extralight uppercase tracking-wide text-[#231F20] font-heading leading-[1.2]"
             >
               {{ item.title }}
             </h3>
-            <p class="mt-3 text-base leading-8 text-[#231F20]/80 font-body">
+            <p
+              class="mt-3 text-sm md:text-base leading-snug md:leading-snug text-[#231F20]/80 font-body"
+            >
               {{ item.description }}
             </p>
           </div>
@@ -69,14 +71,16 @@
 
             <!-- Title -->
             <h3
-              class="text-4xl font-extralight uppercase tracking-wide text-[#231F20] font-heading pr-8"
+              class="text-3xl sm:text-4xl font-extralight uppercase tracking-wide text-[#231F20] font-heading pr-8 leading-[1.1]"
             >
               {{ item.popup.title }}
             </h3>
 
             <!-- Subtitle -->
             {% if item.popup.subtitle %}
-            <div class="mt-3 text-sm tracking-[0.2em] font-heading space-y-1">
+            <div
+              class="mt-3 text-xs sm:text-sm tracking-[0.2em] font-heading space-y-1"
+            >
               {% if item.popup.subtitle.size %} {% for sub in
               item.popup.subtitle %}
               <p>{{ sub }}</p>
@@ -89,7 +93,7 @@
             <!-- PARAGRAPHS -->
             {% if item.popup.paragraphs %}
             <div
-              class="mt-6 space-y-4 text-base md:text-lg leading-8 text-[#231F20]/80 font-body"
+              class="mt-6 space-y-3 md:space-y-4 text-sm md:text-base leading-snug md:leading-snug text-[#231F20]/80 font-body"
             >
               {% for paragraph in item.popup.paragraphs %}
               <p>{{ paragraph }}</p>
@@ -109,7 +113,7 @@
                   data-section-toggle="{{ forloop.parentloop.index }}-{{ forloop.index }}"
                 >
                   <h4
-                    class="text-2xl uppercase font-heading tracking-wide text-[#231F20] transition-colors duration-300 group-hover:text-[#B64919]"
+                    class="text-xl sm:text-2xl uppercase font-heading tracking-wide text-[#231F20] transition-colors duration-300 group-hover:text-[#B64919]"
                   >
                     {{ section.title }}
                   </h4>
@@ -117,7 +121,7 @@
                     class="accordion-icon text-2xl text-[#B64919] transition-transform duration-300"
                   >
                     <svg
-                      class="w-6 h-6 transition-transform duration-300"
+                      class="w-5 h-5 transition-transform duration-300"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -151,13 +155,15 @@
                     {% for col in section.columns %}
                     <div>
                       {% if col.title != "" %}
-                      <h5 class="font-semibold mb-3">{{ col.title }}</h5>
+                      <h5 class="font-semibold mb-3 text-sm">
+                        {{ col.title }}
+                      </h5>
                       {% endif %}
 
-                      <ul class="space-y-2 text-[#231F20]/80">
+                      <ul class="space-y-2 text-[#231F20]/80 text-sm">
                         {% for item in col.items %} {% if item.name %}
                         <li>
-                          <p class="font-medium">{{ item.name }}</p>
+                          <p class="font-medium text-sm">{{ item.name }}</p>
                           {% if item.description %}
                           <p class="text-xs text-[#231F20]/60">
                             {{ item.description }}
@@ -165,7 +171,7 @@
                           {% endif %}
                         </li>
                         {% else %}
-                        <li>{{ item }}</li>
+                        <li class="text-sm">{{ item }}</li>
                         {% endif %} {% endfor %}
                       </ul>
                     </div>
@@ -178,9 +184,11 @@
                   <div class="divide-y divide-[#231F20]/10">
                     {% for item in section.items %}
                     <div class="py-3">
-                      <p class="font-medium text-base">{{ item.name }}</p>
+                      <p class="font-medium text-sm md:text-base">
+                        {{ item.name }}
+                      </p>
                       {% if item.description != "" %}
-                      <p class="text-sm text-[#231F20]/60">
+                      <p class="text-xs sm:text-sm text-[#231F20]/60">
                         {{ item.description }}
                       </p>
                       {% endif %}
@@ -195,7 +203,7 @@
                     {% for item in section.items %}
                     <div class="flex items-baseline gap-3">
                       <!-- NAME -->
-                      <span class="shrink-0"> {{ item.name }} </span>
+                      <span class="shrink-0 text-sm"> {{ item.name }} </span>
 
                       <!-- DOTS -->
                       <div
@@ -203,7 +211,7 @@
                       ></div>
 
                       <!-- PRICE -->
-                      <span class="shrink-0 text-black">
+                      <span class="shrink-0 text-black text-sm">
                         {{ item.price }}k
                       </span>
                     </div>

@@ -6,11 +6,13 @@
     <!-- Header -->
     <div class="mb-16">
       <h1
-        class="text-5xl md:text-6xl font-extralight uppercase tracking-wide text-[#231F20] mb-6 font-heading"
+        class="text-4xl sm:text-5xl md:text-6xl font-extralight uppercase tracking-wide text-[#231F20] mb-6 font-heading leading-[1.1] md:leading-[0.95]"
       >
         {{ data.title }}
       </h1>
-      <p class="uppercase tracking-[0.2em] text-sm text-[#231F20]/60">
+      <p
+        class="uppercase tracking-[0.2em] text-xs sm:text-sm text-[#231F20]/60 font-body"
+      >
         {{ data.subtitle }}
       </p>
     </div>
@@ -18,19 +20,19 @@
     <!-- Error Toast -->
     <div
       id="bookingError"
-      class="hidden fixed top-5 left-1/2 -translate-x-1/2 z-[1001] min-w-[300px] bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg text-center"
+      class="hidden fixed top-5 left-1/2 -translate-x-1/2 z-[1001] min-w-[300px] bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg text-center text-sm font-body"
     ></div>
     <!-- Full-screen loader — ONLY shown by createBooking() (Pay Now), never during price calculation -->
     <div
       id="bookingLoader"
-      style="display:none"
+      style="display: none"
       class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
     >
       <div class="bg-white rounded-lg p-6 text-center shadow-xl">
         <div
           class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B8635] mx-auto mb-4"
         ></div>
-        <p>Processing your booking...</p>
+        <p class="text-sm font-body">Processing your booking...</p>
       </div>
     </div>
 
@@ -40,60 +42,73 @@
         <form id="bookingForm" class="space-y-6">
           <!-- Full Name -->
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label class="text-sm text-[#231F20]/80 font-bold">Full Name</label>
+            <label
+              class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body"
+              >Full Name</label
+            >
             <input
               type="text"
               id="fullName"
               required
-              class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full"
+              class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full text-sm font-body"
               placeholder="John Doe"
             />
           </div>
 
           <!-- Email -->
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label class="text-sm text-[#231F20]/80 font-bold">E-mail</label>
+            <label
+              class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body"
+              >E-mail</label
+            >
             <input
               type="email"
               id="email"
               required
-              class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full"
+              class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full text-sm font-body"
               placeholder="john@example.com"
             />
           </div>
 
           <!-- Phone -->
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label class="text-sm text-[#231F20]/80 font-bold"
+            <label
+              class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body"
               >Phone Number</label
             >
             <input
               type="tel"
               id="phone"
               required
-              class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full"
+              class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full text-sm font-body"
               placeholder="+62 812 3456 7890"
             />
           </div>
 
           <!-- Address (Optional) -->
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label class="text-sm text-[#231F20]/80 font-bold">Address</label>
+            <label
+              class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body"
+              >Address</label
+            >
             <input
               type="text"
               id="address"
-              class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full"
+              class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full text-sm font-body"
               placeholder="Optional"
             />
           </div>
 
           <!-- City (Optional) -->
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label class="text-sm text-[#231F20]/80 font-bold">City</label>
+            <label
+              class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body"
+              >City</label
+            >
             <input
               type="text"
               id="city"
-              class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full"
+              class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full text-sm font-body"
               placeholder="Optional"
             />
           </div>
@@ -105,7 +120,7 @@
               id="newsletter"
               class="w-4 h-4 border border-[#231F20]"
             />
-            <span class="text-sm text-[#231F20]/70">
+            <span class="text-xs sm:text-sm text-[#231F20]/70 font-body">
               Yes, I'd like to receive exclusive offers & promotions.
             </span>
           </div>
@@ -114,11 +129,13 @@
         <!-- Special Requests -->
         <div class="pt-6 space-y-4">
           <h3
-            class="text-xl uppercase tracking-wide text-[#231F20] font-heading"
+            class="text-xl sm:text-2xl uppercase tracking-wide text-[#231F20] font-heading font-extralight"
           >
             Special Requests (Optional)
           </h3>
-          <p class="text-sm text-[#231F20]/60">
+          <p
+            class="text-xs sm:text-sm text-[#231F20]/60 font-body leading-snug"
+          >
             Let us know if you have any additional requests or comments.
           </p>
 
@@ -126,7 +143,7 @@
             id="specialRequests"
             rows="4"
             placeholder="Your message"
-            class="w-full border border-[#231F20]/40 bg-transparent p-4 outline-none resize-none"
+            class="w-full border border-[#231F20]/40 bg-transparent p-4 outline-none resize-none text-sm font-body"
           ></textarea>
         </div>
 
@@ -134,7 +151,7 @@
         <div
           class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pt-6"
         >
-          <p class="text-xs text-[#231F20]/60 max-w-md">
+          <p class="text-xs text-[#231F20]/60 max-w-md leading-snug font-body">
             By clicking on this button, I agree to the
             <a href="/privacy-policy" class="underline">Privacy Policy</a> and
             <a href="/terms" class="underline">Terms of Service</a>.
@@ -143,7 +160,7 @@
           <button
             type="button"
             onclick="window.bookingManager?.createBooking()"
-            class="uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-8 py-3 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm cursor-pointer"
+            class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-8 py-3 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm cursor-pointer"
           >
             Pay Now
           </button>
@@ -153,7 +170,7 @@
       <!-- RIGHT: SUMMARY CARD -->
       <div class="lg:col-span-6">
         <div
-          class="bg-[#A6461F] text-white p-10 h-full flex flex-col justify-between"
+          class="bg-[#A6461F] text-white p-8 md:p-10 h-full flex flex-col justify-between"
         >
           <!-- Top -->
           <div class="space-y-8">
@@ -164,10 +181,15 @@
                 alt="{{ data.villa_name }}"
               />
               <div>
-                <h3 class="text-2xl font-light tracking-wide font-heading">
+                <h3
+                  class="text-xl sm:text-2xl font-light tracking-wide font-heading"
+                >
                   {{ data.villa_name }}
                 </h3>
-                <div id="tripDetails" class="text-sm text-white/80 mt-2">
+                <div
+                  id="tripDetails"
+                  class="text-xs sm:text-sm text-white/80 mt-2 space-y-1"
+                >
                   <p id="datesDisplay">Select dates</p>
                   <p id="guestsDisplay">{{ data.guests }} guests</p>
                 </div>
@@ -175,16 +197,18 @@
             </div>
 
             <!-- Cancellation -->
-            <div class="text-sm space-y-2">
+            <div class="text-xs sm:text-sm space-y-2">
               <p class="font-semibold">Cancellation Policy</p>
-              <p>100% refund up to 14 days before arrival</p>
-              <p>50% refund up to 7 days before arrival</p>
+              <p class="leading-snug">
+                100% refund up to 14 days before arrival
+              </p>
+              <p class="leading-snug">50% refund up to 7 days before arrival</p>
             </div>
 
             <hr class="border-white/30" />
 
             <!-- Price Breakdown -->
-            <div id="priceBreakdown" class="text-sm space-y-2">
+            <div id="priceBreakdown" class="text-xs sm:text-sm space-y-2">
               <p class="font-semibold">Price Details</p>
               <div class="flex justify-between">
                 <span>Loading...</span>
@@ -197,7 +221,9 @@
 
           <!-- Bottom -->
           <div class="text-sm space-y-3 pt-6">
-            <div class="flex justify-between font-semibold text-lg">
+            <div
+              class="flex justify-between font-semibold text-base sm:text-lg"
+            >
               <span>Total</span>
               <span id="totalPrice">IDR 0</span>
             </div>
@@ -211,7 +237,7 @@
                     .getElementById('couponBox')
                     ?.classList.toggle('hidden')
                 "
-                class="underline cursor-pointer text-white/80 hover:text-white"
+                class="underline cursor-pointer text-white/80 hover:text-white text-xs sm:text-sm font-body"
               >
                 + Add a coupon
               </button>
@@ -221,12 +247,12 @@
                   id="couponInput"
                   type="text"
                   placeholder="Enter code"
-                  class="flex-1 border-b border-white/70 bg-transparent py-2 outline-none text-white placeholder-white/50"
+                  class="flex-1 border-b border-white/70 bg-transparent py-2 outline-none text-white placeholder-white/50 text-sm font-body"
                 />
                 <button
                   type="button"
                   onclick="window.bookingManager?.applyCoupon()"
-                  class="uppercase font-heading font-bold tracking-widest bg-[#8B8635] px-4 py-2 rounded-xl text-sm cursor-pointer hover:bg-[#6B682A]"
+                  class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 rounded-xl text-xs sm:text-sm cursor-pointer hover:bg-[#6B682A]"
                 >
                   Apply
                 </button>
@@ -289,9 +315,12 @@
     }
 
     // Initialize booking manager if not already done
-    if (listingId && typeof VillaBookingManager !== "undefined" && !window.bookingManager) {
+    if (
+      listingId &&
+      typeof VillaBookingManager !== "undefined" &&
+      !window.bookingManager
+    ) {
       window.bookingManager = new VillaBookingManager(listingId, 10);
     }
   });
 </script>
-

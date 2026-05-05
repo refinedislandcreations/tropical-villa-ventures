@@ -16,7 +16,7 @@ section_button_url = section_data.button_url | default: '/explore-the-area' %}
           <img
             src="{{ section_image | relative_url }}"
             alt="{{ section_data.title }}"
-            class="h-[520px] w-full object-cover"
+            class="h-[420px] md:h-[520px] w-full object-cover"
             loading="lazy"
           />
         </div>
@@ -25,13 +25,13 @@ section_button_url = section_data.button_url | default: '/explore-the-area' %}
       <!-- Right Content -->
       <div class="max-w-xl lg:pl-8 order-1 lg:order-2">
         <h2
-          class="mb-8 text-5xl md:text-6xl font-extralight tracking-wide text-neutral-900 font-heading uppercase"
+          class="mb-8 text-4xl sm:text-5xl md:text-6xl font-extralight tracking-wide text-neutral-900 font-heading uppercase leading-[1.1] md:leading-[0.95]"
         >
           {{ section_data.title }}
         </h2>
 
         <div
-          class="space-y-6 text-base md:text-lg leading-8 md:leading-9 text-neutral-700 font-body"
+          class="space-y-3 md:space-y-4 text-sm md:text-base leading-snug md:leading-snug text-neutral-700 font-body"
         >
           {% for paragraph in section_data.paragraphs %}
           <p>{{ paragraph }}</p>
@@ -41,7 +41,7 @@ section_button_url = section_data.button_url | default: '/explore-the-area' %}
         {% if section_data.button %}
         <a
           href="{{ section_button_url | relative_url }}"
-          class="mt-10 inline-flex rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-bold uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-center min-w-[120px] text-white"
+          class="mt-8 inline-flex rounded-xl bg-[#9D8B2F] px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base font-heading font-medium uppercase tracking-widest hover:scale-105 transition-all duration-300 hover:bg-[#8B7A28] text-center min-w-[120px] text-white"
         >
           {{ section_data.button }}
         </a>

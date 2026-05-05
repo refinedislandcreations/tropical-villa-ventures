@@ -24,9 +24,17 @@ title: Booking Confirmed | Tropical Villa Ventures
     color: white;
   }
   @keyframes scaleIn {
-    0% { transform: scale(0); opacity: 0; }
-    60% { transform: scale(1.15); }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.15);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
   .booking-detail-row {
     display: flex;
@@ -43,7 +51,7 @@ title: Booking Confirmed | Tropical Villa Ventures
   }
   .booking-detail-value {
     font-weight: 600;
-    color: #231F20;
+    color: #231f20;
     text-align: right;
     font-size: 0.875rem;
   }
@@ -54,7 +62,7 @@ title: Booking Confirmed | Tropical Villa Ventures
     border-radius: 0.5rem;
     font-family: monospace;
     font-size: 0.875rem;
-    color: #8B8635;
+    color: #8b8635;
     font-weight: 600;
     letter-spacing: 0.05em;
   }
@@ -73,26 +81,29 @@ title: Booking Confirmed | Tropical Villa Ventures
       </div>
 
       <h1
-        class="text-3xl md:text-4xl font-heading font-light text-[#231F20] mb-2 text-center"
+        class="text-2xl sm:text-3xl md:text-4xl font-heading font-light text-[#231F20] mb-2 text-center"
       >
-        Booking Confirmed! 🎉
+        Booking Confirmed!
       </h1>
-      <p class="text-[#231F20]/70 mb-6 text-center">
+      <p
+        class="text-sm md:text-base text-[#231F20]/70 mb-6 text-center font-body leading-snug"
+      >
         Thank you for your booking! Your reservation has been confirmed.
       </p>
 
       <!-- Booking Reference -->
       <div id="refSection" class="text-center mb-8 hidden">
-        <p class="text-sm text-[#231F20]/60 mb-2">Your Booking Reference</p>
+        <p class="text-xs sm:text-sm text-[#231F20]/60 mb-2 font-body">
+          Your Booking Reference
+        </p>
         <span id="bookingRef" class="booking-ref"></span>
       </div>
 
       <!-- Booking Details Card -->
-      <div
-        id="bookingDetails"
-        class="hidden bg-[#F3F0E7] rounded-xl p-6 mb-8"
-      >
-        <h3 class="text-lg font-heading text-[#231F20] mb-4 uppercase tracking-wide font-light">
+      <div id="bookingDetails" class="hidden bg-[#F3F0E7] rounded-xl p-6 mb-8">
+        <h3
+          class="text-base sm:text-lg font-heading text-[#231F20] mb-4 uppercase tracking-wide font-light"
+        >
           Booking Details
         </h3>
         <div id="detailRows"></div>
@@ -100,30 +111,49 @@ title: Booking Confirmed | Tropical Villa Ventures
 
       <!-- What's Next -->
       <div class="bg-[#8B8635]/10 rounded-xl p-6 mb-8">
-        <h3 class="text-sm font-semibold text-[#8B8635] mb-3 uppercase tracking-wide">
+        <h3
+          class="text-xs sm:text-sm font-semibold text-[#8B8635] mb-3 uppercase tracking-wide font-body"
+        >
           What Happens Next
         </h3>
-        <ul class="space-y-2 text-sm text-[#231F20]/70">
+        <ul
+          class="space-y-2 text-xs sm:text-sm text-[#231F20]/70 font-body leading-snug"
+        >
           <li class="flex gap-2">
             <span>📧</span>
-            <span>A payment receipt has been sent to your email by our payment provider.</span>
+            <span
+              >A payment receipt has been sent to your email by our payment
+              provider.</span
+            >
           </li>
           <li class="flex gap-2">
             <span>🏡</span>
-            <span>Your reservation has been created in our booking system. You'll receive check-in details closer to your arrival date.</span>
+            <span
+              >Your reservation has been created in our booking system. You'll
+              receive check-in details closer to your arrival date.</span
+            >
           </li>
           <li class="flex gap-2">
             <span>💬</span>
-            <span>Our team may reach out to confirm any special requests or travel arrangements.</span>
+            <span
+              >Our team may reach out to confirm any special requests or travel
+              arrangements.</span
+            >
           </li>
         </ul>
       </div>
 
       <!-- Contact Info -->
-      <div class="text-center text-sm text-[#231F20]/60 mb-8">
+      <div
+        class="text-center text-xs sm:text-sm text-[#231F20]/60 mb-8 font-body"
+      >
         <p>
           Questions? Contact us at
-          <a href="mailto:management@tvvbali.com" class="text-[#8B8635] underline">management@tvvbali.com</a>
+          <a
+            href="mailto:management@tvvbali.com"
+            class="text-[#8B8635] underline"
+            >management@tvvbali.com</a
+          >
         </p>
       </div>
 
@@ -131,7 +161,7 @@ title: Booking Confirmed | Tropical Villa Ventures
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a
           href="/"
-          class="inline-block bg-[#8B8635] text-white px-8 py-3 rounded-xl hover:bg-[#6B682A] transition text-center"
+          class="inline-block bg-[#8B8635] text-white px-8 py-3 rounded-xl hover:bg-[#6B682A] transition text-center font-heading font-medium text-sm"
           >Return to Home</a
         >
       </div>
@@ -191,7 +221,10 @@ title: Booking Confirmed | Tropical Villa Ventures
           { label: "Villa", value: villaName },
           { label: "Check-in", value: formatDate(checkin) },
           { label: "Check-out", value: formatDate(checkout) },
-          { label: "Duration", value: `${nights} night${nights > 1 ? "s" : ""}` },
+          {
+            label: "Duration",
+            value: `${nights} night${nights > 1 ? "s" : ""}`,
+          },
           { label: "Guests", value: `${guests} guest${guests > 1 ? "s" : ""}` },
         ];
 
