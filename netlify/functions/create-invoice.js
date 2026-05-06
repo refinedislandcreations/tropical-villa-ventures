@@ -14,7 +14,6 @@ const STORE_NAME = "temp-bookings";
 const TTL_MS = 86400000; // 24 hours
 
 async function storeTempBooking(externalId, bookingData) {
-  // Try Netlify Blobs first
   if (blobsAvailable && getStore) {
     try {
       const store = getStore(STORE_NAME);
@@ -31,7 +30,6 @@ async function storeTempBooking(externalId, bookingData) {
     }
   }
 
-  // Fallback: call store-temp-booking function via HTTP
   try {
     const baseUrl = process.env.URL || "http://localhost:8888";
     await axios.post(`${baseUrl}/.netlify/functions/store-temp-booking`, {
@@ -41,8 +39,26 @@ async function storeTempBooking(externalId, bookingData) {
     console.log(`Stored temp booking via HTTP fallback: ${externalId}`);
   } catch (httpError) {
     console.error("HTTP fallback storage also failed:", httpError.message);
-    // Don't throw — invoice creation should still proceed
   }
+}
+
+/**
+ * Sanitize any international phone number to E.164 format
+ * Supports: +628xxx, 08xxx, +1xxx, +44xxx, etc.
+ */
+function sanitizePhone(phone) {
+  if (!phone) return "";
+  // Strip spaces, dashes, parentheses, dots
+  let cleaned = phone.replace(/[\s\-\(\)\.]/g, "");
+  // If already starts with +, it's likely valid E.164
+  if (cleaned.startsWith("+")) return cleaned;
+  // If starts with 00 (international prefix), replace with +
+  if (cleaned.startsWith("00")) return "+" + cleaned.substring(2);
+  // If starts with 0, it's a local number — we can't determine the country,
+  // so just skip it (Xendit doesn't require phone)
+  if (cleaned.startsWith("0")) return "";
+  // Otherwise, prepend + (user likely entered country code without +)
+  return "+" + cleaned;
 }
 
 exports.handler = async (event) => {
@@ -71,35 +87,36 @@ exports.handler = async (event) => {
 
     const fullName = `${firstName} ${lastName}`.trim();
     const externalId = `BOOKING_${listingId}_${Date.now()}`;
-    const description = `${villaName}: ${checkin} to ${checkout} (${nights} nights, ${guests} guests)`;
 
-    // Store booking data for webhook retrieval (non-blocking — doesn't fail the invoice)
+    // Calculate 50% deposit
+    const depositAmount = Math.round(totalAmount / 2);
+    const remainingAmount = Math.round(totalAmount) - depositAmount;
+
+    const description = `50% Deposit — ${villaName}: ${checkin} to ${checkout} (${nights} nights, ${guests} guests)`;
+
+    // Store booking data for webhook retrieval (includes FULL total for reference)
     await storeTempBooking(externalId, {
       listingId,
       checkin,
       checkout,
       guests,
-      totalAmount,
+      totalAmount: totalAmount, // Store full amount
+      depositAmount: depositAmount, // Store deposit amount
+      remainingAmount: remainingAmount,
       guestName: fullName,
+      guestFirstName: firstName || "Guest",
+      guestLastName: lastName || "",
       guestEmail: email,
       guestPhone: phone,
+      villaName: villaName,
       specialRequests: specialRequests || "",
     });
 
-    // Sanitize phone number to E.164 format for Xendit
-    let sanitizedPhone = (phone || "").replace(/[\s\-\(\)]/g, "");
-    if (sanitizedPhone && !sanitizedPhone.startsWith("+")) {
-      // Convert Indonesian numbers: 08xx → +628xx
-      if (sanitizedPhone.startsWith("0")) {
-        sanitizedPhone = "+62" + sanitizedPhone.substring(1);
-      } else {
-        sanitizedPhone = "+" + sanitizedPhone;
-      }
-    }
+    // Sanitize phone — universal format
+    const sanitizedPhone = sanitizePhone(phone);
 
     // Validate amount
-    const invoiceAmount = Math.round(totalAmount);
-    if (!invoiceAmount || invoiceAmount <= 0 || isNaN(invoiceAmount)) {
+    if (!depositAmount || depositAmount <= 0 || isNaN(depositAmount)) {
       throw new Error(`Invalid amount: ${totalAmount}. Price calculation may have failed.`);
     }
 
@@ -111,21 +128,21 @@ exports.handler = async (event) => {
     if (lastName) customer.surname = lastName;
     if (sanitizedPhone) customer.mobile_number = sanitizedPhone;
 
-    // Build items (only if nights is valid)
+    // Build items
     const validNights = parseInt(nights) || 1;
     const items = [
       {
-        name: villaName || "Villa Stay",
+        name: `${villaName || "Villa Stay"} — 50% Deposit`,
         quantity: validNights,
-        price: Math.round(invoiceAmount / validNights),
+        price: Math.round(depositAmount / validNights),
         category: "Accommodation",
       },
     ];
 
-    // Create Xendit invoice
+    // Create Xendit invoice for 50% deposit
     const xenditPayload = {
       external_id: externalId,
-      amount: invoiceAmount,
+      amount: depositAmount,
       payer_email: email,
       description: description,
       currency: "IDR",
@@ -172,13 +189,15 @@ exports.handler = async (event) => {
           invoiceUrl: data.invoice_url,
           invoiceId: data.id,
           externalId: externalId,
+          depositAmount: depositAmount,
+          totalAmount: Math.round(totalAmount),
+          remainingAmount: remainingAmount,
         }),
       };
     }
 
     throw new Error(data.message || "Failed to create invoice");
   } catch (error) {
-    // Log full error details for debugging
     console.error("Create invoice error:", JSON.stringify(error.response?.data || error.message, null, 2));
     return {
       statusCode: 500,

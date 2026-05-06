@@ -145,8 +145,15 @@ class VillaBookingManager {
     const totalElement = document.getElementById("totalPrice");
     const breakdownElement = document.getElementById("priceBreakdown");
 
+    const totalPrice = data.totalPrice;
+    const depositAmount = Math.round(totalPrice / 2);
+    const remainingAmount = totalPrice - depositAmount;
+
     if (totalElement) {
-      totalElement.innerText = `IDR ${data.totalPrice.toLocaleString("id-ID")}`;
+      totalElement.innerHTML = `
+        <div>IDR ${depositAmount.toLocaleString("id-ID")}</div>
+        <div class="text-xs font-normal text-white/60 mt-1">50% deposit</div>
+      `;
     }
 
     if (breakdownElement && data.breakdown) {
@@ -187,9 +194,18 @@ class VillaBookingManager {
               : ""
           }
           <hr class="my-2 border-white/30">
-          <div class="flex justify-between font-bold">
-            <span>Total</span>
-            <span>IDR ${data.totalPrice.toLocaleString("id-ID")}</span>
+          <div class="flex justify-between font-semibold">
+            <span>Total Stay</span>
+            <span>IDR ${totalPrice.toLocaleString("id-ID")}</span>
+          </div>
+          <hr class="my-2 border-white/30">
+          <div class="flex justify-between font-bold text-[#F3F0E7]">
+            <span>💳 Pay Now (50%)</span>
+            <span>IDR ${depositAmount.toLocaleString("id-ID")}</span>
+          </div>
+          <div class="flex justify-between text-white/60 text-xs">
+            <span>Remaining at check-in</span>
+            <span>IDR ${remainingAmount.toLocaleString("id-ID")}</span>
           </div>
         </div>
       `;
