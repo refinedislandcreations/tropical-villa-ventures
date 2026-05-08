@@ -26,6 +26,54 @@ async function getBlobStore() {
   return null;
 }
 
+async function getBooking(id) {
+  let data = null;
+  const store = await getBlobStore();
+  if (store) {
+    const raw = await store.get(id);
+    if (raw) data = JSON.parse(raw);
+  }
+  if (!data && memoryStore.has(id)) {
+    data = memoryStore.get(id);
+  }
+  if (!data) return null;
+  
+  if (data.expires && data.expires < Date.now()) {
+    if (store) await store.delete(id).catch(() => {});
+    memoryStore.delete(id);
+    return null;
+  }
+  return data.bookingData;
+}
+
+async function saveBooking(externalId, bookingData) {
+  const store = await getBlobStore();
+  const payload = {
+    bookingData,
+    expires: Date.now() + TTL_MS,
+    createdAt: new Date().toISOString(),
+  };
+  if (store) {
+    try {
+      await store.set(externalId, JSON.stringify(payload));
+    } catch (blobError) {
+      memoryStore.set(externalId, payload);
+    }
+  } else {
+    memoryStore.set(externalId, payload);
+  }
+}
+
+async function removeBooking(id) {
+  const store = await getBlobStore();
+  if (store) await store.delete(id).catch(() => {});
+  memoryStore.delete(id);
+}
+
+exports.getBooking = getBooking;
+exports.saveBooking = saveBooking;
+exports.removeBooking = removeBooking;
+
 exports.handler = async (event) => {
   const store = await getBlobStore();
 
@@ -41,39 +89,14 @@ exports.handler = async (event) => {
     }
 
     try {
-      let data = null;
-
-      // Try blobs first
-      if (store) {
-        const raw = await store.get(id);
-        if (raw) data = JSON.parse(raw);
+      const bookingData = await getBooking(id);
+      if (!bookingData) {
+        return { statusCode: 404, body: JSON.stringify({ error: "Not found or expired" }) };
       }
-
-      // Fallback to memory
-      if (!data && memoryStore.has(id)) {
-        data = memoryStore.get(id);
-      }
-
-      if (!data) {
-        return {
-          statusCode: 404,
-          body: JSON.stringify({ error: "Not found" }),
-        };
-      }
-
-      // Check TTL
-      if (data.expires && data.expires < Date.now()) {
-        if (store) await store.delete(id).catch(() => {});
-        memoryStore.delete(id);
-        return {
-          statusCode: 404,
-          body: JSON.stringify({ error: "Expired" }),
-        };
-      }
-
       return {
         statusCode: 200,
-        body: JSON.stringify({ bookingData: data.bookingData }),
+        headers: { "Cache-Control": "no-store" },
+        body: JSON.stringify({ bookingData }),
       };
     } catch (error) {
       console.error("Retrieve error:", error);
@@ -96,25 +119,7 @@ exports.handler = async (event) => {
         };
       }
 
-      const payload = {
-        bookingData,
-        expires: Date.now() + TTL_MS,
-        createdAt: new Date().toISOString(),
-      };
-
-      // Store in blobs if available
-      if (store) {
-        try {
-          await store.set(externalId, JSON.stringify(payload));
-        } catch (blobError) {
-          console.warn("Blob store failed, using memory:", blobError.message);
-          memoryStore.set(externalId, payload);
-        }
-      } else {
-        // Memory fallback for local dev
-        memoryStore.set(externalId, payload);
-      }
-
+      await saveBooking(externalId, bookingData);
       return {
         statusCode: 200,
         body: JSON.stringify({ success: true }),
@@ -140,8 +145,7 @@ exports.handler = async (event) => {
     }
 
     try {
-      if (store) await store.delete(id).catch(() => {});
-      memoryStore.delete(id);
+      await removeBooking(id);
       return {
         statusCode: 200,
         body: JSON.stringify({ success: true }),

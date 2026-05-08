@@ -4,17 +4,17 @@ const axios = require("axios");
 let cachedToken = null;
 let tokenExpiry = null;
 
-exports.handler = async (event) => {
-  // Check if we have a valid cached token
+async function getToken() {
   if (cachedToken && tokenExpiry && Date.now() < tokenExpiry) {
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ access_token: cachedToken }),
-    };
+    return cachedToken;
   }
 
   const clientId = process.env.HOSTAWAY_ACCOUNT_ID;
   const clientSecret = process.env.HOSTAWAY_API_KEY;
+
+  if (!clientId || !clientSecret) {
+    throw new Error("Missing Hostaway credentials");
+  }
 
   const params = new URLSearchParams();
   params.append("grant_type", "client_credentials");
@@ -22,35 +22,36 @@ exports.handler = async (event) => {
   params.append("client_secret", clientSecret);
   params.append("scope", "general");
 
-  try {
-    const response = await axios.post(
-      "https://api.hostaway.com/v1/accessTokens",
-      params.toString(),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+  const response = await axios.post(
+    "https://api.hostaway.com/v1/accessTokens",
+    params.toString(),
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-    );
+    },
+  );
 
-    const data = response.data;
+  const data = response.data;
+  if (data.access_token) {
+    cachedToken = data.access_token;
+    tokenExpiry = Date.now() + 30 * 24 * 60 * 60 * 1000;
+    return cachedToken;
+  }
+  throw new Error("Failed to get access token");
+}
 
-    if (data.access_token) {
-      cachedToken = data.access_token;
-      tokenExpiry = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days cache
+exports.getToken = getToken;
 
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ access_token: data.access_token }),
-      };
-    }
-
-    throw new Error("Failed to get access token");
+exports.handler = async (event) => {
+  try {
+    const token = await getToken();
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ access_token: token }),
+    };
   } catch (error) {
-    console.error(
-      "Hostaway token error:",
-      error.response?.data || error.message,
-    );
+    console.error("Hostaway token error:", error.response?.data || error.message);
     return {
       statusCode: 500,
       body: JSON.stringify({

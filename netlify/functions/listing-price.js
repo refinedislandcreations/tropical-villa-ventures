@@ -1,12 +1,7 @@
 // netlify/functions/listing-price.js
 const axios = require("axios");
 
-async function getHostawayToken() {
-  const response = await axios.get(
-    `${process.env.URL}/.netlify/functions/hostaway-token`,
-  );
-  return response.data.access_token;
-}
+const { getToken } = require("./hostaway-token");
 
 exports.handler = async (event) => {
   const { listingId, checkin, checkout } = event.queryStringParameters;
@@ -21,7 +16,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const token = await getHostawayToken();
+    const token = await getToken();
 
     const response = await axios.post(
       `https://api.hostaway.com/v1/listings/${listingId}/calendar/priceDetails`,
@@ -49,6 +44,7 @@ exports.handler = async (event) => {
 
       return {
         statusCode: 200,
+        headers: { "Cache-Control": "no-store" },
         body: JSON.stringify({
           success: true,
           totalPrice: data.result.totalPrice,

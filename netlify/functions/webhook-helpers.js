@@ -19,6 +19,7 @@ const axios = require("axios");
 const AXIOS_TIMEOUT = 15000; // 15 seconds for all external requests
 const STORE_NAME = "temp-bookings";
 const IDEMPOTENCY_STORE_NAME = "processed-webhooks";
+const { getBooking, removeBooking } = require("./store-temp-booking");
 
 // ─── Storage Layer ───────────────────────────────────────────────────────────
 
@@ -99,42 +100,17 @@ async function markAsProcessed(invoiceId, externalId, reservationId) {
   }
 }
 
-/**
- * Retrieve temp booking data from blob store or HTTP fallback.
- */
 async function getTempBooking(externalId) {
   console.log(`[STORAGE] Retrieving temp booking: ${externalId}`);
-
-  if (blobsAvailable && getStore) {
-    try {
-      const store = getStore(STORE_NAME);
-      const raw = await store.get(externalId);
-      if (raw) {
-        console.log(`[STORAGE] Found in Blobs`);
-        return JSON.parse(raw).bookingData;
-      }
-    } catch (e) {
-      console.warn(`[STORAGE] Blobs read failed: ${e.message}`);
-    }
-  }
-
   try {
-    const baseUrl = process.env.URL || "http://localhost:8888";
-    const response = await axios.get(
-      `${baseUrl}/.netlify/functions/store-temp-booking?id=${externalId}`,
-      { 
-        timeout: AXIOS_TIMEOUT,
-        headers: { "ngrok-skip-browser-warning": "true" }
-      },
-    );
-    if (response.data?.bookingData) {
-      console.log(`[STORAGE] Found via HTTP fallback`);
-      return response.data.bookingData;
+    const data = await getBooking(externalId);
+    if (data) {
+      console.log(`[STORAGE] Found booking data`);
+      return data;
     }
   } catch (e) {
-    console.warn(`[STORAGE] HTTP fallback failed: ${e.message}`);
+    console.warn(`[STORAGE] Retrieval failed: ${e.message}`);
   }
-
   console.error(`[STORAGE] Not found: ${externalId}`);
   return null;
 }
@@ -144,14 +120,11 @@ async function getTempBooking(externalId) {
  */
 async function cleanupTempBooking(externalId) {
   console.log(`[STORAGE] Cleaning up: ${externalId}`);
-  if (blobsAvailable && getStore) {
-    try {
-      const store = getStore(STORE_NAME);
-      await store.delete(externalId);
-      console.log(`[STORAGE] Deleted from Blobs`);
-    } catch (e) {
-      console.warn(`[STORAGE] Blob delete failed: ${e.message}`);
-    }
+  try {
+    await removeBooking(externalId);
+    console.log(`[STORAGE] Deleted`);
+  } catch (e) {
+    console.warn(`[STORAGE] Delete failed: ${e.message}`);
   }
 }
 

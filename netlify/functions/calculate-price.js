@@ -1,12 +1,7 @@
 // netlify/functions/calculate-price.js
 const axios = require("axios");
 
-async function getHostawayToken() {
-  const response = await axios.get(
-    `${process.env.URL}/.netlify/functions/hostaway-token`,
-  );
-  return response.data.access_token;
-}
+const { getToken } = require("./hostaway-token");
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
@@ -20,7 +15,7 @@ exports.handler = async (event) => {
     const { listingId, startingDate, endingDate, numberOfGuests, couponCode } =
       JSON.parse(event.body);
 
-    const token = await getHostawayToken();
+    const token = await getToken();
 
     // Calculate price using Hostaway API
     const requestBody = {
@@ -120,6 +115,7 @@ exports.handler = async (event) => {
 
       return {
         statusCode: 200,
+        headers: { "Cache-Control": "no-store" },
         body: JSON.stringify({
           success: true,
           totalPrice: data.result.totalPrice,

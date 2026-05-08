@@ -34,6 +34,9 @@ exports.handler = async (event) => {
 
   return {
     statusCode: 200,
+    headers: {
+      "Cache-Control": "public, max-age=300",
+    },
     body: JSON.stringify({
       success: true,
       listing: villa,

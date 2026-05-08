@@ -151,22 +151,22 @@ class VillaBookingManager {
     const pricePerNight = data.pricePerNight || Math.round(totalPrice / nights);
 
     if (totalElement) {
-      totalElement.innerText = `IDR ${totalPrice.toLocaleString("id-ID")}`;
+      totalElement.innerText = `IDR ${totalPrice.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
     if (breakdownElement && data.breakdown) {
       breakdownElement.innerHTML = `
-        <div class="space-y-2 text-sm">
+        <div class="space-y-2 text-sm pt-1">
           <div class="flex justify-between">
-            <span>IDR ${pricePerNight.toLocaleString("id-ID")} x ${nights} night${nights > 1 ? "s" : ""}</span>
-            <span>IDR ${data.breakdown.baseRate.toLocaleString("id-ID")}</span>
+            <span>IDR ${pricePerNight.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} x ${nights} night${nights > 1 ? "s" : ""}</span>
+            <span>IDR ${(pricePerNight * nights).toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           </div>
           ${
             data.breakdown.cleaningFee > 0
               ? `
             <div class="flex justify-between">
               <span>Cleaning fee</span>
-              <span>IDR ${data.breakdown.cleaningFee.toLocaleString("id-ID")}</span>
+              <span>IDR ${data.breakdown.cleaningFee.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
           `
               : ""
@@ -176,7 +176,7 @@ class VillaBookingManager {
               ? `
             <div class="flex justify-between">
               <span>Taxes & fees</span>
-              <span>IDR ${data.breakdown.taxes.toLocaleString("id-ID")}</span>
+              <span>IDR ${data.breakdown.taxes.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
           `
               : ""
@@ -184,18 +184,13 @@ class VillaBookingManager {
           ${
             data.breakdown.discounts > 0
               ? `
-            <div class="flex justify-between text-green-300">
+            <div class="flex justify-between text-white">
               <span>Discount</span>
-              <span>-IDR ${data.breakdown.discounts.toLocaleString("id-ID")}</span>
+              <span>-IDR ${data.breakdown.discounts.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
           `
               : ""
           }
-          <hr class="my-2 border-white/30">
-          <div class="flex justify-between font-bold">
-            <span>Total</span>
-            <span>IDR ${totalPrice.toLocaleString("id-ID")}</span>
-          </div>
         </div>
       `;
     }

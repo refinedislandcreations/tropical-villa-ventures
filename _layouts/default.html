@@ -1,63 +1,83 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Output TailwindCSS -->
-    <link
-      rel="stylesheet"
-      href="{{ '/assets/css/output.css' | relative_url }}"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Custom Styles -->
-    <link
-      rel="stylesheet"
-      href="{{ '/assets/css/style.css' | relative_url }}"
-    />
+  <!-- Output TailwindCSS -->
+  <link rel="stylesheet" href="{{ '/assets/css/output.css' | relative_url }}" />
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
-      rel="stylesheet"
-    />
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" />
 
-    <!-- Favicons -->
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/assets/images/favicon/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="/assets/images/favicon/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="/assets/images/favicon/favicon-16x16.png"
-    />
-    <link rel="manifest" href="/assets/images/favicon/site.webmanifest" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet" />
 
-    <title>{{ page.title }}</title>
-  </head>
-  <body>
-    {% include navigation/site-header.html %}
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png" />
+  <link rel="manifest" href="/assets/images/favicon/site.webmanifest" />
 
-    <main>{{ content }}</main>
+  <title>{{ page.title }}</title>
+</head>
 
-    {% include navigation/site-footer.html %}
+<body>
+  {% include navigation/site-header.html %}
 
-    <!-- GSAP Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <main>{{ content }}</main>
 
-    <!-- Custom Scripts -->
-    <script src="{{ '/assets/js/booking.js' | relative_url }}"></script>
-  </body>
+  {% include navigation/site-footer.html %}
+
+  <!-- Floating WhatsApp Button -->
+  <a href="https://wa.me/628158819533?text=Hello%21%20I%27m%20interested%20in%20booking%20a%20villa.%20Can%20you%20help%20me%3F"
+    target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 z-50 group"
+    aria-label="Chat with us on WhatsApp">
+    <div class="relative">
+      <!-- WhatsApp Button -->
+      <div
+        class="relative bg-green-500 rounded-full p-3 shadow-lg transition-transform duration-300 group-hover:scale-110">
+        <img src="/assets/images/logo/whatsapp.png" alt="WhatsApp" class="w-8 h-8 object-contain" />
+      </div>
+    </div>
+
+    <!-- Tooltip text (shows on hover) -->
+    <span
+      class="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-[#231F20] text-white text-sm font-body px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 pointer-events-none">
+      Chat with us
+    </span>
+  </a>
+
+  <style>
+    /* Mobile adjustments */
+    @media (max-width: 640px) {
+      .fixed.bottom-6.right-6 {
+        bottom: 1rem;
+        right: 1rem;
+      }
+
+      .fixed.bottom-6.right-6 .p-3 {
+        padding: 0.625rem;
+      }
+
+      .fixed.bottom-6.right-6 img {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  </style>
+
+  <!-- GSAP Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+
+  <!-- Custom Scripts -->
+  <script src="{{ '/assets/js/booking.js' | relative_url }}"></script>
+</body>
+
 </html>

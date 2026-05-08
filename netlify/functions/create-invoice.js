@@ -1,46 +1,14 @@
 // netlify/functions/create-invoice.js
 const axios = require("axios");
 
-let blobsAvailable = true;
-let getStore;
-try {
-  ({ getStore } = require("@netlify/blobs"));
-} catch (e) {
-  blobsAvailable = false;
-  console.log("@netlify/blobs not available, using fallback temp storage");
-}
-
-const STORE_NAME = "temp-bookings";
-const TTL_MS = 86400000; // 24 hours
+const { saveBooking } = require("./store-temp-booking");
 
 async function storeTempBooking(externalId, bookingData) {
-  if (blobsAvailable && getStore) {
-    try {
-      const store = getStore(STORE_NAME);
-      const payload = {
-        bookingData,
-        expires: Date.now() + TTL_MS,
-        createdAt: new Date().toISOString(),
-      };
-      await store.set(externalId, JSON.stringify(payload));
-      console.log(`[INVOICE] Stored temp booking via Blobs: ${externalId}`);
-      return;
-    } catch (blobError) {
-      console.warn("[INVOICE] Blobs storage failed, trying HTTP fallback:", blobError.message);
-    }
-  }
-
   try {
-    const baseUrl = process.env.URL || "http://localhost:8888";
-    await axios.post(`${baseUrl}/.netlify/functions/store-temp-booking`, {
-      externalId,
-      bookingData,
-    }, {
-      headers: { "ngrok-skip-browser-warning": "true" }
-    });
-    console.log(`[INVOICE] Stored temp booking via HTTP fallback: ${externalId}`);
-  } catch (httpError) {
-    console.error("[INVOICE] HTTP fallback storage also failed:", httpError.message);
+    await saveBooking(externalId, bookingData);
+    console.log(`[INVOICE] Stored temp booking: ${externalId}`);
+  } catch (error) {
+    console.error("[INVOICE] Storage failed:", error.message);
   }
 }
 
@@ -203,6 +171,7 @@ exports.handler = async (event) => {
     if (data.id) {
       return {
         statusCode: 200,
+        headers: { "Cache-Control": "no-store" },
         body: JSON.stringify({
           success: true,
           invoiceUrl: data.invoice_url,

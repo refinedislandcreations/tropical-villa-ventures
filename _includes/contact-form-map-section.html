@@ -15,10 +15,16 @@
 
         <!-- Form -->
         <form
-          action="{{ section_data.form_action | default: '#' }}"
+          name="contact"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          action="{{ section_data.form_action | default: '/' }}"
           method="POST"
           class="space-y-6"
         >
+          <p class="hidden">
+            <label>Don’t fill this out if you're human: <input name="bot-field" /></label>
+          </p>
           <!-- Name -->
           <div class="grid grid-cols-3 items-center gap-6">
             <label

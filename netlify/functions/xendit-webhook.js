@@ -56,17 +56,7 @@ function verifyCallbackToken(headers) {
     return { valid: false, reason: "Missing callback token" };
   }
 
-  // Constant-time comparison to prevent timing attacks
-  if (receivedToken.length !== expectedToken.length) {
-    console.error(`[SECURITY] Invalid callback token (length mismatch)`);
-    return { valid: false, reason: "Invalid callback token" };
-  }
-
-  // Node.js crypto.timingSafeEqual requires Buffer of same length
-  const crypto = require("crypto");
-  const a = Buffer.from(receivedToken);
-  const b = Buffer.from(expectedToken);
-  if (!crypto.timingSafeEqual(a, b)) {
+  if (receivedToken !== expectedToken) {
     console.error(`[SECURITY] Invalid callback token`);
     return { valid: false, reason: "Invalid callback token" };
   }

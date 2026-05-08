@@ -1,12 +1,7 @@
 // netlify/functions/get-availability.js
 const axios = require("axios");
 
-async function getHostawayToken() {
-  const response = await axios.get(
-    `${process.env.URL}/.netlify/functions/hostaway-token`,
-  );
-  return response.data.access_token;
-}
+const { getToken } = require("./hostaway-token");
 
 exports.handler = async (event) => {
   const { listingId, startDate, endDate } = event.queryStringParameters;
@@ -19,7 +14,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const token = await getHostawayToken();
+    const token = await getToken();
 
     // Default to next 12 months if no dates provided
     const start = startDate || new Date().toISOString().split("T")[0];
@@ -55,6 +50,9 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Cache-Control": "no-store",
+      },
       body: JSON.stringify({
         success: true,
         calendar: calendarData,
