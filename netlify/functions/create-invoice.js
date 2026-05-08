@@ -23,10 +23,10 @@ async function storeTempBooking(externalId, bookingData) {
         createdAt: new Date().toISOString(),
       };
       await store.set(externalId, JSON.stringify(payload));
-      console.log(`Stored temp booking via Blobs: ${externalId}`);
+      console.log(`[INVOICE] Stored temp booking via Blobs: ${externalId}`);
       return;
     } catch (blobError) {
-      console.warn("Blobs storage failed, trying HTTP fallback:", blobError.message);
+      console.warn("[INVOICE] Blobs storage failed, trying HTTP fallback:", blobError.message);
     }
   }
 
@@ -35,29 +35,24 @@ async function storeTempBooking(externalId, bookingData) {
     await axios.post(`${baseUrl}/.netlify/functions/store-temp-booking`, {
       externalId,
       bookingData,
+    }, {
+      headers: { "ngrok-skip-browser-warning": "true" }
     });
-    console.log(`Stored temp booking via HTTP fallback: ${externalId}`);
+    console.log(`[INVOICE] Stored temp booking via HTTP fallback: ${externalId}`);
   } catch (httpError) {
-    console.error("HTTP fallback storage also failed:", httpError.message);
+    console.error("[INVOICE] HTTP fallback storage also failed:", httpError.message);
   }
 }
 
 /**
  * Sanitize any international phone number to E.164 format
- * Supports: +628xxx, 08xxx, +1xxx, +44xxx, etc.
  */
 function sanitizePhone(phone) {
   if (!phone) return "";
-  // Strip spaces, dashes, parentheses, dots
   let cleaned = phone.replace(/[\s\-\(\)\.]/g, "");
-  // If already starts with +, it's likely valid E.164
   if (cleaned.startsWith("+")) return cleaned;
-  // If starts with 00 (international prefix), replace with +
   if (cleaned.startsWith("00")) return "+" + cleaned.substring(2);
-  // If starts with 0, it's a local number — we can't determine the country,
-  // so just skip it (Xendit doesn't require phone)
-  if (cleaned.startsWith("0")) return "";
-  // Otherwise, prepend + (user likely entered country code without +)
+  if (cleaned.startsWith("0")) return "+62" + cleaned.substring(1);
   return "+" + cleaned;
 }
 
@@ -83,26 +78,31 @@ exports.handler = async (event) => {
       email,
       phone,
       specialRequests,
+      couponCode,
     } = JSON.parse(event.body);
+
+    const amount = Math.round(totalAmount);
+
+    console.log(`\n[INVOICE] ── Creating invoice ──────────────────────────`);
+    console.log(`[INVOICE] Villa: ${villaName} (listing: ${listingId})`);
+    console.log(`[INVOICE] Guest: ${firstName} ${lastName} <${email}>`);
+    console.log(`[INVOICE] Dates: ${checkin} → ${checkout} (${nights} nights)`);
+    console.log(`[INVOICE] Amount: IDR ${amount}`);
+    console.log(`[INVOICE] Phone: ${phone || "(none)"}`);
 
     const fullName = `${firstName} ${lastName}`.trim();
     const externalId = `BOOKING_${listingId}_${Date.now()}`;
+    console.log(`[INVOICE] External ID: ${externalId}`);
 
-    // Calculate 50% deposit
-    const depositAmount = Math.round(totalAmount / 2);
-    const remainingAmount = Math.round(totalAmount) - depositAmount;
+    const description = `${villaName}: ${checkin} to ${checkout} (${nights} nights, ${guests} guests)`;
 
-    const description = `50% Deposit — ${villaName}: ${checkin} to ${checkout} (${nights} nights, ${guests} guests)`;
-
-    // Store booking data for webhook retrieval (includes FULL total for reference)
+    // Store booking data for webhook retrieval
     await storeTempBooking(externalId, {
       listingId,
       checkin,
       checkout,
       guests,
-      totalAmount: totalAmount, // Store full amount
-      depositAmount: depositAmount, // Store deposit amount
-      remainingAmount: remainingAmount,
+      totalAmount: amount,
       guestName: fullName,
       guestFirstName: firstName || "Guest",
       guestLastName: lastName || "",
@@ -110,13 +110,14 @@ exports.handler = async (event) => {
       guestPhone: phone,
       villaName: villaName,
       specialRequests: specialRequests || "",
+      couponCode: couponCode || null,
     });
 
     // Sanitize phone — universal format
     const sanitizedPhone = sanitizePhone(phone);
 
     // Validate amount
-    if (!depositAmount || depositAmount <= 0 || isNaN(depositAmount)) {
+    if (!amount || amount <= 0 || isNaN(amount)) {
       throw new Error(`Invalid amount: ${totalAmount}. Price calculation may have failed.`);
     }
 
@@ -132,22 +133,22 @@ exports.handler = async (event) => {
     const validNights = parseInt(nights) || 1;
     const items = [
       {
-        name: `${villaName || "Villa Stay"} — 50% Deposit`,
+        name: villaName || "Villa Stay",
         quantity: validNights,
-        price: Math.round(depositAmount / validNights),
+        price: Math.round(amount / validNights),
         category: "Accommodation",
       },
     ];
 
-    // Create Xendit invoice for 50% deposit
+    // Create Xendit invoice — full payment
     const xenditPayload = {
       external_id: externalId,
-      amount: depositAmount,
+      amount: amount,
       payer_email: email,
       description: description,
       currency: "IDR",
-      success_redirect_url: `${process.env.URL || "https://www.tvvbali.com"}/booking-success.html?ref=${externalId}`,
-      failure_redirect_url: `${process.env.URL || "https://www.tvvbali.com"}/booking-failed.html`,
+      success_redirect_url: `${process.env.URL}/booking-success.html?ref=${externalId}`,
+      failure_redirect_url: `${process.env.URL}/booking-failed.html`,
       invoice_duration: 86400,
       customer: customer,
       customer_notification_preference: {
@@ -157,9 +158,26 @@ exports.handler = async (event) => {
         invoice_expired: ["email"],
       },
       items: items,
+      metadata: {
+        bookingData: {
+          listingId,
+          checkin,
+          checkout,
+          guests,
+          totalAmount: amount,
+          guestName: fullName,
+          guestFirstName: firstName || "Guest",
+          guestLastName: lastName || "",
+          guestEmail: email,
+          guestPhone: sanitizedPhone || phone || "",
+          villaName: villaName,
+          specialRequests: specialRequests || "",
+          couponCode: couponCode || null,
+        }
+      }
     };
 
-    console.log("Xendit payload:", JSON.stringify(xenditPayload, null, 2));
+    console.log("[INVOICE] Xendit payload:", JSON.stringify(xenditPayload, null, 2));
 
     const secretKey = process.env.XENDIT_SECRET_KEY;
     if (!secretKey) {
@@ -180,6 +198,7 @@ exports.handler = async (event) => {
     );
 
     const data = response.data;
+    console.log(`[INVOICE] ✅ Invoice created: ${data.id}`);
 
     if (data.id) {
       return {
@@ -189,16 +208,14 @@ exports.handler = async (event) => {
           invoiceUrl: data.invoice_url,
           invoiceId: data.id,
           externalId: externalId,
-          depositAmount: depositAmount,
-          totalAmount: Math.round(totalAmount),
-          remainingAmount: remainingAmount,
+          totalAmount: amount,
         }),
       };
     }
 
     throw new Error(data.message || "Failed to create invoice");
   } catch (error) {
-    console.error("Create invoice error:", JSON.stringify(error.response?.data || error.message, null, 2));
+    console.error("[INVOICE] ❌ Error:", JSON.stringify(error.response?.data || error.message, null, 2));
     return {
       statusCode: 500,
       body: JSON.stringify({

@@ -53,14 +53,19 @@ exports.handler = async (event) => {
         if (
           couponData.status === "success" &&
           couponData.result &&
-          couponData.result.length
+          couponData.result.id
         ) {
-          requestBody.reservationCouponId =
-            couponData.result[0].reservationCouponId;
+          requestBody.reservationCouponId = couponData.result.id;
         }
       } catch (couponError) {
         console.log("Coupon not found or invalid:", couponCode);
-        // Continue without coupon
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            success: false,
+            error: "Coupon not found or invalid",
+          }),
+        };
       }
     }
 

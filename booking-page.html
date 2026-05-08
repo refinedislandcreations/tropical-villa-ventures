@@ -13,10 +13,12 @@ title: Complete Your Booking | Tropical Villa Ventures
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
+
   @keyframes spin {
     0% {
       transform: rotate(0deg);
     }
+
     100% {
       transform: rotate(360deg);
     }
@@ -27,13 +29,10 @@ title: Complete Your Booking | Tropical Villa Ventures
   <div class="max-w-screen-2xl mx-auto px-6 lg:px-8 py-16">
     <div class="mb-16">
       <h1
-        class="text-4xl sm:text-5xl md:text-6xl font-extralight uppercase tracking-wide text-[#231F20] mb-6 font-heading leading-[1.1] md:leading-[0.95]"
-      >
+        class="text-4xl sm:text-5xl md:text-6xl font-extralight uppercase tracking-wide text-[#231F20] mb-6 font-heading leading-[1.1] md:leading-[0.95]">
         Complete Your Booking
       </h1>
-      <p
-        class="uppercase tracking-[0.2em] text-xs sm:text-sm text-[#231F20]/60 font-body"
-      >
+      <p class="uppercase tracking-[0.2em] text-xs sm:text-sm text-[#231F20]/60 font-body">
         Enter your details to secure your stay
       </p>
     </div>
@@ -41,15 +40,10 @@ title: Complete Your Booking | Tropical Villa Ventures
     <!-- Hidden listing ID for booking manager initialization -->
     <input type="hidden" id="listingId" value="" />
 
-    <div
-      id="bookingError"
-      class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg text-sm"
-    ></div>
-    <div
-      id="bookingLoader"
-      style="display: none"
-      class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
-    >
+    <div id="bookingError"
+      class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg text-sm"></div>
+    <div id="bookingLoader" style="display: none"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
       <div class="bg-white rounded-lg p-8 text-center shadow-xl">
         <div class="loader-spinner"></div>
         <p class="text-[#231F20] text-sm font-body">
@@ -63,117 +57,62 @@ title: Complete Your Booking | Tropical Villa Ventures
       <div class="lg:col-span-6 space-y-10">
         <div class="space-y-6">
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label
-              class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body"
-              >Full Name *</label
-            >
-            <input
-              type="text"
-              id="fullName"
-              required
+            <label class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body">Full Name *</label>
+            <input type="text" id="fullName" required
               class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full text-sm font-body"
-              placeholder="John Doe"
-            />
+              placeholder="John Doe" />
           </div>
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label
-              class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body"
-              >Email *</label
-            >
-            <input
-              type="email"
-              id="email"
-              required
+            <label class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body">Email *</label>
+            <input type="email" id="email" required
               class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full text-sm font-body"
-              placeholder="john@example.com"
-            />
+              placeholder="john@example.com" />
           </div>
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label
-              class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body"
-              >Phone *</label
-            >
-            <input
-              type="tel"
-              id="phone"
-              required
+            <label class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body">Phone *</label>
+            <input type="tel" id="phone" required
               class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full text-sm font-body"
-              placeholder="+62 812 3456 7890"
-            />
+              placeholder="+62 812 3456 7890" />
           </div>
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label
-              class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body"
-              >Address</label
-            >
-            <input
-              type="text"
-              id="address"
+            <label class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body">Address</label>
+            <input type="text" id="address"
               class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full text-sm font-body"
-              placeholder="Optional"
-            />
+              placeholder="Optional" />
           </div>
           <div class="grid grid-cols-[120px_1fr] items-center gap-4">
-            <label
-              class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body"
-              >City</label
-            >
-            <input
-              type="text"
-              id="city"
+            <label class="text-xs sm:text-sm text-[#231F20]/80 font-medium font-body">City</label>
+            <input type="text" id="city"
               class="border-b border-[#231F20]/40 bg-transparent py-2 outline-none w-full text-sm font-body"
-              placeholder="Optional"
-            />
+              placeholder="Optional" />
           </div>
           <div class="flex items-center gap-3 pt-2">
-            <input
-              type="checkbox"
-              id="newsletter"
-              class="w-4 h-4 border border-[#231F20]"
-            />
-            <span class="text-xs sm:text-sm text-[#231F20]/70 font-body"
-              >Yes, I'd like to receive exclusive offers & promotions.</span
-            >
+            <input type="checkbox" id="newsletter" class="w-4 h-4 border border-[#231F20]" />
+            <span class="text-xs sm:text-sm text-[#231F20]/70 font-body">Yes, I'd like to receive exclusive offers &
+              promotions.</span>
           </div>
         </div>
 
         <div class="pt-6 space-y-4">
-          <h3
-            class="text-xl sm:text-2xl uppercase tracking-wide text-[#231F20] font-heading font-extralight"
-          >
+          <h3 class="text-xl sm:text-2xl uppercase tracking-wide text-[#231F20] font-heading font-extralight">
             Special Requests (Optional)
           </h3>
-          <p
-            class="text-xs sm:text-sm text-[#231F20]/60 font-body leading-snug"
-          >
+          <p class="text-xs sm:text-sm text-[#231F20]/60 font-body leading-snug">
             Let us know if you have any additional requests or comments.
           </p>
-          <textarea
-            id="specialRequests"
-            rows="4"
-            placeholder="Your message"
-            class="w-full border border-[#231F20]/40 bg-transparent p-4 outline-none resize-none text-sm font-body"
-          ></textarea>
+          <textarea id="specialRequests" rows="4" placeholder="Your message"
+            class="w-full border border-[#231F20]/40 bg-transparent p-4 outline-none resize-none text-sm font-body"></textarea>
         </div>
 
-        <div
-          class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pt-6"
-        >
-          <p
-            class="text-xs text-[#231F20]/60 max-w-[16rem] leading-snug font-small"
-          >
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pt-6">
+          <p class="text-xs text-[#231F20]/60 max-w-[16rem] leading-snug font-small">
             By clicking this button, I agree to the
             <a href="/privacy-policy.html" class="underline">Privacy Policy</a>
             and
-            <a href="terms-and-conditions.html" class="underline"
-              >Terms of Service</a
-            >.
+            <a href="terms-and-conditions.html" class="underline">Terms of Service</a>.
           </p>
-          <button
-            type="button"
-            onclick="window.bookingManager?.createBooking()"
-            class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-8 py-3 transition hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm cursor-pointer"
-          >
+          <button type="button" onclick="window.bookingManager?.createBooking()"
+            class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-8 py-3 transition hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm cursor-pointer">
             FINALIZE BOOKING
           </button>
         </div>
@@ -181,26 +120,13 @@ title: Complete Your Booking | Tropical Villa Ventures
 
       <!-- RIGHT: SUMMARY CARD -->
       <div class="lg:col-span-6">
-        <div
-          class="bg-[#A6461F] text-white p-8 md:p-10 h-full flex flex-col justify-between"
-        >
+        <div class="bg-[#A6461F] text-white p-8 md:p-10 h-full flex flex-col justify-between">
           <div class="space-y-8">
-            <div
-              class="flex flex-col md:flex-row gap-4 md:gap-6 items-start md:items-end"
-            >
-              <img
-                id="villaImageDisplay"
-                src="/assets/images/villas/villa-indah.webp"
-                class="w-full max-w-xs md:w-64 md:h-64 object-cover rounded"
-                alt="Villa"
-              />
-              <div
-                class="flex flex-col justify-start md:justify-end w-full md:w-auto"
-              >
-                <h3
-                  id="villaNameDisplay"
-                  class="text-lg sm:text-xl md:text-2xl font-light tracking-wide font-heading"
-                >
+            <div class="flex flex-col md:flex-row gap-4 md:gap-6 items-start md:items-end">
+              <img id="villaImageDisplay" src="/assets/images/villas/villa-indah.webp"
+                class="w-full max-w-xs md:w-64 md:h-64 object-cover rounded" alt="Villa" />
+              <div class="flex flex-col justify-start md:justify-end w-full md:w-auto">
+                <h3 id="villaNameDisplay" class="text-lg sm:text-xl md:text-2xl font-light tracking-wide font-heading">
                   Villa
                 </h3>
               </div>
@@ -216,10 +142,7 @@ title: Complete Your Booking | Tropical Villa Ventures
             <hr class="border-white/30" />
             <div class="text-xs sm:text-sm space-y-2">
               <p class="font-semibold">Trip Details</p>
-              <div
-                id="tripDetails"
-                class="text-xs sm:text-sm text-white/80 mt-2 space-y-1"
-              >
+              <div id="tripDetails" class="text-xs sm:text-sm text-white/80 mt-2 space-y-1">
                 <p id="datesDisplay">Select dates</p>
                 <p id="guestsDisplay">- guests</p>
               </div>
@@ -234,36 +157,23 @@ title: Complete Your Booking | Tropical Villa Ventures
             <hr class="border-white/30" />
           </div>
           <div class="text-sm space-y-3 pt-6">
-            <div
-              class="flex justify-between font-semibold text-base sm:text-lg"
-            >
+            <div class="flex justify-between font-semibold text-base sm:text-lg">
               <span>Price Details</span>
               <span id="totalPrice">IDR 0</span>
             </div>
             <div class="space-y-3">
-              <button
-                type="button"
-                onclick="
+              <button type="button" onclick="
                   document
                     .getElementById('couponBox')
                     ?.classList.toggle('hidden')
-                "
-                class="underline cursor-pointer text-white/80 hover:text-white text-xs sm:text-sm font-body"
-              >
+                " class="underline cursor-pointer text-white/80 hover:text-white text-xs sm:text-sm font-body">
                 + Add a coupon
               </button>
               <div id="couponBox" class="hidden flex gap-3">
-                <input
-                  id="couponInput"
-                  type="text"
-                  placeholder="Enter code"
-                  class="flex-1 border-b border-white/70 bg-transparent py-2 outline-none text-white placeholder-white/50 text-sm font-body"
-                />
-                <button
-                  type="button"
-                  onclick="window.bookingManager?.applyCoupon()"
-                  class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 rounded-xl text-xs sm:text-sm cursor-pointer hover:bg-[#6B682A]"
-                >
+                <input id="couponInput" type="text" placeholder="Enter code"
+                  class="flex-1 border-b border-white/70 bg-transparent py-2 outline-none text-white placeholder-white/50 text-sm font-body" />
+                <button type="button" onclick="window.bookingManager?.applyCoupon()"
+                  class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 rounded-xl text-xs sm:text-sm cursor-pointer hover:bg-[#6B682A]">
                   Apply
                 </button>
               </div>

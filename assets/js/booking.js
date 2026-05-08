@@ -127,17 +127,18 @@ class VillaBookingManager {
       });
 
       const data = await response.json();
-      if (data.success) {
-        this.priceBreakdown = data;
-        this.updatePriceDisplay(data);
-      } else {
-        console.error("Price calculation failed:", data.error);
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Price calculation failed");
       }
+      this.priceBreakdown = data;
+      this.updatePriceDisplay(data);
     } catch (error) {
       console.error("Price calculation error:", error);
       if (breakdownEl) {
-        breakdownEl.innerHTML = `<div class="text-sm text-white/60">Unable to load price. Please try again.</div>`;
+        breakdownEl.innerHTML = `<div class="text-sm text-red-400">Unable to load price or invalid coupon.</div>`;
       }
+      if (totalEl) totalEl.innerText = "Error";
+      throw error;
     }
   }
 
@@ -146,21 +147,18 @@ class VillaBookingManager {
     const breakdownElement = document.getElementById("priceBreakdown");
 
     const totalPrice = data.totalPrice;
-    const depositAmount = Math.round(totalPrice / 2);
-    const remainingAmount = totalPrice - depositAmount;
+    const nights = data.nights || 1;
+    const pricePerNight = data.pricePerNight || Math.round(totalPrice / nights);
 
     if (totalElement) {
-      totalElement.innerHTML = `
-        <div>IDR ${depositAmount.toLocaleString("id-ID")}</div>
-        <div class="text-xs font-normal text-white/60 mt-1">50% deposit</div>
-      `;
+      totalElement.innerText = `IDR ${totalPrice.toLocaleString("id-ID")}`;
     }
 
     if (breakdownElement && data.breakdown) {
       breakdownElement.innerHTML = `
         <div class="space-y-2 text-sm">
           <div class="flex justify-between">
-            <span>Nightly rate</span>
+            <span>IDR ${pricePerNight.toLocaleString("id-ID")} x ${nights} night${nights > 1 ? "s" : ""}</span>
             <span>IDR ${data.breakdown.baseRate.toLocaleString("id-ID")}</span>
           </div>
           ${
@@ -194,18 +192,9 @@ class VillaBookingManager {
               : ""
           }
           <hr class="my-2 border-white/30">
-          <div class="flex justify-between font-semibold">
-            <span>Total Stay</span>
+          <div class="flex justify-between font-bold">
+            <span>Total</span>
             <span>IDR ${totalPrice.toLocaleString("id-ID")}</span>
-          </div>
-          <hr class="my-2 border-white/30">
-          <div class="flex justify-between font-bold text-[#F3F0E7]">
-            <span>💳 Pay Now (50%)</span>
-            <span>IDR ${depositAmount.toLocaleString("id-ID")}</span>
-          </div>
-          <div class="flex justify-between text-white/60 text-xs">
-            <span>Remaining at check-in</span>
-            <span>IDR ${remainingAmount.toLocaleString("id-ID")}</span>
           </div>
         </div>
       `;
@@ -265,6 +254,7 @@ class VillaBookingManager {
         address: formData.address || "",
         city: formData.city || "",
         specialRequests: formData.specialRequests || "",
+        couponCode: this.couponCode || null,
       };
 
       // Create invoice — this also stores temp booking data via Blobs
@@ -300,15 +290,29 @@ class VillaBookingManager {
     if (!code) return;
 
     this.couponCode = code;
-    await this.calculatePrice();
+    try {
+      await this.calculatePrice();
 
-    const message = document.getElementById("couponMessage");
-    if (message) {
-      message.innerText = "Coupon applied!";
-      message.className = "text-xs text-green-200 mt-1";
-      setTimeout(() => {
-        message.innerText = "";
-      }, 3000);
+      const message = document.getElementById("couponMessage");
+      if (message) {
+        message.innerText = "Coupon applied!";
+        message.className = "text-xs text-green-200 mt-1";
+        setTimeout(() => {
+          message.innerText = "";
+        }, 3000);
+      }
+    } catch (e) {
+      this.couponCode = null;
+      try { await this.calculatePrice(); } catch(err) {} // recalculate without coupon
+      
+      const message = document.getElementById("couponMessage");
+      if (message) {
+        message.innerText = "Coupon not found or invalid";
+        message.className = "text-xs text-red-400 mt-1";
+        setTimeout(() => {
+          message.innerText = "";
+        }, 3000);
+      }
     }
   }
 
