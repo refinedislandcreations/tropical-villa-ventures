@@ -21,5 +21,5 @@ main_nav:
   - title: Contact
     url: "/contact.html"
   - title: Book Now
-    url: "#"
+    url: "/our-villas.html"
     is_button: true

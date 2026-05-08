@@ -21,7 +21,7 @@ stay_at_villa_section:
     - "Surrounded by tropical greenery, the villa offers a peaceful place to slow down and enjoy island life at your own pace. Spend the morning by the pool, explore nearby beaches during the day, and return to your villa to unwind in the evening."
     - "Located in Ungasan on Bali’s Bukit Peninsula, Villa Indah is just a short drive from Melasti Beach, Pandawa Beach, and the beach clubs and restaurants of Uluwatu."
   button: "Book Now"
-  button_url: "/book-now"
+  button_url: "/villa-indah.html#hero-section"
   image: "/assets/images/villas/villa-indah/villa-indah-master-bedroom-decor.webp"
 
 gallery:
@@ -48,7 +48,7 @@ features_section:
     - "Outdoor lounge areas"
     - "Air-conditioned bedrooms"
   button: "BOOK NOW"
-  button_url: "/booking"
+  button_url: "/villa-indah.html#hero-section"
   image: "/assets/images/villas/villa-indah/villa-indah-poolside-sun-loungers.webp"
 
 testimonials_section:
@@ -85,7 +85,7 @@ gallery_cta:
     - /assets/images/villas/villa-indah/villa-indah-garden-outdoor-shower.webp
     - /assets/images/villas/villa-indah/villa-indah-outdoor-dining-table.webp
   button: "Book Now"
-  button_url: "/contact"
+  button_url: "/villa-indah.html#hero-section"
 
 location_section:
   title: "Where To Find Villa Indah"
@@ -135,10 +135,13 @@ faq_section:
           answer: "Yes, massage and spa services are available."
 ---
 
-{% include villas/hero-villa.html section=page.hero
-listing_id=page.hostaway.listing_id %} {% include
-content-image-reverse-section.html section=page.stay_at_villa_section %} {%
-include villas/gallery-section.html section=page.gallery %} {% include
+<div id="hero-section">
+  {% include villas/hero-villa.html section=page.hero
+  listing_id=page.hostaway.listing_id %}
+</div>
+
+{% include content-image-reverse-section.html section=page.stay_at_villa_section
+%} {% include villas/gallery-section.html section=page.gallery %} {% include
 content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"
 %} {% include location-map-section.html section=page.location_section %} {%
 include editorial-testimonials-carousel-section.html

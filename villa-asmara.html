@@ -19,9 +19,9 @@ stay_at_villa_section:
   paragraphs:
     - "Tropical Villa Asmara is a private villa designed with traditional Balinese charm, featuring warm wooden details and a peaceful tropical atmosphere."
     - "The villa offers 2 comfortable bedrooms, a living room, and a fully equipped kitchen, opening to a spacious outdoor area with a private pool, lush garden, koi fishpond, dining space, and a relaxing gazebo."
-    - "Located in Ungasan on Bali’s Bukit Peninsula, the villa is just a short drive from Melasti Beach, Uluwatu, and nearby beach clubs, restaurants, and lifestyle spots."
+    - "Located in Ungasan on Bali's Bukit Peninsula, the villa is just a short drive from Melasti Beach, Uluwatu, and nearby beach clubs, restaurants, and lifestyle spots."
   button: "Book Now"
-  button_url: "/book-now"
+  button_url: "/villa-asmara.html#hero-section"
   image: "/assets/images/villas/villa-asmara/villa-asmara-antique-wooden-bedroom.webp"
 
 gallery:
@@ -48,7 +48,7 @@ features_section:
     - "Easy access to Melasti Beach and Uluwatu"
     - "Air-conditioned bedrooms"
   button: "BOOK NOW"
-  button_url: "/booking"
+  button_url: "/villa-asmara.html#hero-section"
   image: "/assets/images/villas/villa-asmara/villa-asmara-poolside-bale-gazebo.webp"
 
 testimonials_section:
@@ -65,12 +65,12 @@ testimonials_section:
       date: "March 2026"
 
     - headline: "Amazing"
-      quote: "Amazing stay in nature, absolut gem! The garden is simply amazing with so much space and unlimited green views, feels like you’re surrounded by nature, we loved it. The villa has a charming Indonesian style design but with luxury touches. Huge TV with Netflix, Marshall Soundsystem, big and comfy beds and stylish bathrooms. We also enjoyed all the services, floating breakfast, in-villa massages on a professional massage bed and the team organized transports for us and helped to get a scooter to get around easily. There is a QR code in the welcome book for a shortcut to melasti beach, took us less than 10 min and 0 traffic, also could explore the local village on the way and the more quieter, local roads of Ungasan, great idea!"
+      quote: "Amazing stay in nature, absolut gem! The garden is simply amazing with so much space and unlimited green views, feels like you're surrounded by nature, we loved it. The villa has a charming Indonesian style design but with luxury touches. Huge TV with Netflix, Marshall Soundsystem, big and comfy beds and stylish bathrooms. We also enjoyed all the services, floating breakfast, in-villa massages on a professional massage bed and the team organized transports for us and helped to get a scooter to get around easily. There is a QR code in the welcome book for a shortcut to melasti beach, took us less than 10 min and 0 traffic, also could explore the local village on the way and the more quieter, local roads of Ungasan, great idea!"
       author: "Alexander"
       date: "August 2025"
 
     - headline: "Delicious Breakfast"
-      quote: "We opted for one floating breakfast. It was delicious and the staff made it a very special experience. The villa also arranged a massage and driver. The villa is beautiful and very clean. The pool is a good size and my family really enjoyed using it. There is a garden and koi pond too. Both Dhila and Nikma were great and very prompt in their communication. I wouldn’t hesitate in recommending the villa."
+      quote: "We opted for one floating breakfast. It was delicious and the staff made it a very special experience. The villa also arranged a massage and driver. The villa is beautiful and very clean. The pool is a good size and my family really enjoyed using it. There is a garden and koi pond too. Both Dhila and Nikma were great and very prompt in their communication. I wouldn't hesitate in recommending the villa."
       author: "Kosser"
       date: "August 2025"
 
@@ -80,7 +80,7 @@ gallery_cta:
     - /assets/images/villas/villa-asmara/villa-asmara-tropical-pond-walkway.webp
     - /assets/images/villas/villa-asmara/villa-asmara-outdoor-teak-dining-set.webp
   button: "Book Now"
-  button_url: "/contact"
+  button_url: "/villa-asmara.html#hero-section"
 
 location_section:
   title: "Where To Find Villa Asmara"
@@ -130,10 +130,13 @@ faq_section:
           answer: "Yes, massage and spa services are available."
 ---
 
-{% include villas/hero-villa.html section=page.hero
-listing_id=page.hostaway.listing_id %} {% include
-content-image-reverse-section.html section=page.stay_at_villa_section %} {%
-include villas/gallery-section.html section=page.gallery %} {% include
+<div id="hero-section">
+  {% include villas/hero-villa.html section=page.hero
+  listing_id=page.hostaway.listing_id %}
+</div>
+
+{% include content-image-reverse-section.html section=page.stay_at_villa_section
+%} {% include villas/gallery-section.html section=page.gallery %} {% include
 content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"
 %} {% include location-map-section.html section=page.location_section %} {%
 include editorial-testimonials-carousel-section.html

@@ -17,11 +17,11 @@ hero:
 stay_at_villa_section:
   title: "Your Stay at Villa Senang"
   paragraphs:
-    - "Villa Senang means ‘joy’ in Bahasa, offering a warm and cheerful tropical escape designed for comfort, privacy, and relaxation."
+    - "Villa Senang means 'joy' in Bahasa, offering a warm and cheerful tropical escape designed for comfort, privacy, and relaxation."
     - "The villa features 2 identical bedrooms, a cozy living area, and a fully equipped kitchen, opening to a beautiful outdoor space with a private pool, lush garden, and a gazebo at its center."
     - "Located in a peaceful area of Bali, Villa Senang offers quiet surroundings while still being within reach of beaches, restaurants, and local attractions."
   button: "Book Now"
-  button_url: "/book-now"
+  button_url: "/villa-senang.html#hero-section"
   image: "/assets/images/villas/villa-senang/villa-senang-boho-chic-bedroom.webp"
 
 gallery:
@@ -48,7 +48,7 @@ features_section:
     - "Outdoor dining and lounge area"
     - "Peaceful and private location"
   button: "BOOK NOW"
-  button_url: "/booking"
+  button_url: "/villa-senang.html#hero-section"
   image: "/assets/images/villas/villa-senang/villa-senang-poolside-loungers-bali.webp"
 
 testimonials_section:
@@ -80,7 +80,7 @@ gallery_cta:
     - /assets/images/villas/villa-senang/villa-senang-ornate-balinese-door.webp
     - /assets/images/villas/villa-senang/villa-senang-pool-gazebo-bridge.webp
   button: "Book Now"
-  button_url: "/contact"
+  button_url: "/villa-senang.html#hero-section"
 
 location_section:
   title: "Where To Find Villa Senang"
@@ -121,10 +121,13 @@ faq_section:
           answer: "Yes, scooter rental, car hire, and transport services are available."
 ---
 
-{% include villas/hero-villa.html section=page.hero
-listing_id=page.hostaway.listing_id %} {% include
-content-image-reverse-section.html section=page.stay_at_villa_section %} {%
-include villas/gallery-section.html section=page.gallery %} {% include
+<div id="hero-section">
+  {% include villas/hero-villa.html section=page.hero
+  listing_id=page.hostaway.listing_id %}
+</div>
+
+{% include content-image-reverse-section.html section=page.stay_at_villa_section
+%} {% include villas/gallery-section.html section=page.gallery %} {% include
 content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"
 %} {% include location-map-section.html section=page.location_section %} {%
 include editorial-testimonials-carousel-section.html

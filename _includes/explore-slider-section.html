@@ -13,7 +13,6 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
   <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
     <!-- Top row -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-14">
-      <!-- Title -->
       <div class="lg:col-span-4">
         <h2
           class="text-4xl sm:text-5xl md:text-6xl font-extralight tracking-wide uppercase text-[#231F20] font-heading leading-[1.1] md:leading-[0.95]"
@@ -21,8 +20,6 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
           {{ section_data.title }}
         </h2>
       </div>
-
-      <!-- Description -->
       <div class="lg:col-span-8">
         <p
           class="text-[#231F20]/85 text-sm md:text-base leading-snug md:leading-snug max-w-4xl font-body"
@@ -32,36 +29,204 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
       </div>
     </div>
 
-    <!-- Manual horizontal slider - REMOVED scroll-smooth -->
+    <!-- Manual horizontal slider -->
     <div
       class="overflow-x-auto overflow-y-hidden snap-x snap-mandatory pb-4"
       id="explore-slider-{{ slider_id }}"
     >
       <div class="flex gap-6 w-max">
         {% for item in section_data.items %}
-        <article class="snap-start shrink-0 w-[82vw] sm:w-[520px] lg:w-[540px]">
-          <img
-            src="{{ item.image | relative_url }}"
-            alt="{{ item.name }}"
-            class="w-full h-[260px] sm:h-[340px] lg:h-[380px] object-cover"
-            loading="lazy"
-          />
-
-          <div class="pt-5">
-            <h3
-              class="text-2xl sm:text-3xl font-extralight uppercase tracking-wide text-[#231F20] font-heading leading-[1.2]"
-            >
-              {{ item.name }}
-            </h3>
-
-            <p
-              class="mt-3 text-sm md:text-base leading-snug md:leading-snug text-[#231F20]/80 max-w-[95%] font-body"
-            >
-              {{ item.description }}
-            </p>
-          </div>
+        <article
+          class="snap-start shrink-0 w-[82vw] sm:w-[520px] lg:w-[540px] group"
+        >
+          {% assign has_popup = item.popup and item.popup != blank %} {% if
+          has_popup %}
+          <button
+            type="button"
+            data-modal-target="explore-modal-{{ slider_id }}-{{ forloop.index }}"
+            class="w-full text-left"
+          >
+            {% endif %}
+            <img
+              src="{{ item.image | relative_url }}"
+              alt="{{ item.name }}"
+              class="w-full h-[260px] sm:h-[340px] lg:h-[380px] object-cover transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+            />
+            <div class="pt-5">
+              <h3
+                class="text-2xl sm:text-3xl font-extralight uppercase tracking-wide text-[#231F20] font-heading leading-[1.2]"
+              >
+                {{ item.name }}
+              </h3>
+              <p
+                class="mt-3 text-sm md:text-base leading-snug md:leading-snug text-[#231F20]/80 max-w-[95%] font-body"
+              >
+                {{ item.description }}
+              </p>
+            </div>
+            {% if has_popup %}
+          </button>
+          {% endif %}
         </article>
-        {% endfor %}
+
+        {% if has_popup %}
+        <!-- MODAL -->
+        <div
+          id="explore-modal-{{ slider_id }}-{{ forloop.index }}"
+          class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/60 p-6"
+        >
+          <!-- GRADIENT BORDER WRAPPER -->
+          <div
+            class="w-full max-w-2xl p-[8px] bg-gradient-to-r from-[#7F361C] to-[#D06223]"
+          >
+            <!-- WHITE CONTENT BOX -->
+            <div
+              class="relative bg-white p-8 md:p-10 shadow-2xl overflow-y-auto max-h-[90vh]"
+            >
+              <!-- Close -->
+              <button
+                type="button"
+                data-modal-close="explore-modal-{{ slider_id }}-{{ forloop.index }}"
+                class="absolute top-4 right-4 text-2xl text-[#231F20]/60 hover:text-[#231F20] transition-colors duration-300"
+              >
+                ×
+              </button>
+
+              <!-- Title -->
+              <h3
+                class="text-3xl sm:text-4xl font-extralight uppercase tracking-wide text-[#231F20] font-heading pr-8 leading-[1.1]"
+              >
+                {{ item.popup.title }}
+              </h3>
+
+              <!-- Duration & Pickup Info -->
+              <div class="mt-4 space-y-2">
+                {% if item.popup.duration %}
+                <div class="flex items-center gap-2 text-sm text-[#231F20]/70">
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span>Duration: {{ item.popup.duration }}</span>
+                </div>
+                {% endif %} {% if item.popup.pickup_time %}
+                <div class="flex items-center gap-2 text-sm text-[#231F20]/70">
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                  <span>Pick-up: {{ item.popup.pickup_time }}</span>
+                </div>
+                {% endif %} {% if item.popup.boat_departure %}
+                <div class="flex items-center gap-2 text-sm text-[#231F20]/70">
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span>Boat Departure: {{ item.popup.boat_departure }}</span>
+                </div>
+                {% endif %} {% if item.popup.boat_return %}
+                <div class="flex items-center gap-2 text-sm text-[#231F20]/70">
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span>Boat Return: {{ item.popup.boat_return }}</span>
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Included Items -->
+              {% if item.popup.included %}
+              <div class="mt-6">
+                <h4 class="text-lg font-semibold text-[#231F20] mb-3">
+                  Included:
+                </h4>
+                <ul class="space-y-2">
+                  {% for inc in item.popup.included %}
+                  <li class="flex items-start gap-2 text-sm text-[#231F20]/80">
+                    <svg
+                      class="w-4 h-4 text-green-600 mt-0.5 shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      ></path>
+                    </svg>
+                    <span>{{ inc }}</span>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+
+              <!-- Note -->
+              {% if item.popup.note %}
+              <div class="mt-4 p-3 bg-amber-50 rounded-lg">
+                <p class="text-xs text-amber-700">{{ item.popup.note }}</p>
+              </div>
+              {% endif %}
+
+              <!-- Description -->
+              <div class="mt-6">
+                <p
+                  class="text-sm md:text-base leading-relaxed text-[#231F20]/80 font-body"
+                >
+                  {{ item.popup.description }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %} {% endfor %}
       </div>
     </div>
 
@@ -79,18 +244,54 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
     scrollbar-color: #9d8b2f #e9e6de;
     -webkit-overflow-scrolling: touch;
   }
-
   #explore-{{ slider_id }} .overflow-x-auto::-webkit-scrollbar {
     height: 6px;
   }
-
   #explore-{{ slider_id }} .overflow-x-auto::-webkit-scrollbar-track {
     background: #e9e6de;
     border-radius: 9999px;
   }
-
   #explore-{{ slider_id }} .overflow-x-auto::-webkit-scrollbar-thumb {
     background: #9d8b2f;
     border-radius: 9999px;
   }
 </style>
+
+<!-- MODAL SCRIPT -->
+<script>
+  (function () {
+    function initExploreModals() {
+      document.querySelectorAll("[data-modal-target]").forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+          const modal = document.getElementById(trigger.dataset.modalTarget);
+          modal?.classList.remove("hidden");
+          modal?.classList.add("flex");
+          document.body.style.overflow = "hidden";
+        });
+      });
+
+      document.querySelectorAll("[data-modal-close]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const modal = document.getElementById(btn.dataset.modalClose);
+          modal?.classList.add("hidden");
+          modal?.classList.remove("flex");
+          document.body.style.overflow = "";
+        });
+      });
+
+      document.querySelectorAll('[id^="explore-modal-"]').forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+            document.body.style.overflow = "";
+          }
+        });
+      });
+    }
+
+    document.readyState === "loading"
+      ? document.addEventListener("DOMContentLoaded", initExploreModals)
+      : initExploreModals();
+  })();
+</script>

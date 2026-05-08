@@ -19,9 +19,9 @@ stay_at_villa_section:
   paragraphs:
     - "Villa Sinar Maluku is a modern tropical villa designed with a blend of contemporary style and natural Balinese charm, set in a peaceful and private environment."
     - "The villa features 2 comfortable bedrooms, a living room, and a fully equipped kitchen, opening to a spacious outdoor area with a large pool, lush garden, and a gazebo overlooking a dramatic cliff view."
-    - "Located in Ungasan, the villa is close to Melasti Beach, Uluwatu, and Savaya Beach Club, offering the perfect balance of tranquility and easy access to Bali’s best attractions."
+    - "Located in Ungasan, the villa is close to Melasti Beach, Uluwatu, and Savaya Beach Club, offering the perfect balance of tranquility and easy access to Bali's best attractions."
   button: "Book Now"
-  button_url: "/book-now"
+  button_url: "/villa-sinar-maluku.html#hero-section"
   image: "/assets/images/villas/villa-sinar-maluku/villa-sinar-maluku-king-bedroom-wardrobe.webp"
 
 gallery:
@@ -48,7 +48,7 @@ features_section:
     - "Outdoor dining and lounge areas"
     - "Easy access to Melasti Beach and Uluwatu"
   button: "BOOK NOW"
-  button_url: "/booking"
+  button_url: "/villa-sinar-maluku.html#hero-section"
   image: "/assets/images/villas/villa-sinar-maluku/villa-sinar-maluku-twilight-pool-view.webp"
 
 testimonials_section:
@@ -80,7 +80,7 @@ gallery_cta:
     - /assets/images/villas/villa-sinar-maluku/villa-sinar-maluku-private-garden-swing.webp
     - /assets/images/villas/villa-sinar-maluku/villa-sinar-maluku-entrance-way.webp
   button: "Book Now"
-  button_url: "/contact"
+  button_url: "/villa-sinar-maluku.html#hero-section"
 
 location_section:
   title: "Where To Find Villa Sinar Maluku"
@@ -121,10 +121,13 @@ faq_section:
           answer: "Yes, transport, scooter rental, and local assistance can be arranged."
 ---
 
-{% include villas/hero-villa.html section=page.hero
-listing_id=page.hostaway.listing_id %} {% include
-content-image-reverse-section.html section=page.stay_at_villa_section %} {%
-include villas/gallery-section.html section=page.gallery %} {% include
+<div id="hero-section">
+  {% include villas/hero-villa.html section=page.hero
+  listing_id=page.hostaway.listing_id %}
+</div>
+
+{% include content-image-reverse-section.html section=page.stay_at_villa_section
+%} {% include villas/gallery-section.html section=page.gallery %} {% include
 content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"
 %} {% include location-map-section.html section=page.location_section %} {%
 include editorial-testimonials-carousel-section.html

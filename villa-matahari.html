@@ -21,7 +21,7 @@ stay_at_villa_section:
     - "The villa features 2 spacious bedrooms, a cozy living area, and a fully equipped kitchen, opening onto a lush garden with a private pool, sun loungers, and a relaxing gazebo."
     - "Located just minutes from Melasti Beach, Uluwatu, and popular restaurants and beach clubs, Villa Matahari offers the perfect balance of tranquility and convenience."
   button: "Book Now"
-  button_url: "/book-now"
+  button_url: "/villa-matahari.html#hero-section"
   image: "/assets/images/villas/villa-matahari/villa-matahari-antique-master-bedroom.webp"
 
 gallery:
@@ -48,7 +48,7 @@ features_section:
     - "Air-conditioned bedrooms"
     - "Easy access to Melasti Beach and Uluwatu"
   button: "BOOK NOW"
-  button_url: "/booking"
+  button_url: "/villa-matahari.html#hero-section"
   image: "/assets/images/villas/villa-matahari/villa-matahari-poolside-dining-pavilion.webp"
 
 testimonials_section:
@@ -90,7 +90,7 @@ gallery_cta:
     - /assets/images/villas/villa-matahari/villa-matahari-stone-ensuite-vanity.webp
     - /assets/images/villas/villa-matahari/villa-matahari-garden-pathway-bamboo.webp
   button: "Book Now"
-  button_url: "/contact"
+  button_url: "/villa-matahari.html#hero-section"
 
 location_section:
   title: "Where To Find Villa Matahari"
@@ -128,10 +128,13 @@ faq_section:
           answer: "Yes, transport, massages, meals, and scooter rental can be arranged."
 ---
 
-{% include villas/hero-villa.html section=page.hero
-listing_id=page.hostaway.listing_id %} {% include
-content-image-reverse-section.html section=page.stay_at_villa_section %} {%
-include villas/gallery-section.html section=page.gallery %} {% include
+<div id="hero-section">
+  {% include villas/hero-villa.html section=page.hero
+  listing_id=page.hostaway.listing_id %}
+</div>
+
+{% include content-image-reverse-section.html section=page.stay_at_villa_section
+%} {% include villas/gallery-section.html section=page.gallery %} {% include
 content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"
 %} {% include location-map-section.html section=page.location_section %} {%
 include editorial-testimonials-carousel-section.html
