@@ -131,6 +131,36 @@ async function cleanupTempBooking(externalId) {
 // ─── Hostaway Integration ────────────────────────────────────────────────────
 
 /**
+ * Fetch a full invoice from Xendit by ID.
+ *
+ * Xendit does not echo the `metadata` field in webhook callbacks, so when the
+ * webhook lands on a different process than the one that created the invoice
+ * (e.g. invoice created on prod, webhook routed via ngrok to local dev), the
+ * temp-storage lookup misses. Fetching the invoice directly from Xendit gives
+ * us an environment-independent source of truth — the metadata we set at
+ * creation is persisted on the invoice itself.
+ *
+ * Throws on failure — callers must handle.
+ */
+async function fetchXenditInvoice(invoiceId) {
+  const secretKey = process.env.XENDIT_SECRET_KEY;
+  if (!secretKey) {
+    throw new Error("XENDIT_SECRET_KEY not configured");
+  }
+  const authString = Buffer.from(`${secretKey}:`).toString("base64");
+
+  console.log(`[XENDIT] Fetching invoice ${invoiceId}`);
+  const response = await axios.get(
+    `https://api.xendit.co/v2/invoices/${invoiceId}`,
+    {
+      timeout: AXIOS_TIMEOUT,
+      headers: { Authorization: `Basic ${authString}` },
+    },
+  );
+  return response.data;
+}
+
+/**
  * Fetch Hostaway OAuth token directly from Hostaway API.
  * Throws on failure — callers must handle.
  */
@@ -388,22 +418,45 @@ async function handlePaid(externalId, webhookData) {
   }
 
   // ── Step 2: Load booking data ──────────────────────────────────────────────
-  // We prefer the metadata from the Xendit invoice directly! This avoids dependency on temp storage.
+  // Three-tier lookup, ordered fastest → most authoritative:
+  //   1. Webhook metadata        (free, but Xendit doesn't actually echo this)
+  //   2. Local temp storage      (fast, but only works in same-process flows)
+  //   3. Xendit invoice GET      (authoritative, cross-environment, ~200ms)
   let bookingData = null;
+  let dataSource = null;
+
   if (webhookData.metadata && webhookData.metadata.bookingData) {
-    console.log(`[PAID] Extracted booking data from Xendit metadata`);
     bookingData = webhookData.metadata.bookingData;
-  } else {
-    console.log(`[PAID] Metadata not found, falling back to temp storage`);
-    bookingData = await getTempBooking(externalId);
+    dataSource = "webhook-metadata";
   }
 
   if (!bookingData) {
-    // No booking data means we can't create a reservation.
-    // This is a permanent failure — do NOT throw (retries won't help).
-    console.error(`[PAID] ❌ No booking data found for ${externalId}. Cannot create reservation.`);
+    bookingData = await getTempBooking(externalId);
+    if (bookingData) dataSource = "temp-storage";
+  }
+
+  if (!bookingData) {
+    try {
+      const invoice = await fetchXenditInvoice(invoiceId);
+      if (invoice?.metadata?.bookingData) {
+        bookingData = invoice.metadata.bookingData;
+        dataSource = "xendit-invoice";
+      } else {
+        console.warn(`[PAID] Xendit invoice ${invoiceId} has no metadata.bookingData`);
+      }
+    } catch (e) {
+      console.error(`[PAID] Failed to fetch invoice from Xendit: ${e.response?.data || e.message}`);
+    }
+  }
+
+  if (!bookingData) {
+    // No booking data from any source. This is a permanent failure —
+    // do NOT throw, since retries won't help.
+    console.error(`[PAID] ❌ No booking data found for ${externalId} (tried metadata, temp storage, Xendit GET). Cannot create reservation.`);
     return { success: false, error: "No booking data found" };
   }
+
+  console.log(`[PAID] Booking data loaded from: ${dataSource}`);
 
   // Attach externalId for the hostNote
   bookingData.externalId = externalId;
@@ -501,6 +554,8 @@ module.exports = {
   // Idempotency
   isAlreadyProcessed,
   markAsProcessed,
+  // Xendit
+  fetchXenditInvoice,
   // Hostaway
   getHostawayToken,
   createHostawayReservation,

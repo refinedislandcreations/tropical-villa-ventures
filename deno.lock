@@ -11,7 +11,9 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
+        "npm:@netlify/blobs@^8.1.0",
         "npm:@tailwindcss/cli@^4.2.1",
+        "npm:axios@^1.15.2",
         "npm:concurrently@^9.2.1",
         "npm:tailwindcss@^4.2.1"
       ]
