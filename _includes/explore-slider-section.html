@@ -231,9 +231,17 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
     </div>
 
     <div
-      class="mt-4 text-xs sm:text-sm text-[#231F20]/50 text-center lg:hidden font-body"
+      class="flex justify-center my-4 text-[#231F20]/50 text-xs sm:text-sm font-body"
     >
-      Swipe to explore
+      <!-- Mobile & Tablet -->
+      <span class="block lg:hidden">
+        Swipe to explore • Tap to see more details
+      </span>
+
+      <!-- Desktop -->
+      <span class="hidden lg:block">
+        Swipe to explore • Click to see more details
+      </span>
     </div>
   </div>
 </section>

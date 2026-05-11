@@ -15,6 +15,7 @@
 
         <!-- Form -->
         <form
+          id="contactForm"
           name="contact"
           data-netlify="true"
           netlify-honeypot="bot-field"
@@ -22,6 +23,7 @@
           method="POST"
           class="space-y-6"
         >
+          <input type="hidden" name="form-name" value="contact" />
           <p class="hidden">
             <label>Don’t fill this out if you're human: <input name="bot-field" /></label>
           </p>
@@ -87,10 +89,12 @@
           <!-- Button -->
           <div class="flex justify-end">
             <button
+              id="contactSubmitBtn"
               type="submit"
-              class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm sm:text-base"
+              class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 text-white rounded-xl text-sm sm:text-base"
             >
-              Submit
+              <span data-submit-label>Submit</span>
+              <span data-submit-loading class="hidden">Sending…</span>
             </button>
           </div>
         </form>
@@ -135,3 +139,208 @@
     </div>
   </div>
 </section>
+
+<!-- SUCCESS MODAL -->
+<div
+  id="contact-success-modal"
+  class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/60 p-6"
+>
+  <div
+    class="w-full max-w-2xl p-[8px] bg-gradient-to-r from-[#7F361C] to-[#D06223]"
+  >
+    <div
+      class="relative bg-white p-8 md:p-10 shadow-2xl overflow-y-auto max-h-[90vh]"
+    >
+      <button
+        type="button"
+        data-contact-modal-close="contact-success-modal"
+        class="absolute top-4 right-4 text-2xl text-[#231F20]/60 hover:text-[#231F20] transition-colors duration-300"
+      >
+        ×
+      </button>
+
+      <h3
+        class="text-3xl sm:text-4xl font-extralight uppercase tracking-wide text-[#231F20] font-heading pr-8 leading-[1.1]"
+      >
+        Message Sent
+      </h3>
+
+      <div
+        class="mt-3 text-xs sm:text-sm tracking-[0.2em] font-heading"
+      >
+        <p>THANK YOU FOR REACHING OUT</p>
+      </div>
+
+      <div
+        class="mt-6 space-y-3 md:space-y-4 text-sm md:text-base leading-snug md:leading-snug text-[#231F20]/80 font-body"
+      >
+        <p>
+          We have received your message and will get back to you as soon as
+          possible. A member of our team typically responds within one business
+          day.
+        </p>
+        <p>
+          In the meantime, feel free to reach us directly at
+          <strong class="font-semibold">management@tvvbali.com</strong> or
+          <strong class="font-semibold">+62 8158819533</strong>.
+        </p>
+      </div>
+
+      <div class="mt-8 flex justify-end">
+        <button
+          type="button"
+          data-contact-modal-close="contact-success-modal"
+          class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm sm:text-base"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ERROR MODAL -->
+<div
+  id="contact-error-modal"
+  class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/60 p-6"
+>
+  <div
+    class="w-full max-w-2xl p-[8px] bg-gradient-to-r from-[#7F361C] to-[#D06223]"
+  >
+    <div
+      class="relative bg-white p-8 md:p-10 shadow-2xl overflow-y-auto max-h-[90vh]"
+    >
+      <button
+        type="button"
+        data-contact-modal-close="contact-error-modal"
+        class="absolute top-4 right-4 text-2xl text-[#231F20]/60 hover:text-[#231F20] transition-colors duration-300"
+      >
+        ×
+      </button>
+
+      <h3
+        class="text-3xl sm:text-4xl font-extralight uppercase tracking-wide text-[#231F20] font-heading pr-8 leading-[1.1]"
+      >
+        Something Went Wrong
+      </h3>
+
+      <div
+        class="mt-3 text-xs sm:text-sm tracking-[0.2em] font-heading"
+      >
+        <p>YOUR MESSAGE COULD NOT BE SENT</p>
+      </div>
+
+      <div
+        class="mt-6 space-y-3 md:space-y-4 text-sm md:text-base leading-snug md:leading-snug text-[#231F20]/80 font-body"
+      >
+        <p>
+          We were unable to deliver your message. Please check your connection
+          and try again, or reach us directly at
+          <strong class="font-semibold">management@tvvbali.com</strong> or
+          <strong class="font-semibold">+62 8158819533</strong>.
+        </p>
+      </div>
+
+      <div class="mt-8 flex justify-end">
+        <button
+          type="button"
+          data-contact-modal-close="contact-error-modal"
+          class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-in-out hover:bg-[#6B682A] hover:scale-105 active:scale-95 text-white rounded-xl text-sm sm:text-base"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    function init() {
+      const form = document.getElementById("contactForm");
+      const submitBtn = document.getElementById("contactSubmitBtn");
+      const successModal = document.getElementById("contact-success-modal");
+      const errorModal = document.getElementById("contact-error-modal");
+      if (!form || !successModal || !errorModal) return;
+
+      function openModal(modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal(modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+        document.body.style.overflow = "";
+      }
+
+      document
+        .querySelectorAll("[data-contact-modal-close]")
+        .forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const modal = document.getElementById(
+              btn.dataset.contactModalClose,
+            );
+            if (modal) closeModal(modal);
+          });
+        });
+
+      [successModal, errorModal].forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) closeModal(modal);
+        });
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        if (!successModal.classList.contains("hidden")) closeModal(successModal);
+        if (!errorModal.classList.contains("hidden")) closeModal(errorModal);
+      });
+
+      function setLoading(loading) {
+        if (!submitBtn) return;
+        submitBtn.disabled = loading;
+        const label = submitBtn.querySelector("[data-submit-label]");
+        const loadingLabel = submitBtn.querySelector("[data-submit-loading]");
+        if (label) label.classList.toggle("hidden", loading);
+        if (loadingLabel) loadingLabel.classList.toggle("hidden", !loading);
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        try {
+          const formData = new FormData(form);
+          const body = new URLSearchParams(formData).toString();
+          const action = form.getAttribute("action") || "/";
+
+          const response = await fetch(action, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body,
+          });
+
+          if (!response.ok) {
+            throw new Error("Submission failed: " + response.status);
+          }
+
+          form.reset();
+          openModal(successModal);
+        } catch (err) {
+          console.error("Contact form error:", err);
+          openModal(errorModal);
+        } finally {
+          setLoading(false);
+        }
+      });
+    }
+
+    document.readyState === "loading"
+      ? document.addEventListener("DOMContentLoaded", init)
+      : init();
+  })();
+</script>

@@ -1,4 +1,3 @@
-<!-- _includes/villas/hero-villa.html -->
 {% assign section_data = include.section %} {% assign bg_image =
 section_data.background_image | default: '/assets/images/hero-image.jpg' %} {%
 assign max_guests = section_data.meta.guests | default: 10 %}
@@ -17,12 +16,14 @@ assign max_guests = section_data.meta.guests | default: 10 %}
   <!-- Content Wrapper -->
   <div class="absolute inset-x-0 bottom-0">
     <div
-      class="bg-gradient-to-t from-[#AF431D]/90 via-[#D06223CC]/80 to-transparent lg:bg-gradient-to-r lg:from-[#AF431D]/90 lg:to-[#D06223CC]/80 pt-10 pb-10 overflow-visible"
+      class="bg-gradient-to-t from-[#AF431D]/90 via-[#D06223CC]/80 to-transparent lg:bg-gradient-to-r lg:from-[#AF431D]/90 lg:to-[#D06223CC]/80 pt-6 sm:pt-8 md:pt-10 pb-10 overflow-visible"
     >
       <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
-          <!-- LEFT - Updated text styling to match hero section -->
-          <div class="lg:col-span-7 text-white space-y-4 md:space-y-5">
+        <!-- LEFT CONTENT - Hero text -->
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8 lg:items-end">
+          <div
+            class="lg:col-span-7 text-white space-y-4 md:space-y-5 mb-6 md:mb-8 lg:mb-0"
+          >
             <h1
               class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extralight uppercase tracking-wide font-heading leading-[1.1] md:leading-[0.95]"
             >
@@ -42,8 +43,129 @@ assign max_guests = section_data.meta.guests | default: 10 %}
             </p>
           </div>
 
-          <!-- RIGHT (BOOKING) -->
-          <div class="lg:col-span-5">
+          <!-- RIGHT (BOOKING) - Mobile version (shows below text) -->
+          <div class="lg:hidden mt-4 md:mt-6">
+            <div
+              class="bg-white/95 backdrop-blur-md rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-visible w-full"
+            >
+              <input
+                type="hidden"
+                id="listingId"
+                value="{{ include.listing_id }}"
+              />
+              <input type="hidden" id="maxGuests" value="{{ max_guests }}" />
+              <input
+                type="hidden"
+                id="villaName"
+                value="{{ section_data.title }}"
+              />
+              <input
+                type="hidden"
+                id="villaImage"
+                value="{{ bg_image | relative_url }}"
+              />
+
+              <!-- BOOKING BAR - Mobile layout (2 columns) -->
+              <div class="grid grid-cols-2 gap-4 items-end">
+                <div class="text-center">
+                  <p class="text-xs text-[#231F20]/60 mb-2 font-body">
+                    Check In
+                  </p>
+                  <input
+                    id="checkin"
+                    type="text"
+                    readonly
+                    placeholder="Select date"
+                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent py-1 cursor-pointer text-xs font-body"
+                  />
+                </div>
+                <div class="text-center">
+                  <p class="text-xs text-[#231F20]/60 mb-2 font-body">
+                    Check Out
+                  </p>
+                  <input
+                    id="checkout"
+                    type="text"
+                    readonly
+                    placeholder="Select date"
+                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent py-1 opacity-50 cursor-pointer text-xs font-body"
+                  />
+                </div>
+                <div class="text-center">
+                  <p class="text-xs text-[#231F20]/60 mb-2 font-body">Guests</p>
+                  <select
+                    id="guests"
+                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent py-1 text-xs font-body"
+                  >
+                    {% for i in (1..max_guests) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div>
+                  <button
+                    id="bookNowBtn"
+                    disabled
+                    class="w-full uppercase bg-[#8B8635] text-white rounded-xl py-2.5 opacity-50 transition hover:bg-[#6B682A] text-xs font-heading font-medium tracking-widest"
+                  >
+                    Book Now
+                  </button>
+                </div>
+              </div>
+
+              <!-- CALENDAR POPUP -->
+              <div
+                id="calendarWrapper"
+                class="hidden fixed left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2 z-[1000] bg-white rounded-2xl shadow-2xl p-6 w-[420px] max-w-[90vw]"
+              >
+                <div
+                  class="flex justify-between items-center mb-4 pb-2 border-b"
+                >
+                  <h3
+                    class="font-semibold text-[#231F20] text-base font-heading"
+                  >
+                    Select Dates
+                  </h3>
+                  <button
+                    id="closeCalendarBtn"
+                    class="text-gray-400 hover:text-gray-600 text-2xl"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div id="calendarLoading" class="text-center py-8">
+                  <div
+                    class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#8B8635] mx-auto mb-2"
+                  ></div>
+                  <p class="text-sm text-gray-500 font-body">
+                    Loading availability...
+                  </p>
+                </div>
+                <div id="calendarContainer" class="hidden"></div>
+                <div
+                  id="calendarError"
+                  class="hidden text-center py-4 text-sm text-red-600 font-body"
+                ></div>
+                <div class="flex justify-between mt-4 pt-3 border-t">
+                  <button
+                    id="clearDatesBtn"
+                    class="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded font-body"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    id="confirmDatesBtn"
+                    class="bg-[#8B8635] text-white px-6 py-2 rounded-lg text-sm hover:bg-[#6B682A] transition font-heading font-medium"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT (BOOKING) - Tablet/Desktop version (floats on right) -->
+          <div class="hidden lg:block lg:col-span-5">
             <div
               class="bg-white/95 backdrop-blur-md rounded-2xl p-6 md:p-8 shadow-xl relative overflow-visible"
             >
@@ -64,10 +186,8 @@ assign max_guests = section_data.meta.guests | default: 10 %}
                 value="{{ bg_image | relative_url }}"
               />
 
-              <!-- BOOKING BAR -->
-              <div
-                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-end"
-              >
+              <!-- BOOKING BAR - Tablet/Desktop layout (4 columns) -->
+              <div class="grid grid-cols-4 gap-6 items-end">
                 <div class="text-center">
                   <p
                     class="text-xs md:text-sm text-[#231F20]/60 mb-2 font-body"
@@ -325,6 +445,7 @@ assign max_guests = section_data.meta.guests | default: 10 %}
     let isLoading = true;
     let isCalendarOpen = false;
 
+    // Get elements - works for both mobile and desktop since IDs are the same
     const checkinInput = document.getElementById("checkin");
     const checkoutInput = document.getElementById("checkout");
     const bookBtn = document.getElementById("bookNowBtn");
@@ -375,12 +496,11 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       });
     }
 
-    // Check if all dates in the range between two dates are available
     function isRangeFullyAvailable(startDate, endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
       const current = new Date(start);
-      current.setDate(current.getDate() + 1); // Skip check-in day (already validated)
+      current.setDate(current.getDate() + 1);
 
       while (current < end) {
         const dateStr = current.toISOString().split("T")[0];
@@ -393,7 +513,6 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       return true;
     }
 
-    // Get the first unavailable date in a range
     function getFirstUnavailableInRange(startDate, endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
@@ -475,8 +594,6 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       </div></div>`;
 
       calendarContainer.innerHTML = html;
-
-      // Re-attach event listeners after rendering
       attachDayClickEvents();
       attachMonthNavEvents();
     }
@@ -516,24 +633,20 @@ assign max_guests = section_data.meta.guests | default: 10 %}
     }
 
     function handleDateSelection(date) {
-      // Clear any previous error
       if (calendarError) calendarError.classList.add("hidden");
 
       if (!selectedCheckin || (selectedCheckin && selectedCheckout)) {
-        // Start new selection
         selectedCheckin = date;
         selectedCheckout = null;
       } else if (selectedCheckin && !selectedCheckout) {
         let newCheckin = selectedCheckin;
         let newCheckout = date;
 
-        // Swap if checkout is before checkin
         if (new Date(date) < new Date(selectedCheckin)) {
           newCheckout = selectedCheckin;
           newCheckin = date;
         }
 
-        // Validate that all dates in the range are available
         if (!isRangeFullyAvailable(newCheckin, newCheckout)) {
           const blockedDate = getFirstUnavailableInRange(
             newCheckin,
@@ -543,7 +656,6 @@ assign max_guests = section_data.meta.guests | default: 10 %}
             calendarError.textContent = `Cannot book this range — ${formatDisplayDate(blockedDate)} is unavailable. Please select dates without gaps.`;
             calendarError.classList.remove("hidden");
           }
-          // Reset selection to the clicked date
           selectedCheckin = date;
           selectedCheckout = null;
         } else {
@@ -563,7 +675,6 @@ assign max_guests = section_data.meta.guests | default: 10 %}
         bookBtn.classList.remove("opacity-50");
         hideCalendar();
 
-        // Store rich booking data including villa info
         const villaName =
           document.getElementById("villaName")?.value || "Villa";
         const villaImage = document.getElementById("villaImage")?.value || "";
@@ -635,11 +746,9 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       renderCalendar();
     })();
 
-    // Input click handlers
     checkinInput.addEventListener("click", showCalendar);
     checkoutInput.addEventListener("click", showCalendar);
 
-    // Button handlers
     closeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       hideCalendar();
@@ -653,14 +762,12 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       confirmSelection();
     });
 
-    // Close on outside click - but NOT when clicking inside calendar
     document.addEventListener("click", (e) => {
       if (
         isCalendarOpen &&
         calendarWrapper &&
         !calendarWrapper.contains(e.target)
       ) {
-        // Don't close if clicking on checkin/checkout inputs
         if (
           !checkinInput.contains(e.target) &&
           !checkoutInput.contains(e.target)
@@ -670,15 +777,12 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       }
     });
 
-    // Prevent calendar from closing when clicking inside it
     calendarWrapper.addEventListener("click", (e) => {
       e.stopPropagation();
     });
 
-    // Book button — store data and redirect
     bookBtn.addEventListener("click", () => {
       if (selectedCheckin && selectedCheckout) {
-        // Ensure latest data is stored
         const villaName =
           document.getElementById("villaName")?.value || "Villa";
         const villaImage = document.getElementById("villaImage")?.value || "";

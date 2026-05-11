@@ -4,6 +4,16 @@
 <section class="bg-[#F3F0E7] section">
   <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
     <div
+      class="flex justify-center my-4 text-[#231F20]/50 text-xs sm:text-sm font-body"
+    >
+      <!-- Mobile & Tablet -->
+      <span class="block lg:hidden">Tap to see more details</span>
+
+      <!-- Desktop -->
+      <span class="hidden lg:block">Click to see more details</span>
+    </div>
+
+    <div
       class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-12"
     >
       {% for item in section_data.items %}
