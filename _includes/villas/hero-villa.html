@@ -13,8 +13,14 @@ assign max_guests = section_data.meta.guests | default: 10 %}
     />
   </div>
 
+  <!-- Dark overlay for mobile/tablet to ensure text readability -->
+  <div
+    class="absolute inset-0 bg-black/50 md:bg-black/40 lg:bg-transparent"
+  ></div>
+
   <!-- Content Wrapper -->
   <div class="absolute inset-x-0 bottom-0">
+    <!-- Mobile/Tablet: Solid dark background | Desktop: Gradient overlay -->
     <div
       class="bg-gradient-to-t from-[#AF431D]/90 via-[#D06223CC]/80 to-transparent lg:bg-gradient-to-r lg:from-[#AF431D]/90 lg:to-[#D06223CC]/80 pt-6 sm:pt-8 md:pt-10 pb-10 overflow-visible"
     >
