@@ -49,20 +49,34 @@ exports.handler = async (event) => {
       couponCode,
     } = JSON.parse(event.body);
 
-    const amount = Math.round(totalAmount);
+    const baseAmount = Math.round(totalAmount);
+
+    // Calculate Fees (ensure consistency with calculate-price.js)
+    const processingRate = 0.029; // 2.9%
+    const fixedFee = 2000;
+    const vatRate = 0.11;         // 11%
+
+    const processingFee = Math.round(baseAmount * processingRate);
+    const feeBeforeVAT = processingFee + fixedFee;
+    const vat = Math.round(feeBeforeVAT * vatRate);
+    const totalFee = processingFee + fixedFee + vat;
+
+    const finalAmount = baseAmount + totalFee;
 
     console.log(`\n[INVOICE] ── Creating invoice ──────────────────────────`);
     console.log(`[INVOICE] Villa: ${villaName} (listing: ${listingId})`);
     console.log(`[INVOICE] Guest: ${firstName} ${lastName} <${email}>`);
     console.log(`[INVOICE] Dates: ${checkin} → ${checkout} (${nights} nights)`);
-    console.log(`[INVOICE] Amount: IDR ${amount}`);
+    console.log(`[INVOICE] Base Amount: IDR ${baseAmount}`);
+    console.log(`[INVOICE] Total Fees: IDR ${totalFee}`);
+    console.log(`[INVOICE] Final Amount: IDR ${finalAmount}`);
     console.log(`[INVOICE] Phone: ${phone || "(none)"}`);
 
     const fullName = `${firstName} ${lastName}`.trim();
     const externalId = `BOOKING_${listingId}_${Date.now()}`;
     console.log(`[INVOICE] External ID: ${externalId}`);
 
-    const description = `${villaName}: ${checkin} to ${checkout} (${nights} nights, ${guests} guests)`;
+    const description = `Booking for ${villaName}\nStay: ${checkin} to ${checkout} (${nights} nights)\nGuests: ${guests}\nGuest: ${fullName}`;
 
     // Store booking data for webhook retrieval
     await storeTempBooking(externalId, {
@@ -70,7 +84,14 @@ exports.handler = async (event) => {
       checkin,
       checkout,
       guests,
-      totalAmount: amount,
+      baseAmount: baseAmount,
+      totalAmount: finalAmount,
+      totalFee: totalFee,
+      feeBreakdown: {
+        processingFee,
+        fixedFee,
+        vat
+      },
       guestName: fullName,
       guestFirstName: firstName || "Guest",
       guestLastName: lastName || "",
@@ -84,10 +105,34 @@ exports.handler = async (event) => {
     // Sanitize phone — universal format
     const sanitizedPhone = sanitizePhone(phone);
 
-    // Validate amount
-    if (!amount || amount <= 0 || isNaN(amount)) {
-      throw new Error(`Invalid amount: ${totalAmount}. Price calculation may have failed.`);
-    }
+    // Build items for Xendit Invoice display
+    const items = [
+      {
+        name: `Stay at ${villaName}`,
+        quantity: 1,
+        price: baseAmount,
+        category: "Accommodation",
+        description: `${nights} nights (${checkin} - ${checkout})`
+      },
+      {
+        name: "Payment Processing Fee (2.9%)",
+        quantity: 1,
+        price: processingFee,
+        category: "Fees"
+      },
+      {
+        name: "Flat Processing Fee",
+        quantity: 1,
+        price: fixedFee,
+        category: "Fees"
+      },
+      {
+        name: "VAT on Fees (11%)",
+        quantity: 1,
+        price: vat,
+        category: "Fees"
+      }
+    ];
 
     // Build customer object (only include valid fields)
     const customer = {
@@ -97,21 +142,10 @@ exports.handler = async (event) => {
     if (lastName) customer.surname = lastName;
     if (sanitizedPhone) customer.mobile_number = sanitizedPhone;
 
-    // Build items
-    const validNights = parseInt(nights) || 1;
-    const items = [
-      {
-        name: villaName || "Villa Stay",
-        quantity: validNights,
-        price: Math.round(amount / validNights),
-        category: "Accommodation",
-      },
-    ];
-
     // Create Xendit invoice — full payment
     const xenditPayload = {
       external_id: externalId,
-      amount: amount,
+      amount: finalAmount,
       payer_email: email,
       description: description,
       currency: "IDR",
@@ -120,25 +154,34 @@ exports.handler = async (event) => {
       invoice_duration: 86400,
       customer: customer,
       customer_notification_preference: {
-        invoice_created: ["email"],
-        invoice_reminder: ["email"],
-        invoice_paid: ["email"],
-        invoice_expired: ["email"],
+        invoice_created: ["email", "whatsapp"],
+        invoice_reminder: ["email", "whatsapp"],
+        invoice_paid: ["email", "whatsapp"],
+        invoice_expired: ["email", "whatsapp"],
       },
       items: items,
+      payment_methods: [
+        "CREDIT_CARD",
+        "BANK_TRANSFER",
+        "EWALLET",
+        "QRIS",
+        "DIRECT_DEBIT",
+        "RETAIL_OUTLET"
+      ],
       metadata: {
         bookingData: {
           listingId,
+          villaName,
           checkin,
           checkout,
           guests,
-          totalAmount: amount,
+          nights,
+          baseAmount,
+          totalFee,
+          finalAmount,
           guestName: fullName,
-          guestFirstName: firstName || "Guest",
-          guestLastName: lastName || "",
           guestEmail: email,
           guestPhone: sanitizedPhone || phone || "",
-          villaName: villaName,
           specialRequests: specialRequests || "",
           couponCode: couponCode || null,
         }
@@ -177,7 +220,7 @@ exports.handler = async (event) => {
           invoiceUrl: data.invoice_url,
           invoiceId: data.id,
           externalId: externalId,
-          totalAmount: amount,
+          totalAmount: finalAmount,
         }),
       };
     }

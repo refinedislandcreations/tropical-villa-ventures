@@ -113,16 +113,37 @@ exports.handler = async (event) => {
       const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
       const pricePerNight = data.result.totalPrice / nights;
 
+      // Calculate Payment Processing Fee
+      // Formula provided by user: 2.9% + 2000 + 11% VAT
+      const baseAmount = data.result.totalPrice;
+      const processingRate = 0.029; // 2.9%
+      const fixedFee = 2000;
+      const vatRate = 0.11;         // 11%
+
+      const processingFee = baseAmount * processingRate;
+      const feeBeforeVAT = processingFee + fixedFee;
+      const vat = feeBeforeVAT * vatRate;
+      const totalFee = feeBeforeVAT + vat;
+
+      const finalTotalPrice = baseAmount + totalFee;
+
       return {
         statusCode: 200,
         headers: { "Cache-Control": "no-store" },
         body: JSON.stringify({
           success: true,
-          totalPrice: data.result.totalPrice,
+          basePrice: baseAmount,
+          totalPrice: finalTotalPrice,
           pricePerNight: pricePerNight,
           nights: nights,
           currency: "IDR",
           breakdown,
+          fees: {
+            processingFee,
+            fixedFee,
+            vat,
+            totalFee
+          },
           components: components.map((c) => ({
             name: c.title || c.name,
             type: c.type,

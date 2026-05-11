@@ -145,28 +145,36 @@ class VillaBookingManager {
   updatePriceDisplay(data) {
     const totalElement = document.getElementById("totalPrice");
     const breakdownElement = document.getElementById("priceBreakdown");
+    const feeElement = document.getElementById("feeBreakdown");
 
     const totalPrice = data.totalPrice;
+    const basePrice = data.basePrice || totalPrice;
     const nights = data.nights || 1;
-    const pricePerNight = data.pricePerNight || Math.round(totalPrice / nights);
+    const pricePerNight = data.pricePerNight || Math.round(basePrice / nights);
+
+    const formatIDR = (num) =>
+      `IDR ${Math.round(num).toLocaleString("id-ID", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      })}`;
 
     if (totalElement) {
-      totalElement.innerText = `IDR ${totalPrice.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      totalElement.innerText = formatIDR(totalPrice);
     }
 
     if (breakdownElement && data.breakdown) {
       breakdownElement.innerHTML = `
         <div class="space-y-2 text-sm pt-1">
           <div class="flex justify-between">
-            <span>IDR ${pricePerNight.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} x ${nights} night${nights > 1 ? "s" : ""}</span>
-            <span>IDR ${(pricePerNight * nights).toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <span>${formatIDR(pricePerNight)} x ${nights} night${nights > 1 ? "s" : ""}</span>
+            <span>${formatIDR(pricePerNight * nights)}</span>
           </div>
           ${
             data.breakdown.cleaningFee > 0
               ? `
             <div class="flex justify-between">
               <span>Cleaning fee</span>
-              <span>IDR ${data.breakdown.cleaningFee.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span>${formatIDR(data.breakdown.cleaningFee)}</span>
             </div>
           `
               : ""
@@ -176,7 +184,7 @@ class VillaBookingManager {
               ? `
             <div class="flex justify-between">
               <span>Taxes & fees</span>
-              <span>IDR ${data.breakdown.taxes.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span>${formatIDR(data.breakdown.taxes)}</span>
             </div>
           `
               : ""
@@ -184,13 +192,36 @@ class VillaBookingManager {
           ${
             data.breakdown.discounts > 0
               ? `
-            <div class="flex justify-between text-white">
+            <div class="flex justify-between text-white font-medium">
               <span>Discount</span>
-              <span>-IDR ${data.breakdown.discounts.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span>-${formatIDR(data.breakdown.discounts)}</span>
             </div>
           `
               : ""
           }
+        </div>
+      `;
+    }
+
+    if (feeElement && data.fees) {
+      feeElement.innerHTML = `
+        <div class="space-y-1 text-sm pt-1">
+          <div class="flex justify-between">
+            <span>Payment Processing Fee (2.9%)</span>
+            <span>${formatIDR(data.fees.processingFee)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Flat Fee</span>
+            <span>${formatIDR(data.fees.fixedFee)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>VAT (11%)</span>
+            <span>${formatIDR(data.fees.vat)}</span>
+          </div>
+          <div class="flex justify-between border-t border-white/20 pt-1 mt-1 font-medium">
+            <span>Fee Subtotal</span>
+            <span>${formatIDR(data.fees.totalFee)}</span>
+          </div>
         </div>
       `;
     }

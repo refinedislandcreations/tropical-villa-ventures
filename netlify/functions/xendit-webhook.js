@@ -125,9 +125,9 @@ exports.handler = async (event) => {
         result = await handlePaid(externalId, webhookData);
         break;
 
-      // SETTLED: Acknowledge only — reservation already created on PAID (§4).
+      // SETTLED: Acknowledge only (or process if PAID was missed)
       case "SETTLED":
-        result = handleSettled(externalId, webhookData);
+        result = await handleSettled(externalId, webhookData);
         break;
 
       // PENDING / EXPIRED: Acknowledge, safe operations only.

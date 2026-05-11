@@ -239,10 +239,10 @@ async function createHostawayReservation(token, bookingData) {
     securityDepositFee: null,
     isPaid: 1,
     currency: "IDR",
-    status: "new",
-    hostNote: `Paid via Xendit. Booking ref: ${bookingData.externalId || "N/A"}`,
+    status: "confirmed",
+    hostNote: `Paid via Xendit. Booking ref: ${bookingData.externalId || "N/A"}. Total including fees: IDR ${totalAmount}`,
     guestNote: bookingData.specialRequests || null,
-    comment: null,
+    comment: `Base Price: IDR ${bookingData.baseAmount || "N/A"}. Fees: IDR ${bookingData.totalFee || "N/A"}`,
     couponName: bookingData.couponCode || null,
     financeField: [
       {
@@ -502,16 +502,26 @@ async function handlePaid(externalId, webhookData) {
  * Handle SETTLED status.
  * SETTLED means the funds have been disbursed to the merchant account.
  * The reservation should already have been created when PAID was received,
- * so we just acknowledge — no duplicate processing.
+ * but as a safety measure for methods that might skip PAID or if PAID was missed,
+ * we attempt to process it here if not already done.
  */
-function handleSettled(externalId, webhookData) {
+async function handleSettled(externalId, webhookData) {
+  const invoiceId = webhookData.id;
+
   console.log(`\n${"=".repeat(60)}`);
-  console.log(`[SETTLED] Settlement acknowledged: ${externalId}`);
-  console.log(`[SETTLED] Invoice ID: ${webhookData.id}`);
-  console.log(`[SETTLED] Amount: ${webhookData.amount} ${webhookData.currency}`);
-  console.log(`[SETTLED] This is a settlement notification only — reservation was created on PAID.`);
-  console.log(`${"=".repeat(60)}\n`);
-  return { acknowledged: true, status: "SETTLED" };
+  console.log(`[SETTLED] Settlement received: ${externalId}`);
+  console.log(`[SETTLED] Invoice ID: ${invoiceId}`);
+
+  // Check idempotency — if already handled via PAID, skip
+  const alreadyDone = await isAlreadyProcessed(invoiceId, externalId);
+  if (alreadyDone) {
+    console.log(`[SETTLED] Already processed via PAID. Acknowledging only.`);
+    return { success: true, duplicate: true, message: "Already processed" };
+  }
+
+  // If not processed, treat it like a PAID event to ensure reservation is created
+  console.log(`[SETTLED] Not yet processed. Finalizing booking now...`);
+  return await handlePaid(externalId, webhookData);
 }
 
 function handlePending(externalId, webhookData) {
