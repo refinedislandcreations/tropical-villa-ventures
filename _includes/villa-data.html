@@ -1,0 +1,2 @@
+{% assign villas = site.pages | where_exp: "item", "item.hostaway.listing_id != nil" %}
+<script>window.allVillas=[{% for villa in villas %}{id:"{{villa.hostaway.listing_id}}",name:"{{villa.hero.title}}",description:"{{villa.hero.description|escape}}",guests:{{villa.hero.meta.guests|default:0}},bedrooms:{{villa.hero.meta.bedrooms|default:0}},bathrooms:{{villa.hero.meta.bathrooms|default:0}},image:"{{villa.hero.background_image|relative_url}}",url:"{{villa.url|relative_url}}"}{% unless forloop.last %},{% endunless %}{% endfor %}];</script>

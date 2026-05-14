@@ -169,26 +169,7 @@ class VillaBookingManager {
             <span>${formatIDR(pricePerNight)} x ${nights} night${nights > 1 ? "s" : ""}</span>
             <span>${formatIDR(pricePerNight * nights)}</span>
           </div>
-          ${
-            data.breakdown.cleaningFee > 0
-              ? `
-            <div class="flex justify-between">
-              <span>Cleaning fee</span>
-              <span>${formatIDR(data.breakdown.cleaningFee)}</span>
-            </div>
-          `
-              : ""
-          }
-          ${
-            data.breakdown.taxes > 0
-              ? `
-            <div class="flex justify-between">
-              <span>Taxes & fees</span>
-              <span>${formatIDR(data.breakdown.taxes)}</span>
-            </div>
-          `
-              : ""
-          }
+
           ${
             data.breakdown.discounts > 0
               ? `

@@ -102,14 +102,11 @@ assign max_guests = section_data.meta.guests | default: 10 %}
                   >
                     Guests
                   </p>
-                  <select
-                    id="guests"
-                    class="w-full text-center border-b border-[#231F20]/30 bg-transparent py-1 text-sm font-body"
-                  >
-                    {% for i in (1..max_guests) %}
-                    <option value="{{ i }}">{{ i }}</option>
-                    {% endfor %}
-                  </select>
+                  <div class="flex items-center justify-center w-full border-b border-[#231F20]/30 py-[0.1rem] bg-transparent focus-within:border-[#8B8635] transition-colors">
+                    <button type="button" class="w-6 h-6 flex items-center justify-center text-[#231F20] cursor-pointer transition hover:bg-[#231F20]/10 rounded-full font-bold" onclick="window.updateVillaGuests(-1)">-</button>
+                    <input id="guests" type="text" readonly value="2" class="w-8 text-center bg-transparent text-sm font-body outline-none" />
+                    <button type="button" class="w-6 h-6 flex items-center justify-center text-[#231F20] cursor-pointer transition hover:bg-[#231F20]/10 rounded-full font-bold" onclick="window.updateVillaGuests(1)">+</button>
+                  </div>
                 </div>
 
                 <div>
@@ -122,7 +119,6 @@ assign max_guests = section_data.meta.guests | default: 10 %}
                   </button>
                 </div>
               </div>
-
               <!-- CALENDAR POPUP -->
               <div
                 id="calendarWrapper"
@@ -315,6 +311,16 @@ assign max_guests = section_data.meta.guests | default: 10 %}
 </style>
 
 <script>
+  window.updateVillaGuests = function(change) {
+    const input = document.getElementById("guests");
+    const max = parseInt(document.getElementById("maxGuests")?.value || 10);
+    let val = parseInt(input.value) || 2;
+    val += change;
+    if (val < 1) val = 1;
+    if (val > max) val = max;
+    input.value = val;
+  };
+
   document.addEventListener("DOMContentLoaded", function () {
     const listingId = document.getElementById("listingId")?.value;
     if (!listingId) return;
@@ -534,8 +540,17 @@ assign max_guests = section_data.meta.guests | default: 10 %}
           newCheckin = date;
         }
 
-        // Validate that all dates in the range are available
-        if (!isRangeFullyAvailable(newCheckin, newCheckout)) {
+        const diffTime = Math.abs(new Date(newCheckout) - new Date(newCheckin));
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 2) {
+          if (calendarError) {
+            calendarError.textContent = "Minimum stay is 2 nights.";
+            calendarError.classList.remove("hidden");
+          }
+          selectedCheckin = date;
+          selectedCheckout = null;
+        } else if (!isRangeFullyAvailable(newCheckin, newCheckout)) {
           const blockedDate = getFirstUnavailableInRange(
             newCheckin,
             newCheckout,
@@ -633,6 +648,25 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       isLoading = false;
       calendarLoading.classList.add("hidden");
       calendarContainer.classList.remove("hidden");
+
+      // Load shared dates from direct-booking page (via sessionStorage)
+      try {
+        const shared = JSON.parse(sessionStorage.getItem("sharedDates"));
+        if (shared && shared.checkin && shared.checkout) {
+          selectedCheckin = shared.checkin;
+          selectedCheckout = shared.checkout;
+          checkinInput.value = formatDisplayDate(selectedCheckin);
+          checkoutInput.value = formatDisplayDate(selectedCheckout);
+          checkoutInput.classList.remove("opacity-50");
+          bookBtn.disabled = false;
+          bookBtn.classList.remove("opacity-50");
+          if (shared.guests) {
+            const guestsInput = document.getElementById("guests");
+            if (guestsInput) guestsInput.value = shared.guests;
+          }
+        }
+      } catch (e) { /* ignore parse errors */ }
+
       renderCalendar();
     })();
 

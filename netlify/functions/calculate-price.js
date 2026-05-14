@@ -64,6 +64,24 @@ exports.handler = async (event) => {
       }
     }
 
+    // CHECK AVAILABILITY FIRST
+    const calendarResponse = await axios.get(
+      `https://api.hostaway.com/v1/listings/${listingId}/calendar?startDate=${startingDate}&endDate=${endingDate}&includeResources=0`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    
+    if (calendarResponse.data && calendarResponse.data.result) {
+      // Only check up to the night before checkout
+      const days = calendarResponse.data.result.filter(d => d.date >= startingDate && d.date < endingDate);
+      const isAvailable = days.every(d => d.status === "available" || d.isAvailable === 1);
+      if (!isAvailable || days.length === 0) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify({ success: false, error: "Dates not available" })
+        };
+      }
+    }
+
     const response = await axios.post(
       `https://api.hostaway.com/v1/listings/${listingId}/calendar/priceDetails`,
       requestBody,
@@ -111,11 +129,14 @@ exports.handler = async (event) => {
       const start = new Date(startingDate);
       const end = new Date(endingDate);
       const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-      const pricePerNight = data.result.totalPrice / nights;
+
+      // Remove cleaning fee and service fee/taxes from baseAmount
+      const cleanBaseAmount = data.result.totalPrice - breakdown.cleaningFee - breakdown.taxes - breakdown.otherFees;
+      const pricePerNight = cleanBaseAmount / nights;
 
       // Calculate Payment Processing Fee
       // Formula provided by user: 2.9% + 2000 + 11% VAT
-      const baseAmount = data.result.totalPrice;
+      const baseAmount = cleanBaseAmount;
       const processingRate = 0.029; // 2.9%
       const fixedFee = 2000;
       const vatRate = 0.11;         // 11%
