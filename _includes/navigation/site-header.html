@@ -2,7 +2,7 @@
 <header
   role="banner"
   id="site-header"
-  class="w-full fixed top-0 z-50 h-[70px] md:h-[82px] flex items-center bg-transparent backdrop-blur-0 transition-all duration-500 ease-out will-change-transform"
+  class="w-full fixed top-0 z-50 h-17.5 md:h-20.5 flex items-center bg-transparent backdrop-blur-0 transition-all duration-500 ease-out will-change-transform"
 >
   <div
     class="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center h-full"
@@ -10,13 +10,13 @@
     <div class="flex justify-between items-center w-full">
       <!-- Logo -->
       <div
-        class="flex-shrink-0 transform transition-transform duration-300 hover:scale-105 origin-left"
+        class="shrink-0 transform transition-transform duration-300 hover:scale-105 origin-left"
       >
         <a href="{{ '/' | relative_url }}" aria-label="Home">
           <img
             src="{{ '/assets/images/logo/tvv-logo.png' | relative_url }}"
             alt="Mayo Resort Logo"
-            class="h-[3rem] md:h-[4rem] w-auto transition-opacity duration-300"
+            class="h-12 md:h-16 w-auto transition-opacity duration-300"
             loading="eager"
             width="auto"
             height="64"
@@ -126,7 +126,7 @@
 <!-- Mobile Menu -->
 <nav
   id="mobile-menu"
-  class="fixed top-0 right-0 h-full w-[75%] max-w-[420px] z-45 flex flex-col p-6 transform translate-x-full transition-transform duration-400 ease-out overflow-y-auto bg-gradient-to-r from-[#AF431D] to-[#D06223CC] shadow-2xl"
+  class="fixed top-0 right-0 h-full w-[75%] max-w-105 z-45 flex flex-col p-6 transform translate-x-full transition-transform duration-400 ease-out overflow-y-auto bg-linear-to-r from-[#AF431D] to-[#D06223CC] shadow-2xl"
   aria-label="Mobile Navigation"
   role="navigation"
   style="display: none"

@@ -140,27 +140,41 @@ title: Direct Bookings | Tropical Villa Ventures
   }
 </style>
 
-<section class="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-visible">
+<section
+  class="relative w-full h-screen min-h-150 flex items-center justify-center overflow-visible"
+>
   <!-- Auto-changing Background Images -->
   <div id="hero-bg-slider" class="absolute inset-0 z-0">
-    <img src="/assets/images/villas/villa-asmara.webp"
+    <img
+      src="/assets/images/villas/villa-asmara.webp"
       class="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-1000 slide"
-      alt="Villa Asmara">
-    <img src="/assets/images/villas/villa-indah.webp"
+      alt="Villa Asmara"
+    />
+    <img
+      src="/assets/images/villas/villa-indah.webp"
       class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 slide"
-      alt="Villa Indah">
-    <img src="/assets/images/villas/villa-matahari.webp"
+      alt="Villa Indah"
+    />
+    <img
+      src="/assets/images/villas/villa-matahari.webp"
       class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 slide"
-      alt="Villa Matahari">
-    <img src="/assets/images/villas/villa-raya.webp"
+      alt="Villa Matahari"
+    />
+    <img
+      src="/assets/images/villas/villa-raya.webp"
       class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 slide"
-      alt="Villa Raya">
-    <img src="/assets/images/villas/villa-senang.webp"
+      alt="Villa Raya"
+    />
+    <img
+      src="/assets/images/villas/villa-senang.webp"
       class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 slide"
-      alt="Villa Senang">
-    <img src="/assets/images/villas/villa-sinar-maluku.webp"
+      alt="Villa Senang"
+    />
+    <img
+      src="/assets/images/villas/villa-sinar-maluku.webp"
       class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 slide"
-      alt="Villa Sinar Maluku">
+      alt="Villa Sinar Maluku"
+    />
   </div>
 
   <!-- Thin Orange Overlay -->
@@ -168,83 +182,160 @@ title: Direct Bookings | Tropical Villa Ventures
   <div class="absolute inset-0 z-10 bg-[#231F20]/30"></div>
 
   <!-- Content -->
-  <div class="relative z-20 text-center px-4 w-full max-w-5xl mx-auto flex flex-col items-center mt-16">
-    <p class="uppercase tracking-[0.2em] text-white text-xs sm:text-sm font-body mb-4">
+  <div
+    class="relative z-20 text-center px-4 w-full max-w-5xl mx-auto flex flex-col items-center mt-16"
+  >
+    <p
+      class="uppercase tracking-[0.2em] text-white text-xs sm:text-sm font-body mb-4"
+    >
       DIRECT BOOKINGS . UNGASAN, BALI
     </p>
     <h1
-      class="text-4xl sm:text-5xl md:text-7xl font-extralight text-white mb-6 font-heading leading-tight uppercase tracking-wide drop-shadow-sm">
+      class="text-4xl sm:text-5xl md:text-7xl font-extralight text-white mb-6 font-heading leading-tight uppercase tracking-wide drop-shadow-sm"
+    >
       Find your tropical stay
     </h1>
-    <p class="text-white/95 text-sm sm:text-lg font-body mb-12 max-w-2xl mx-auto font-light drop-shadow-sm">
-      Six private villas hidden across the Bukit Peninsula. Pick your dates – we'll show you what's open.
+    <p
+      class="text-white/95 text-sm sm:text-lg font-body mb-12 max-w-2xl mx-auto font-light drop-shadow-sm"
+    >
+      Six private villas hidden across the Bukit Peninsula. Pick your dates –
+      we'll show you what's open.
     </p>
 
     <!-- Booking Form -->
-    <div class="bg-white/95 backdrop-blur-md rounded-2xl p-6 md:p-8 shadow-xl relative overflow-visible w-full">
+    <div
+      class="bg-white/95 backdrop-blur-md rounded-2xl p-6 md:p-8 shadow-xl relative overflow-visible w-full"
+    >
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 items-end">
         <div class="text-left">
-          <p class="text-xs md:text-sm text-[#231F20]/60 mb-2 font-body uppercase tracking-wider font-bold">Check In</p>
-          <input id="checkin" type="text" readonly placeholder="Select date"
-            class="w-full text-left border-b-2 border-[#231F20]/20 bg-transparent py-2 cursor-pointer text-sm font-body outline-none focus:border-[#8B8635]" />
-        </div>
-
-        <div class="text-left">
-          <p class="text-xs md:text-sm text-[#231F20]/60 mb-2 font-body uppercase tracking-wider font-bold">Check Out
+          <p
+            class="text-xs md:text-sm text-[#231F20]/60 mb-2 font-body uppercase tracking-wider font-bold"
+          >
+            Check In
           </p>
-          <input id="checkout" type="text" readonly placeholder="Select date"
-            class="w-full text-left border-b-2 border-[#231F20]/20 bg-transparent py-2 opacity-50 cursor-pointer text-sm font-body outline-none focus:border-[#8B8635]" />
+          <input
+            id="checkin"
+            type="text"
+            readonly
+            placeholder="Select date"
+            class="w-full text-left border-b-2 border-[#231F20]/20 bg-transparent py-2 cursor-pointer text-sm font-body outline-none focus:border-[#8B8635]"
+          />
         </div>
 
         <div class="text-left">
-          <p class="text-xs md:text-sm text-[#231F20]/60 mb-2 font-body uppercase tracking-wider font-bold">Guests</p>
+          <p
+            class="text-xs md:text-sm text-[#231F20]/60 mb-2 font-body uppercase tracking-wider font-bold"
+          >
+            Check Out
+          </p>
+          <input
+            id="checkout"
+            type="text"
+            readonly
+            placeholder="Select date"
+            class="w-full text-left border-b-2 border-[#231F20]/20 bg-transparent py-2 opacity-50 cursor-pointer text-sm font-body outline-none focus:border-[#8B8635]"
+          />
+        </div>
+
+        <div class="text-left">
+          <p
+            class="text-xs md:text-sm text-[#231F20]/60 mb-2 font-body uppercase tracking-wider font-bold"
+          >
+            Guests
+          </p>
           <div
-            class="flex items-center w-full border-b-2 border-[#231F20]/20 py-[0.35rem] bg-transparent focus-within:border-[#8B8635] transition-colors justify-between">
-            <button type="button"
+            class="flex items-center w-full border-b-2 border-[#231F20]/20 py-[0.35rem] bg-transparent focus-within:border-[#8B8635] transition-colors justify-between"
+          >
+            <button
+              type="button"
               class="w-7 h-7 flex items-center justify-center text-[#231F20] cursor-pointer transition hover:bg-[#231F20]/10 rounded-full font-bold"
-              onclick="window.updateGuests(-1)">-</button>
-            <input id="guests" type="text" readonly value="2"
-              class="w-12 text-center bg-transparent text-sm font-body outline-none" />
-            <button type="button"
+              onclick="window.updateGuests(-1)"
+            >
+              -
+            </button>
+            <input
+              id="guests"
+              type="text"
+              readonly
+              value="2"
+              class="w-12 text-center bg-transparent text-sm font-body outline-none"
+            />
+            <button
+              type="button"
               class="w-7 h-7 flex items-center justify-center text-[#231F20] cursor-pointer transition hover:bg-[#231F20]/10 rounded-full font-bold"
-              onclick="window.updateGuests(1)">+</button>
+              onclick="window.updateGuests(1)"
+            >
+              +
+            </button>
           </div>
         </div>
 
         <div>
-          <button id="searchVillaBtn" disabled
-            class="w-full uppercase bg-[#8B8635] text-white rounded-xl py-3 opacity-50 transition hover:bg-[#6B682A] text-sm font-heading font-medium tracking-widest cursor-pointer shadow-md">
+          <button
+            id="searchVillaBtn"
+            disabled
+            class="w-full uppercase bg-[#8B8635] text-white rounded-xl py-3 opacity-50 transition hover:bg-[#6B682A] text-sm font-heading font-medium tracking-widest cursor-pointer shadow-md"
+          >
             Search Villas
           </button>
         </div>
       </div>
 
       <!-- CALENDAR POPUP -->
-      <div id="calendarWrapper"
-        class="hidden absolute left-1/2 transform -translate-x-1/2 top-full mt-4 z-[1000] bg-white rounded-2xl shadow-2xl p-6 w-[420px] max-w-[90vw]">
+      <div
+        id="calendarWrapper"
+        class="hidden absolute left-1/2 transform -translate-x-1/2 top-full mt-4 z-100 bg-white rounded-2xl shadow-2xl p-6 w-105 max-w-[90vw]"
+      >
         <div class="flex justify-between items-center mb-4 pb-2 border-b">
-          <h3 class="font-semibold text-[#231F20] text-base font-heading">Select Dates</h3>
-          <button id="closeCalendarBtn" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+          <h3 class="font-semibold text-[#231F20] text-base font-heading">
+            Select Dates
+          </h3>
+          <button
+            id="closeCalendarBtn"
+            class="text-gray-400 hover:text-gray-600 text-2xl"
+          >
+            &times;
+          </button>
         </div>
         <div id="calendarContainer"></div>
-        <div id="calendarError" class="hidden text-center py-4 text-sm text-red-600 font-body"></div>
+        <div
+          id="calendarError"
+          class="hidden text-center py-4 text-sm text-red-600 font-body"
+        ></div>
         <div class="flex justify-between mt-4 pt-3 border-t">
-          <button id="clearDatesBtn"
-            class="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded font-body cursor-pointer">Clear</button>
-          <button id="confirmDatesBtn"
-            class="bg-[#8B8635] text-white px-6 py-2 rounded-lg text-sm hover:bg-[#6B682A] transition font-heading font-medium cursor-pointer">Confirm</button>
+          <button
+            id="clearDatesBtn"
+            class="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded font-body cursor-pointer"
+          >
+            Clear
+          </button>
+          <button
+            id="confirmDatesBtn"
+            class="bg-[#8B8635] text-white px-6 py-2 rounded-lg text-sm hover:bg-[#6B682A] transition font-heading font-medium cursor-pointer"
+          >
+            Confirm
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Benefits -->
-    <div class="flex flex-wrap justify-center gap-6 sm:gap-10 mt-10 z-10">
-      <div class="flex items-center gap-3 text-white font-body text-sm sm:text-base tracking-wide drop-shadow-sm">
-        <span class="text-[#8B8635] flex items-center justify-center font-bold">✓</span> BEST RATE GUARANTEED
+    <div class="flex flex-wrap justify-center gap-6 sm:gap-10 mt-10">
+      <div
+        class="flex items-center gap-3 text-white font-body text-sm sm:text-base tracking-wide drop-shadow-sm"
+      >
+        <span class="text-[#8B8635] flex items-center justify-center font-bold"
+          >✓</span
+        >
+        BEST RATE GUARANTEED
       </div>
-      <div class="flex items-center gap-3 text-white font-body text-sm sm:text-base tracking-wide drop-shadow-sm">
-        <span class="text-[#8B8635] flex items-center justify-center font-bold">✓</span> 100% REFUND UP TO 14 DAYS
-        BEFORE ARRIVAL
+      <div
+        class="flex items-center gap-3 text-white font-body text-sm sm:text-base tracking-wide drop-shadow-sm"
+      >
+        <span class="text-[#8B8635] flex items-center justify-center font-bold"
+          >✓</span
+        >
+        100% REFUND UP TO 14 DAYS BEFORE ARRIVAL
       </div>
     </div>
   </div>
@@ -252,19 +343,28 @@ title: Direct Bookings | Tropical Villa Ventures
 
 <!-- ALL VILLAS / SEARCH RESULTS SECTION -->
 <section id="search-results-section" class="bg-[#F3F0E7] py-16">
-  <div class="max-w-screen-xl mx-auto px-6">
+  <div class="max-w-7xl mx-auto px-6">
     <div class="mb-10 text-[#231F20]">
-      <p id="search-meta" class="uppercase tracking-widest text-xs sm:text-sm text-[#A6461F] font-body mb-4">
+      <p
+        id="search-meta"
+        class="uppercase tracking-widest text-xs sm:text-sm text-[#A6461F] font-body mb-4"
+      >
         YOUR STAY . DATES . NIGHTS . GUESTS
       </p>
       <div class="flex flex-col sm:flex-row justify-between sm:items-end gap-4">
-        <h2 class="text-4xl sm:text-5xl font-extralight font-heading text-[#231F20]">
-          We found <span id="found-count" class="text-[#A6461F]">0</span> villas for your dates
+        <h2
+          class="text-4xl sm:text-5xl font-extralight font-heading text-[#231F20]"
+        >
+          We found <span id="found-count" class="text-[#A6461F]">0</span> villas
+          for your dates
         </h2>
         <div class="flex items-center gap-3">
           <span class="text-sm font-body text-gray-600">Sort by</span>
-          <select id="sort-select" onchange="window.renderResults && window.renderResults()"
-            class="border border-gray-300 bg-white p-2 text-sm focus:outline-none font-body cursor-pointer">
+          <select
+            id="sort-select"
+            onchange="window.renderResults && window.renderResults()"
+            class="border border-gray-300 bg-white p-2 text-sm focus:outline-none font-body cursor-pointer"
+          >
             <option value="recommended">Recommended</option>
             <option value="price-asc">Price (Low to High)</option>
             <option value="price-desc">Price (High to Low)</option>
@@ -273,9 +373,16 @@ title: Direct Bookings | Tropical Villa Ventures
       </div>
     </div>
 
-    <div id="loading-spinner" class="hidden flex-col items-center justify-center py-20">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B8635] mx-auto mb-4"></div>
-      <p class="text-gray-600 font-body">Checking availability across our villas...</p>
+    <div
+      id="loading-spinner"
+      class="hidden flex-col items-center justify-center py-20"
+    >
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B8635] mx-auto mb-4"
+      ></div>
+      <p class="text-gray-600 font-body">
+        Checking availability across our villas...
+      </p>
     </div>
 
     <div id="villas-container" class="space-y-8">
@@ -283,60 +390,114 @@ title: Direct Bookings | Tropical Villa Ventures
     </div>
 
     <div class="mt-12 bg-[#EBE7DB] p-8 text-center rounded-sm">
-      <h3 class="text-xl font-heading mb-2 text-[#231F20]">Not sure which villa suits your group?</h3>
-      <p class="text-sm text-gray-600 font-body mb-6">Our team in Ungasan is happy to recommend the right fit — usually
-        within an hour.</p>
-      <a href="/contact.html"
-        class="inline-block uppercase tracking-widest bg-[#231F20] text-white px-8 py-3 text-xs font-medium hover:bg-[#3a3536] transition">CHAT
-        WITH US</a>
+      <h3 class="text-xl font-heading mb-2 text-[#231F20]">
+        Not sure which villa suits your group?
+      </h3>
+      <p class="text-sm text-gray-600 font-body mb-6">
+        Our team is happy to recommend the right fit — usually within an hour.
+      </p>
+      <a
+        href="/contact.html"
+        class="inline-block uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-out hover:bg-[#6B682A] hover:scale-105 hover:-translate-y-1 active:scale-95 active:translate-y-0 text-white rounded-xl text-sm sm:text-base shadow-md text-center"
+        >CHAT WITH US</a
+      >
     </div>
   </div>
 </section>
 
 <!-- REVIEW STAY OVERLAY -->
-<div id="booking-overlay" class="fixed inset-0 z-[2000] hidden">
-  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeOverlay()"></div>
+<div id="booking-overlay" class="fixed inset-0 z-2000 hidden">
+  <div
+    class="absolute inset-0 bg-black/40 backdrop-blur-sm"
+    onclick="closeOverlay()"
+  ></div>
   <div
     class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-full"
-    id="booking-sidebar">
+    id="booking-sidebar"
+  >
     <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-      <h3 class="uppercase tracking-widest text-[#A6461F] text-xs font-semibold">REVIEW YOUR STAY</h3>
-      <button onclick="closeOverlay()"
-        class="text-gray-400 hover:text-gray-600 border border-gray-200 w-8 h-8 flex items-center justify-center rounded">✕</button>
+      <h3
+        class="uppercase tracking-widest text-[#A6461F] text-xs font-semibold"
+      >
+        REVIEW YOUR STAY
+      </h3>
+      <button
+        onclick="closeOverlay()"
+        class="text-gray-400 hover:text-gray-600 border border-gray-200 w-8 h-8 flex items-center justify-center rounded"
+      >
+        ✕
+      </button>
     </div>
     <div class="flex-1 overflow-y-auto p-6 space-y-6">
-      <img id="overlay-image" src="" class="w-full h-48 object-cover rounded" alt="">
+      <img
+        id="overlay-image"
+        src=""
+        class="w-full h-48 object-cover rounded"
+        alt=""
+      />
       <div>
-        <h2 id="overlay-title" class="text-3xl font-light font-heading text-[#231F20] mb-2"></h2>
+        <h2
+          id="overlay-title"
+          class="text-3xl font-light font-heading text-[#231F20] mb-2"
+        ></h2>
         <p id="overlay-desc" class="text-sm text-gray-500 font-body"></p>
       </div>
-      <div class="border-t border-b border-gray-100 py-4 space-y-3 text-sm font-body">
-        <div class="flex justify-between"><span class="text-gray-600">Check-in</span><span id="overlay-checkin"
-            class="font-medium text-[#231F20]"></span></div>
-        <div class="flex justify-between"><span class="text-gray-600">Check-out</span><span id="overlay-checkout"
-            class="font-medium text-[#231F20]"></span></div>
-        <div class="flex justify-between"><span class="text-gray-600">Guests</span><span id="overlay-guests"
-            class="font-medium text-[#231F20]"></span></div>
-        <div class="flex justify-between"><span class="text-gray-600">Nights</span><span id="overlay-nights"
-            class="font-medium text-[#231F20]"></span></div>
+      <div
+        class="border-t border-b border-gray-100 py-4 space-y-3 text-sm font-body"
+      >
+        <div class="flex justify-between">
+          <span class="text-gray-600">Check-in</span
+          ><span id="overlay-checkin" class="font-medium text-[#231F20]"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">Check-out</span
+          ><span
+            id="overlay-checkout"
+            class="font-medium text-[#231F20]"
+          ></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">Guests</span
+          ><span id="overlay-guests" class="font-medium text-[#231F20]"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">Nights</span
+          ><span id="overlay-nights" class="font-medium text-[#231F20]"></span>
+        </div>
       </div>
       <div class="space-y-3 text-sm font-body">
-        <div class="flex justify-between"><span id="overlay-rate-calc"></span><span id="overlay-base-total"
-            class="font-medium"></span></div>
-        <div class="flex justify-between text-gray-600"><span>Payment Processing Fee (2.9%)</span><span
-            id="overlay-processing"></span></div>
-        <div class="flex justify-between text-gray-600"><span>Flat Fee</span><span id="overlay-flat"></span></div>
-        <div class="flex justify-between text-gray-600"><span>VAT (11%)</span><span id="overlay-vat"></span></div>
+        <div class="flex justify-between">
+          <span id="overlay-rate-calc"></span
+          ><span id="overlay-base-total" class="font-medium"></span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>Payment Processing Fee (2.9%)</span
+          ><span id="overlay-processing"></span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>Flat Fee</span><span id="overlay-flat"></span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>VAT (11%)</span><span id="overlay-vat"></span>
+        </div>
       </div>
       <div class="border-t border-gray-100 pt-4 flex justify-between items-end">
-        <span class="text-xl font-light font-heading text-[#231F20]">Total</span>
-        <span id="overlay-total" class="text-2xl font-light font-heading text-[#231F20]"></span>
+        <span class="text-xl font-light font-heading text-[#231F20]"
+          >Total</span
+        >
+        <span
+          id="overlay-total"
+          class="text-2xl font-light font-heading text-[#231F20]"
+        ></span>
       </div>
     </div>
     <div class="p-6 bg-[#F3F0E7]">
-      <button id="overlay-submit"
-        class="w-full uppercase font-heading font-medium tracking-widest bg-[#A6461F] text-white py-4 rounded transition hover:bg-[#8e3c1a]">CONTINUE
-        TO PAYMENT</button>
+      <button
+        id="overlay-submit"
+        class="w-full uppercase font-heading font-medium tracking-widest bg-[#A6461F] text-white py-4 rounded transition hover:bg-[#8e3c1a]"
+      >
+        CONTINUE TO PAYMENT
+      </button>
     </div>
   </div>
 </div>
@@ -375,7 +536,11 @@ title: Direct Bookings | Tropical Villa Ventures
 
   function formatDisplayDate(dateStr) {
     const date = new Date(dateStr + "T00:00:00");
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
   }
 
   function renderCalendar() {
@@ -386,7 +551,8 @@ title: Direct Bookings | Tropical Villa Ventures
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const today = new Date().toISOString().split("T")[0];
     let html = `<div class="calendar-grid"><div class="calendar-header"><button class="prev-month-btn" type="button">&larr;</button><h4>${firstDay.toLocaleDateString("en-US", { month: "long", year: "numeric" })}</h4><button class="next-month-btn" type="button">&rarr;</button></div><div class="calendar-weekdays"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div class="calendar-days">`;
-    for (let i = 0; i < startOffset; i++) html += `<div class="calendar-day empty"></div>`;
+    for (let i = 0; i < startOffset; i++)
+      html += `<div class="calendar-day empty"></div>`;
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       const isPast = dateStr < today;
@@ -395,20 +561,39 @@ title: Direct Bookings | Tropical Villa Ventures
       if (selectedCheckin && selectedCheckout) {
         if (dateStr === selectedCheckin) cls += " selected-start";
         else if (dateStr === selectedCheckout) cls += " selected-end";
-        else if (dateStr > selectedCheckin && dateStr < selectedCheckout) cls += " in-range";
-      } else if (selectedCheckin && dateStr === selectedCheckin) cls += " selected-start";
+        else if (dateStr > selectedCheckin && dateStr < selectedCheckout)
+          cls += " in-range";
+      } else if (selectedCheckin && dateStr === selectedCheckin)
+        cls += " selected-start";
       if (dateStr === today && !isPast) cls += " today";
       html += `<div class="${cls}" data-date="${dateStr}" data-selectable="${!isPast}">${day}</div>`;
     }
     html += `</div></div>`;
     calendarContainer.innerHTML = html;
-    calendarContainer.querySelectorAll('.calendar-day[data-selectable="true"]').forEach(d => {
-      d.addEventListener("click", e => { e.stopPropagation(); handleDateSelection(d.dataset.date); });
-    });
+    calendarContainer
+      .querySelectorAll('.calendar-day[data-selectable="true"]')
+      .forEach((d) => {
+        d.addEventListener("click", (e) => {
+          e.stopPropagation();
+          handleDateSelection(d.dataset.date);
+        });
+      });
     const pBtn = calendarContainer.querySelector(".prev-month-btn");
     const nBtn = calendarContainer.querySelector(".next-month-btn");
-    if (pBtn) pBtn.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-    if (nBtn) nBtn.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+    if (pBtn)
+      pBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+      });
+    if (nBtn)
+      nBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+      });
   }
 
   window.updateGuests = function (change) {
@@ -424,14 +609,22 @@ title: Direct Bookings | Tropical Villa Ventures
       selectedCheckin = date;
       selectedCheckout = null;
     } else if (selectedCheckin && !selectedCheckout) {
-      let ci = selectedCheckin, co = date;
-      if (new Date(date) < new Date(selectedCheckin)) { co = selectedCheckin; ci = date; }
+      let ci = selectedCheckin,
+        co = date;
+      if (new Date(date) < new Date(selectedCheckin)) {
+        co = selectedCheckin;
+        ci = date;
+      }
       const diff = Math.ceil(Math.abs(new Date(co) - new Date(ci)) / 86400000);
       if (diff < 2) {
         calendarError.textContent = "Minimum stay is 2 nights.";
         calendarError.classList.remove("hidden");
-        selectedCheckin = date; selectedCheckout = null;
-      } else { selectedCheckin = ci; selectedCheckout = co; }
+        selectedCheckin = date;
+        selectedCheckout = null;
+      } else {
+        selectedCheckin = ci;
+        selectedCheckout = co;
+      }
     }
     renderCalendar();
   }
@@ -445,7 +638,14 @@ title: Direct Bookings | Tropical Villa Ventures
       searchBtn.classList.remove("opacity-50");
       hideCalendar();
       // Share dates across pages via sessionStorage
-      sessionStorage.setItem("sharedDates", JSON.stringify({ checkin: selectedCheckin, checkout: selectedCheckout, guests: parseInt(document.getElementById("guests").value) }));
+      sessionStorage.setItem(
+        "sharedDates",
+        JSON.stringify({
+          checkin: selectedCheckin,
+          checkout: selectedCheckout,
+          guests: parseInt(document.getElementById("guests").value),
+        }),
+      );
     } else if (selectedCheckin) {
       calendarError.textContent = "Please select a check-out date.";
       calendarError.classList.remove("hidden");
@@ -453,27 +653,56 @@ title: Direct Bookings | Tropical Villa Ventures
   }
 
   function clearSelection() {
-    selectedCheckin = null; selectedCheckout = null;
-    checkinInput.value = ""; checkoutInput.value = "";
+    selectedCheckin = null;
+    selectedCheckout = null;
+    checkinInput.value = "";
+    checkoutInput.value = "";
     checkoutInput.classList.add("opacity-50");
-    searchBtn.disabled = true; searchBtn.classList.add("opacity-50");
+    searchBtn.disabled = true;
+    searchBtn.classList.add("opacity-50");
     calendarError.classList.add("hidden");
     sessionStorage.removeItem("sharedDates");
     renderCalendar();
   }
 
-  function showCalendar() { calendarWrapper.classList.remove("hidden"); isCalendarOpen = true; renderCalendar(); }
-  function hideCalendar() { calendarWrapper.classList.add("hidden"); isCalendarOpen = false; }
+  function showCalendar() {
+    calendarWrapper.classList.remove("hidden");
+    isCalendarOpen = true;
+    renderCalendar();
+  }
+  function hideCalendar() {
+    calendarWrapper.classList.add("hidden");
+    isCalendarOpen = false;
+  }
 
   checkinInput.addEventListener("click", showCalendar);
   checkoutInput.addEventListener("click", showCalendar);
-  closeBtn.addEventListener("click", e => { e.stopPropagation(); hideCalendar(); });
-  clearBtn.addEventListener("click", e => { e.stopPropagation(); clearSelection(); });
-  confirmBtn.addEventListener("click", e => { e.stopPropagation(); confirmSelection(); });
-  document.addEventListener("click", e => {
-    if (isCalendarOpen && calendarWrapper && !calendarWrapper.contains(e.target) && !checkinInput.contains(e.target) && !checkoutInput.contains(e.target) && e.target.id !== 'searchVillaBtn') hideCalendar();
+  closeBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    hideCalendar();
   });
-  calendarWrapper.addEventListener("click", e => { e.stopPropagation(); });
+  clearBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    clearSelection();
+  });
+  confirmBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    confirmSelection();
+  });
+  document.addEventListener("click", (e) => {
+    if (
+      isCalendarOpen &&
+      calendarWrapper &&
+      !calendarWrapper.contains(e.target) &&
+      !checkinInput.contains(e.target) &&
+      !checkoutInput.contains(e.target) &&
+      e.target.id !== "searchVillaBtn"
+    )
+      hideCalendar();
+  });
+  calendarWrapper.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
 
   // --- Formatting ---
   const formatIDR = (num) => `IDR ${Math.round(num).toLocaleString("id-ID")}`;
@@ -482,15 +711,20 @@ title: Direct Bookings | Tropical Villa Ventures
   function renderAllVillas() {
     const container = document.getElementById("villas-container");
     container.innerHTML = "";
-    document.getElementById("search-meta").textContent = "EXPLORE OUR VILLAS \u00b7 UNGASAN, BALI";
+    document.getElementById("search-meta").textContent =
+      "EXPLORE OUR VILLAS \u00b7 UNGASAN, BALI";
     const h2 = document.querySelector("#search-results-section h2");
-    if (h2) h2.innerHTML = `Explore our <span id="found-count" class="text-[#A6461F]">${window.allVillas.length}</span> private villas`;
-    const sortW = document.querySelector("#search-results-section .flex.items-center.gap-3");
+    if (h2)
+      h2.innerHTML = `Explore our <span id="found-count" class="text-[#A6461F]">${window.allVillas.length}</span> private villas`;
+    const sortW = document.querySelector(
+      "#search-results-section .flex.items-center.gap-3",
+    );
     if (sortW) sortW.classList.add("hidden");
-    window.allVillas.forEach(v => {
+    window.allVillas.forEach((v) => {
       const card = document.createElement("div");
-      card.className = "bg-white flex flex-col md:flex-row shadow-sm overflow-hidden";
-      card.innerHTML = `<div class="relative w-full md:w-2/5 h-64 md:h-auto"><img src="${v.image}" class="w-full h-full object-cover" alt="${v.name}"></div><div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center"><p class="text-xs text-[#A6461F] uppercase tracking-widest mb-2 font-semibold">TROPICAL VILLA</p><h3 class="text-3xl font-heading text-[#231F20] mb-4">${v.name}</h3><p class="text-sm text-gray-600 font-body mb-6 line-clamp-3">${v.description}</p><div class="flex gap-6 text-sm text-gray-600 mb-6"><span class="flex items-center gap-2">\ud83d\udecf\ufe0f ${v.bedrooms} bedrooms</span><span class="flex items-center gap-2">\ud83d\udec1 ${v.bathrooms} bathrooms</span><span class="flex items-center gap-2">\ud83d\udc65 Up to ${v.guests}</span></div><a href="${v.url}" class="inline-block w-fit border border-gray-300 text-gray-600 uppercase text-xs tracking-widest py-3 px-6 rounded-sm transition hover:bg-gray-50">VIEW DETAILS</a></div>`;
+      card.className =
+        "bg-white flex flex-col md:flex-row shadow-sm overflow-hidden";
+      card.innerHTML = `<div class="relative w-full md:w-2/5 h-64 md:h-auto"><img src="${v.image}" class="w-full h-full object-cover" alt="${v.name}"></div><div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center"><p class="text-xs text-[#A6461F] uppercase tracking-widest mb-2 font-semibold">TROPICAL VILLA</p><h3 class="text-3xl font-heading text-[#231F20] mb-4">${v.name}</h3><p class="text-sm text-gray-600 font-body mb-6 line-clamp-3">${v.description}</p><div class="flex gap-6 text-sm text-gray-600 mb-6"><span class="flex items-center gap-2">· ${v.bedrooms} bedrooms</span><span class="flex items-center gap-2">· ${v.bathrooms} bathrooms</span><span class="flex items-center gap-2">· Up to ${v.guests} guests</span></div><a href="${v.url}" class="inline-block w-fit border border-gray-300 text-gray-600 uppercase text-xs tracking-widest py-3 px-6 rounded-sm transition hover:bg-gray-50">VIEW DETAILS</a></div>`;
       container.appendChild(card);
     });
   }
@@ -502,49 +736,80 @@ title: Direct Bookings | Tropical Villa Ventures
   searchBtn.addEventListener("click", async () => {
     if (!selectedCheckin || !selectedCheckout) return;
     const guests = parseInt(document.getElementById("guests").value);
-    document.getElementById("search-results-section").scrollIntoView({ behavior: 'smooth' });
+    document
+      .getElementById("search-results-section")
+      .scrollIntoView({ behavior: "smooth" });
     document.getElementById("loading-spinner").classList.remove("hidden");
     document.getElementById("loading-spinner").style.display = "flex";
     document.getElementById("villas-container").innerHTML = "";
-    const nights = Math.ceil((new Date(selectedCheckout) - new Date(selectedCheckin)) / 86400000);
-    document.getElementById("search-meta").textContent = `YOUR STAY \u00b7 ${formatDisplayDate(selectedCheckin).toUpperCase()} \u2192 ${formatDisplayDate(selectedCheckout).toUpperCase()} \u00b7 ${nights} NIGHTS \u00b7 ${guests} GUESTS`;
+    const nights = Math.ceil(
+      (new Date(selectedCheckout) - new Date(selectedCheckin)) / 86400000,
+    );
+    document.getElementById("search-meta").textContent =
+      `YOUR STAY \u00b7 ${formatDisplayDate(selectedCheckin).toUpperCase()} \u2192 ${formatDisplayDate(selectedCheckout).toUpperCase()} \u00b7 ${nights} NIGHTS \u00b7 ${guests} GUESTS`;
     document.getElementById("found-count").textContent = "...";
-    const sortW = document.querySelector("#search-results-section .flex.items-center.gap-3");
+    const sortW = document.querySelector(
+      "#search-results-section .flex.items-center.gap-3",
+    );
     if (sortW) sortW.classList.remove("hidden");
 
     // Step 1: Instant availability via Hostaway Booking Engine (single API call)
     let availableIds = new Set();
     try {
-      const sr = await fetch(`/.netlify/functions/search-availability?startDate=${selectedCheckin}&endDate=${selectedCheckout}&guests=${guests}`);
+      const sr = await fetch(
+        `/.netlify/functions/search-availability?startDate=${selectedCheckin}&endDate=${selectedCheckout}&guests=${guests}`,
+      );
       const sd = await sr.json();
-      if (sd.success && sd.listings) sd.listings.forEach(l => availableIds.add(String(l.hostawayId)));
-    } catch (e) { console.error("Search failed:", e); }
+      if (sd.success && sd.listings)
+        sd.listings.forEach((l) => availableIds.add(String(l.hostawayId)));
+    } catch (e) {
+      console.error("Search failed:", e);
+    }
 
-    const avail = window.allVillas.filter(v => availableIds.has(String(v.id)));
+    const avail = window.allVillas.filter((v) =>
+      availableIds.has(String(v.id)),
+    );
     if (avail.length === 0) {
       document.getElementById("loading-spinner").classList.add("hidden");
       document.getElementById("loading-spinner").style.display = "";
       currentSearchResults = [];
       const h2 = document.querySelector("#search-results-section h2");
-      if (h2) h2.innerHTML = `We found <span id="found-count" class="text-[#A6461F]">0</span> villas for your dates`;
+      if (h2)
+        h2.innerHTML = `We found <span id="found-count" class="text-[#A6461F]">0</span> villas for your dates`;
       window.renderResults();
       return;
     }
 
     // Step 2: Get detailed pricing for available villas only
-    const results = await Promise.all(avail.map(async villa => {
-      try {
-        const r = await fetch("/.netlify/functions/calculate-price", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ listingId: villa.id, startingDate: selectedCheckin, endingDate: selectedCheckout, numberOfGuests: guests }) });
-        const d = await r.json();
-        return d.success ? { villa, available: true, data: d } : { villa, available: false };
-      } catch (e) { return { villa, available: false }; }
-    }));
+    const results = await Promise.all(
+      avail.map(async (villa) => {
+        try {
+          const r = await fetch("/.netlify/functions/calculate-price", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              listingId: villa.id,
+              startingDate: selectedCheckin,
+              endingDate: selectedCheckout,
+              numberOfGuests: guests,
+            }),
+          });
+          const d = await r.json();
+          return d.success
+            ? { villa, available: true, data: d }
+            : { villa, available: false };
+        } catch (e) {
+          return { villa, available: false };
+        }
+      }),
+    );
 
     document.getElementById("loading-spinner").classList.add("hidden");
     document.getElementById("loading-spinner").style.display = "";
-    currentSearchResults = results.filter(r => r.available);
+    currentSearchResults = results.filter((r) => r.available);
     const h2 = document.querySelector("#search-results-section h2");
-    if (h2) h2.innerHTML = `We found <span id="found-count" class="text-[#A6461F]">${currentSearchResults.length}</span> villas for your dates`;
+    if (h2)
+      h2.innerHTML = `We found <span id="found-count" class="text-[#A6461F]">${currentSearchResults.length}</span> villas for your dates`;
     if (window.renderResults) window.renderResults();
   });
 
@@ -557,18 +822,23 @@ title: Direct Bookings | Tropical Villa Ventures
     container.innerHTML = "";
     const sortVal = document.getElementById("sort-select").value;
     let sorted = [...currentSearchResults];
-    if (sortVal === "price-asc") sorted.sort((a, b) => a.data.totalPrice - b.data.totalPrice);
-    else if (sortVal === "price-desc") sorted.sort((a, b) => b.data.totalPrice - a.data.totalPrice);
-    const nights = Math.ceil((new Date(selectedCheckout) - new Date(selectedCheckin)) / 86400000);
-    sorted.forEach(res => {
+    if (sortVal === "price-asc")
+      sorted.sort((a, b) => a.data.totalPrice - b.data.totalPrice);
+    else if (sortVal === "price-desc")
+      sorted.sort((a, b) => b.data.totalPrice - a.data.totalPrice);
+    const nights = Math.ceil(
+      (new Date(selectedCheckout) - new Date(selectedCheckin)) / 86400000,
+    );
+    sorted.forEach((res) => {
       const idx = currentSearchResults.indexOf(res);
       const v = res.villa;
       const card = document.createElement("div");
-      card.className = "bg-white flex flex-col md:flex-row shadow-sm overflow-hidden";
-      card.innerHTML = `<div class="relative w-full md:w-2/5 h-64 md:h-auto"><img src="${v.image}" class="w-full h-full object-cover" alt="${v.name}"><div class="absolute top-4 left-4 bg-white/95 px-3 py-1 text-xs font-semibold text-[#8B8635] tracking-widest shadow-sm rounded-sm">\u2713 AVAILABLE</div></div><div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center"><p class="text-xs text-[#A6461F] uppercase tracking-widest mb-2 font-semibold">TROPICAL VILLA</p><h3 class="text-3xl font-heading text-[#231F20] mb-4">${v.name}</h3><p class="text-sm text-gray-600 font-body mb-6 line-clamp-3">${v.description}</p><div class="flex gap-6 text-sm text-gray-600"><span class="flex items-center gap-2">\ud83d\udecf\ufe0f ${v.bedrooms} bedrooms</span><span class="flex items-center gap-2">\ud83d\udec1 ${v.bathrooms} bathrooms</span><span class="flex items-center gap-2">\ud83d\udc65 Up to ${v.guests}</span></div></div><div class="p-6 md:p-8 md:w-[280px] flex flex-col justify-between border-t md:border-t-0 md:border-l border-gray-100 bg-[#FAF9F6]"><div><p class="text-xs text-gray-500 uppercase tracking-widest mb-1">From</p><div class="flex items-end gap-1 mb-4"><span class="text-2xl text-[#231F20] font-heading">${formatIDR(res.data.pricePerNight)}</span><span class="text-sm text-gray-500 pb-1">/ night</span></div><p class="text-xs text-gray-500 mb-1">Total for ${nights} nights</p><p class="text-lg text-[#231F20] mb-6">${formatIDR(res.data.totalPrice)}</p></div><div class="space-y-3"><button onclick="openOverlay(${idx})" class="w-full bg-[#A6461F] text-white uppercase text-xs tracking-widest py-3 rounded-sm transition hover:bg-[#8e3c1a] cursor-pointer">RESERVE</button><a href="${v.url}" class="block w-full text-center border border-gray-300 text-gray-600 uppercase text-xs tracking-widest py-3 rounded-sm transition hover:bg-gray-50">VIEW DETAILS</a></div></div>`;
+      card.className =
+        "bg-white flex flex-col md:flex-row shadow-sm overflow-hidden";
+      card.innerHTML = `<div class="relative w-full md:w-2/5 h-64 md:h-auto"><img src="${v.image}" class="w-full h-full object-cover" alt="${v.name}"><div class="absolute top-4 left-4 bg-white/95 px-3 py-1 text-xs font-semibold text-[#8B8635] tracking-widest shadow-sm rounded-sm">\u2713 AVAILABLE</div></div><div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center"><p class="text-xs text-[#A6461F] uppercase tracking-widest mb-2 font-semibold">TROPICAL VILLA</p><h3 class="text-3xl font-heading text-[#231F20] mb-4">${v.name}</h3><p class="text-sm text-gray-600 font-body mb-6 line-clamp-3">${v.description}</p><div class="flex gap-6 text-sm text-gray-600"><span class="flex items-center gap-2">· ${v.bedrooms} bedrooms</span><span class="flex items-center gap-2">· ${v.bathrooms} bathrooms</span><span class="flex items-center gap-2">· Up to ${v.guests}</span></div></div><div class="p-6 md:p-8 md:w-[280px] flex flex-col justify-between border-t md:border-t-0 md:border-l border-gray-100 bg-[#FAF9F6]"><div><p class="text-xs text-gray-500 uppercase tracking-widest mb-1">From</p><div class="flex items-end gap-1 mb-4"><span class="text-2xl text-[#231F20] font-heading">${formatIDR(res.data.pricePerNight)}</span><span class="text-sm text-gray-500 pb-1">/ night</span></div><p class="text-xs text-gray-500 mb-1">Total for ${nights} nights</p><p class="text-lg text-[#231F20] mb-6">${formatIDR(res.data.totalPrice)}</p></div><div class="space-y-3"><button onclick="openOverlay(${idx})" class="w-full bg-[#A6461F] text-white uppercase text-xs tracking-widest py-3 rounded-sm transition hover:bg-[#8e3c1a] cursor-pointer">RESERVE</button><a href="${v.url}" class="block w-full text-center border border-gray-300 text-gray-600 uppercase text-xs tracking-widest py-3 rounded-sm transition hover:bg-gray-50">VIEW DETAILS</a></div></div>`;
       container.appendChild(card);
     });
-  }
+  };
 
   // --- Overlay Logic ---
   let selectedBookingIndex = null;
@@ -576,22 +846,37 @@ title: Direct Bookings | Tropical Villa Ventures
     selectedBookingIndex = index;
     const res = currentSearchResults[index];
     if (!res || !res.available) return;
-    const v = res.villa, d = res.data;
-    const nights = Math.ceil((new Date(selectedCheckout) - new Date(selectedCheckin)) / 86400000);
+    const v = res.villa,
+      d = res.data;
+    const nights = Math.ceil(
+      (new Date(selectedCheckout) - new Date(selectedCheckin)) / 86400000,
+    );
     const guests = document.getElementById("guests").value;
     document.getElementById("overlay-image").src = v.image;
     document.getElementById("overlay-title").textContent = v.name;
-    document.getElementById("overlay-desc").textContent = v.description.substring(0, 120) + "...";
-    document.getElementById("overlay-checkin").textContent = formatDisplayDate(selectedCheckin);
-    document.getElementById("overlay-checkout").textContent = formatDisplayDate(selectedCheckout);
+    document.getElementById("overlay-desc").textContent =
+      v.description.substring(0, 120) + "...";
+    document.getElementById("overlay-checkin").textContent =
+      formatDisplayDate(selectedCheckin);
+    document.getElementById("overlay-checkout").textContent =
+      formatDisplayDate(selectedCheckout);
     document.getElementById("overlay-guests").textContent = guests;
     document.getElementById("overlay-nights").textContent = nights;
-    document.getElementById("overlay-rate-calc").textContent = `${formatIDR(d.pricePerNight)} \u00d7 ${nights} nights`;
-    document.getElementById("overlay-base-total").textContent = formatIDR(d.pricePerNight * nights);
-    document.getElementById("overlay-processing").textContent = formatIDR(d.fees.processingFee);
-    document.getElementById("overlay-flat").textContent = formatIDR(d.fees.fixedFee);
+    document.getElementById("overlay-rate-calc").textContent =
+      `${formatIDR(d.pricePerNight)} \u00d7 ${nights} nights`;
+    document.getElementById("overlay-base-total").textContent = formatIDR(
+      d.pricePerNight * nights,
+    );
+    document.getElementById("overlay-processing").textContent = formatIDR(
+      d.fees.processingFee,
+    );
+    document.getElementById("overlay-flat").textContent = formatIDR(
+      d.fees.fixedFee,
+    );
     document.getElementById("overlay-vat").textContent = formatIDR(d.fees.vat);
-    document.getElementById("overlay-total").textContent = formatIDR(d.totalPrice);
+    document.getElementById("overlay-total").textContent = formatIDR(
+      d.totalPrice,
+    );
     const overlay = document.getElementById("booking-overlay");
     const sidebar = document.getElementById("booking-sidebar");
     overlay.classList.remove("hidden");
@@ -601,17 +886,27 @@ title: Direct Bookings | Tropical Villa Ventures
   window.closeOverlay = function () {
     const sidebar = document.getElementById("booking-sidebar");
     sidebar.classList.add("translate-x-full");
-    setTimeout(() => document.getElementById("booking-overlay").classList.add("hidden"), 300);
+    setTimeout(
+      () => document.getElementById("booking-overlay").classList.add("hidden"),
+      300,
+    );
   };
 
   document.getElementById("overlay-submit").addEventListener("click", () => {
     if (selectedBookingIndex === null) return;
     const res = currentSearchResults[selectedBookingIndex];
     const guests = document.getElementById("guests").value;
-    localStorage.setItem("bookingData", JSON.stringify({
-      listingId: res.villa.id, checkin: selectedCheckin, checkout: selectedCheckout,
-      guests: parseInt(guests), villaName: res.villa.name, villaImage: res.villa.image
-    }));
+    localStorage.setItem(
+      "bookingData",
+      JSON.stringify({
+        listingId: res.villa.id,
+        checkin: selectedCheckin,
+        checkout: selectedCheckout,
+        guests: parseInt(guests),
+        villaName: res.villa.name,
+        villaImage: res.villa.image,
+      }),
+    );
     window.location.href = "/booking-page.html";
   });
 </script>
