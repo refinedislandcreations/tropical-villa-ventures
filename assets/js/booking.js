@@ -219,13 +219,62 @@ class VillaBookingManager {
     };
   }
 
-  async createBooking() {
+  validateForm() {
     const formData = this.getFormData();
+    let isValid = true;
+    let firstError = null;
 
-    if (!formData.fullName || !formData.email || !formData.phone) {
-      this.showError("Please fill in all required fields");
+    const fields = [
+      { id: "fullName", name: "full name", type: "text" },
+      { id: "email", name: "email address", type: "email" },
+      { id: "phone", name: "phone number", type: "tel" }
+    ];
+
+    fields.forEach(field => {
+      const el = document.getElementById(field.id);
+      if (!el) return;
+
+      const val = formData[field.id].trim();
+      let hasError = false;
+
+      if (!val) {
+        hasError = true;
+        if (!firstError) firstError = `Please enter your ${field.name}.`;
+      } else if (field.type === "email") {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(val)) {
+          hasError = true;
+          if (!firstError) firstError = "Please enter a valid email address.";
+        }
+      }
+
+      if (hasError) {
+        isValid = false;
+        // Highlight field with red border
+        el.classList.add("border-red-500", "text-red-500");
+        el.classList.remove("border-[#231F20]/40");
+        
+        // Remove error style when user starts typing again
+        el.addEventListener("input", function removeError() {
+          el.classList.remove("border-red-500", "text-red-500");
+          el.classList.add("border-[#231F20]/40");
+          el.removeEventListener("input", removeError);
+        });
+      }
+    });
+
+    if (!isValid) {
+      this.showError(firstError);
+    }
+    return isValid;
+  }
+
+  async createBooking() {
+    if (!this.validateForm()) {
       return false;
     }
+
+    const formData = this.getFormData();
 
     if (!this.checkinDate || !this.checkoutDate || !this.priceBreakdown) {
       this.showError("Please select check-in and check-out dates first.");

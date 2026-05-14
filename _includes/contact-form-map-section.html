@@ -307,8 +307,60 @@
         if (loadingLabel) loadingLabel.classList.toggle("hidden", !loading);
       }
 
+      function validateContactForm() {
+        let isValid = true;
+        let firstError = null;
+
+        const fields = [
+          { name: "name", label: "full name", type: "text" },
+          { name: "email", label: "email address", type: "email" },
+          { name: "message", label: "message", type: "text" }
+        ];
+
+        fields.forEach(field => {
+          const el = form.elements[field.name];
+          if (!el) return;
+
+          const val = el.value.trim();
+          let hasError = false;
+
+          if (!val) {
+            hasError = true;
+            if (!firstError) firstError = `Please enter your ${field.label}.`;
+          } else if (field.type === "email") {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(val)) {
+              hasError = true;
+              if (!firstError) firstError = "Please enter a valid email address.";
+            }
+          }
+
+          if (hasError) {
+            isValid = false;
+            el.classList.add("border-red-500", "text-red-500");
+            el.classList.remove("border-[#231F20]/40");
+            
+            el.addEventListener("input", function removeError() {
+              el.classList.remove("border-red-500", "text-red-500");
+              el.classList.add("border-[#231F20]/40");
+              el.removeEventListener("input", removeError);
+            });
+          }
+        });
+
+        if (!isValid) {
+          alert(firstError);
+        }
+        return isValid;
+      }
+
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
+        
+        if (!validateContactForm()) {
+          return;
+        }
+
         setLoading(true);
 
         try {
