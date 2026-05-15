@@ -141,7 +141,7 @@ title: Direct Bookings | Tropical Villa Ventures
 </style>
 
 <section
-  class="relative w-full h-screen min-h-150 flex items-center justify-center overflow-visible"
+  class="relative w-full h-dvh flex items-center justify-center overflow-visible"
 >
   <!-- Auto-changing Background Images -->
   <div id="hero-bg-slider" class="absolute inset-0 z-0">
@@ -185,11 +185,6 @@ title: Direct Bookings | Tropical Villa Ventures
   <div
     class="relative z-20 text-center px-4 w-full max-w-5xl mx-auto flex flex-col items-center mt-16"
   >
-    <p
-      class="uppercase tracking-[0.2em] text-white text-xs sm:text-sm font-body mb-4"
-    >
-      DIRECT BOOKINGS · UNGASAN, BALI
-    </p>
     <h1
       class="text-4xl sm:text-5xl md:text-7xl font-extralight text-white mb-6 font-heading leading-tight uppercase tracking-wide drop-shadow-sm"
     >
@@ -318,26 +313,6 @@ title: Direct Bookings | Tropical Villa Ventures
         </div>
       </div>
     </div>
-
-    <!-- Benefits -->
-    <div class="flex flex-wrap justify-center gap-6 sm:gap-10 mt-10">
-      <div
-        class="flex items-center gap-3 text-white font-body text-sm sm:text-base tracking-wide drop-shadow-sm"
-      >
-        <span class="text-[#8B8635] flex items-center justify-center font-bold"
-          >✓</span
-        >
-        BEST RATE GUARANTEED
-      </div>
-      <div
-        class="flex items-center gap-3 text-white font-body text-sm sm:text-base tracking-wide drop-shadow-sm"
-      >
-        <span class="text-[#8B8635] flex items-center justify-center font-bold"
-          >✓</span
-        >
-        100% REFUND UP TO 14 DAYS BEFORE ARRIVAL
-      </div>
-    </div>
   </div>
 </section>
 
@@ -391,10 +366,10 @@ title: Direct Bookings | Tropical Villa Ventures
 
     <div class="mt-12 bg-[#EBE7DB] p-8 text-center rounded-sm">
       <h3 class="text-xl font-heading mb-2 text-[#231F20]">
-        Not sure which villa suits your group?
+        Not sure which villa to choose?
       </h3>
       <p class="text-sm text-gray-600 font-body mb-6">
-        Our team is happy to recommend the right fit — usually within an hour.
+        Our team is happy to recommend the right fit for you.
       </p>
       <a
         href="/contact.html"
@@ -711,8 +686,7 @@ title: Direct Bookings | Tropical Villa Ventures
   function renderAllVillas() {
     const container = document.getElementById("villas-container");
     container.innerHTML = "";
-    document.getElementById("search-meta").textContent =
-      "EXPLORE OUR VILLAS \u00b7 UNGASAN, BALI";
+    document.getElementById("search-meta").textContent = "";
     const h2 = document.querySelector("#search-results-section h2");
     if (h2)
       h2.innerHTML = `Explore our <span id="found-count" class="text-[#A6461F]">${window.allVillas.length}</span> private villas`;
@@ -724,7 +698,7 @@ title: Direct Bookings | Tropical Villa Ventures
       const card = document.createElement("div");
       card.className =
         "bg-white flex flex-col md:flex-row shadow-sm overflow-hidden";
-      card.innerHTML = `<div class="relative w-full md:w-2/5 h-64 md:h-auto"><img src="${v.image}" class="w-full h-full object-cover" alt="${v.name}"></div><div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center"><p class="text-xs text-[#A6461F] uppercase tracking-widest mb-2 font-semibold">TROPICAL VILLA</p><h3 class="text-3xl font-heading text-[#231F20] mb-4">${v.name}</h3><p class="text-sm text-gray-600 font-body mb-6 line-clamp-3">${v.description}</p><div class="flex gap-6 text-sm text-gray-600 mb-6"><span class="flex items-center gap-2">· ${v.bedrooms} bedrooms</span><span class="flex items-center gap-2">· ${v.bathrooms} bathrooms</span><span class="flex items-center gap-2">· Up to ${v.guests} guests</span></div><a href="${v.url}" class="inline-block w-fit border border-gray-300 text-gray-600 uppercase text-xs tracking-widest py-3 px-6 rounded-sm transition hover:bg-gray-50">VIEW DETAILS</a></div>`;
+      card.innerHTML = `<div class="relative w-full md:w-2/5 h-64 md:h-auto"><img src="${v.image}" class="w-full h-full object-cover" alt="${v.name}"></div><div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center"><h3 class="text-3xl font-heading text-[#231F20] mb-4">${v.name}</h3><p class="text-sm text-gray-600 font-body mb-6 line-clamp-3">${v.description}</p><div class="flex gap-6 text-sm text-gray-600 mb-6"><span class="flex items-center gap-2">· ${v.bedrooms} bedrooms</span><span class="flex items-center gap-2">· ${v.bathrooms} bathrooms</span><span class="flex items-center gap-2">· Up to ${v.guests} guests</span></div><a href="${v.url}" class="inline-block w-fit border border-gray-300 text-gray-600 uppercase text-xs tracking-widest py-3 px-6 rounded-sm transition hover:bg-gray-50">VIEW DETAILS</a></div>`;
       container.appendChild(card);
     });
   }
@@ -835,7 +809,7 @@ title: Direct Bookings | Tropical Villa Ventures
       const card = document.createElement("div");
       card.className =
         "bg-white flex flex-col md:flex-row shadow-sm overflow-hidden";
-      card.innerHTML = `<div class="relative w-full md:w-2/5 h-64 md:h-auto"><img src="${v.image}" class="w-full h-full object-cover" alt="${v.name}"><div class="absolute top-4 left-4 bg-white/95 px-3 py-1 text-xs font-semibold text-[#8B8635] tracking-widest shadow-sm rounded-sm">\u2713 AVAILABLE</div></div><div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center"><p class="text-xs text-[#A6461F] uppercase tracking-widest mb-2 font-semibold">TROPICAL VILLA</p><h3 class="text-3xl font-heading text-[#231F20] mb-4">${v.name}</h3><p class="text-sm text-gray-600 font-body mb-6 line-clamp-3">${v.description}</p><div class="flex gap-6 text-sm text-gray-600"><span class="flex items-center gap-2">· ${v.bedrooms} bedrooms</span><span class="flex items-center gap-2">· ${v.bathrooms} bathrooms</span><span class="flex items-center gap-2">· Up to ${v.guests} guests</span></div></div><div class="p-6 md:p-8 md:w-[280px] flex flex-col justify-between border-t md:border-t-0 md:border-l border-gray-100 bg-[#FAF9F6]"><div><p class="text-xs text-gray-500 uppercase tracking-widest mb-1">From</p><div class="flex items-end gap-1 mb-4"><span class="text-2xl text-[#231F20] font-heading">${formatIDR(res.data.pricePerNight)}</span><span class="text-sm text-gray-500 pb-1">/ night</span></div><p class="text-xs text-gray-500 mb-1">Total for ${nights} nights</p><p class="text-lg text-[#231F20] mb-6">${formatIDR(res.data.totalPrice)}</p></div><div class="space-y-3"><button onclick="openOverlay(${idx})" class="w-full bg-[#A6461F] text-white uppercase text-xs tracking-widest py-3 rounded-sm transition hover:bg-[#8e3c1a] cursor-pointer">RESERVE</button><a href="${v.url}" class="block w-full text-center border border-gray-300 text-gray-600 uppercase text-xs tracking-widest py-3 rounded-sm transition hover:bg-gray-50">VIEW DETAILS</a></div></div>`;
+      card.innerHTML = `<div class="relative w-full md:w-2/5 h-64 md:h-auto"><img src="${v.image}" class="w-full h-full object-cover" alt="${v.name}"><div class="absolute top-4 left-4 bg-white/95 px-3 py-1 text-xs font-semibold text-[#8B8635] tracking-widest shadow-sm rounded-sm">\u2713 AVAILABLE</div></div><div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center"><h3 class="text-3xl font-heading text-[#231F20] mb-4">${v.name}</h3><p class="text-sm text-gray-600 font-body mb-6 line-clamp-3">${v.description}</p><div class="flex gap-6 text-sm text-gray-600"><span class="flex items-center gap-2">· ${v.bedrooms} bedrooms</span><span class="flex items-center gap-2">· ${v.bathrooms} bathrooms</span><span class="flex items-center gap-2">· Up to ${v.guests} guests</span></div></div><div class="p-6 md:p-8 md:w-[280px] flex flex-col justify-between border-t md:border-t-0 md:border-l border-gray-100 bg-[#FAF9F6]"><div><p class="text-xs text-gray-500 uppercase tracking-widest mb-1">From</p><div class="flex items-end gap-1 mb-4"><span class="text-2xl text-[#231F20] font-heading">${formatIDR(res.data.pricePerNight)}</span><span class="text-sm text-gray-500 pb-1">/ night</span></div><p class="text-xs text-gray-500 mb-1">Total for ${nights} nights</p><p class="text-lg text-[#231F20] mb-6">${formatIDR(res.data.totalPrice)}</p></div><div class="space-y-3"><button onclick="openOverlay(${idx})" class="w-full bg-[#A6461F] text-white uppercase text-xs tracking-widest py-3 rounded-sm transition hover:bg-[#8e3c1a] cursor-pointer">BOOK NOW</button><a href="${v.url}" class="block w-full text-center border border-gray-300 text-gray-600 uppercase text-xs tracking-widest py-3 rounded-sm transition hover:bg-gray-50">VIEW DETAILS</a></div></div>`;
       container.appendChild(card);
     });
   };

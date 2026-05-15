@@ -1,10 +1,10 @@
 <!-- _includes/villas/hero-villa.html -->
-{% include villa-data.html %}
-{% assign section_data = include.section %} {% assign bg_image =
-section_data.background_image | default: '/assets/images/hero-image.jpg' %} {%
-assign max_guests = section_data.meta.guests | default: 10 %}
+{% include villa-data.html %} {% assign section_data = include.section %} {%
+assign bg_image = section_data.background_image | default:
+'/assets/images/hero-image.jpg' %} {% assign max_guests =
+section_data.meta.guests | default: 10 %}
 
-<section class="relative min-h-screen overflow-visible">
+<section class="relative min-h-dvh overflow-visible">
   <!-- Background -->
   <div class="absolute inset-0">
     <img
@@ -194,76 +194,231 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       </div>
     </div>
   </div>
-  
+
   <!-- OVERLAY -->
   <div id="booking-overlay" class="fixed inset-0 z-[2000] hidden text-left">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer" onclick="closeOverlay()"></div>
-    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-full" id="booking-sidebar">
-      <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-        <h3 class="uppercase tracking-widest text-[#A6461F] text-xs font-semibold" id="overlay-header-title">REVIEW YOUR STAY</h3>
-        <button onclick="closeOverlay()" class="text-gray-400 hover:text-gray-600 border border-gray-200 w-8 h-8 flex items-center justify-center rounded cursor-pointer">✕</button>
+    <div
+      class="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer"
+      onclick="closeOverlay()"
+    ></div>
+    <div
+      class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-full"
+      id="booking-sidebar"
+    >
+      <div
+        class="p-6 border-b border-gray-100 flex justify-between items-center"
+      >
+        <h3
+          class="uppercase tracking-widest text-[#A6461F] text-xs font-semibold"
+          id="overlay-header-title"
+        >
+          REVIEW YOUR STAY
+        </h3>
+        <button
+          onclick="closeOverlay()"
+          class="text-gray-400 hover:text-gray-600 border border-gray-200 w-8 h-8 flex items-center justify-center rounded cursor-pointer"
+        >
+          ✕
+        </button>
       </div>
-      
+
       <!-- State: Loading -->
-      <div id="overlay-loading" class="flex-1 flex flex-col items-center justify-center p-6 hidden">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B8635] mx-auto mb-4"></div>
+      <div
+        id="overlay-loading"
+        class="flex-1 flex flex-col items-center justify-center p-6 hidden"
+      >
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B8635] mx-auto mb-4"
+        ></div>
         <p class="text-gray-600 font-body">Checking availability...</p>
       </div>
 
       <!-- State: Available -->
-      <div id="overlay-available" class="flex-1 overflow-y-auto p-6 space-y-6 hidden">
-        <img id="overlay-image" src="" class="w-full h-48 object-cover rounded" alt="" />
+      <div
+        id="overlay-available"
+        class="flex-1 overflow-y-auto p-6 space-y-6 hidden"
+      >
+        <img
+          id="overlay-image"
+          src=""
+          class="w-full h-48 object-cover rounded"
+          alt=""
+        />
         <div>
-          <h2 id="overlay-title" class="text-3xl font-light font-heading text-[#231F20] mb-2"></h2>
+          <h2
+            id="overlay-title"
+            class="text-3xl font-light font-heading text-[#231F20] mb-2"
+          ></h2>
           <p id="overlay-desc" class="text-sm text-gray-500 font-body"></p>
         </div>
-        <div class="border-t border-b border-gray-100 py-4 space-y-3 text-sm font-body">
-          <div class="flex justify-between"><span class="text-gray-600">Check-in</span><span id="overlay-checkin" class="font-medium text-[#231F20]"></span></div>
-          <div class="flex justify-between"><span class="text-gray-600">Check-out</span><span id="overlay-checkout" class="font-medium text-[#231F20]"></span></div>
-          <div class="flex justify-between"><span class="text-gray-600">Guests</span><span id="overlay-guests" class="font-medium text-[#231F20]"></span></div>
+        <div
+          class="border-t border-b border-gray-100 py-4 space-y-3 text-sm font-body"
+        >
+          <div class="flex justify-between">
+            <span class="text-gray-600">Check-in</span
+            ><span
+              id="overlay-checkin"
+              class="font-medium text-[#231F20]"
+            ></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Check-out</span
+            ><span
+              id="overlay-checkout"
+              class="font-medium text-[#231F20]"
+            ></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Guests</span
+            ><span
+              id="overlay-guests"
+              class="font-medium text-[#231F20]"
+            ></span>
+          </div>
         </div>
         <div class="space-y-3 font-body text-sm">
-          <div class="flex justify-between text-gray-600"><span id="overlay-rate-calc"></span><span id="overlay-base-total"></span></div>
-          <div class="flex justify-between text-gray-600"><span>Processing Fee (2.9%)</span><span id="overlay-processing"></span></div>
-          <div class="flex justify-between text-gray-600"><span>Flat Fee</span><span id="overlay-flat"></span></div>
-          <div class="flex justify-between text-gray-600 border-b border-gray-100 pb-3"><span>VAT (11%)</span><span id="overlay-vat"></span></div>
-          <div class="flex justify-between font-semibold text-lg text-[#231F20] pt-2"><span>Total</span><span id="overlay-total"></span></div>
+          <div class="flex justify-between text-gray-600">
+            <span id="overlay-rate-calc"></span
+            ><span id="overlay-base-total"></span>
+          </div>
+          <div class="flex justify-between text-gray-600">
+            <span>Processing Fee (2.9%)</span
+            ><span id="overlay-processing"></span>
+          </div>
+          <div class="flex justify-between text-gray-600">
+            <span>Flat Fee</span><span id="overlay-flat"></span>
+          </div>
+          <div
+            class="flex justify-between text-gray-600 border-b border-gray-100 pb-3"
+          >
+            <span>VAT (11%)</span><span id="overlay-vat"></span>
+          </div>
+          <div
+            class="flex justify-between font-semibold text-lg text-[#231F20] pt-2"
+          >
+            <span>Total</span><span id="overlay-total"></span>
+          </div>
         </div>
-        <button id="overlay-submit" class="w-full uppercase font-heading font-medium tracking-widest bg-[#A6461F] text-white py-4 rounded transition hover:bg-[#8e3c1a] cursor-pointer">CONTINUE TO PAYMENT</button>
+        <button
+          id="overlay-submit"
+          class="w-full uppercase font-heading font-medium tracking-widest bg-[#A6461F] text-white py-4 rounded transition hover:bg-[#8e3c1a] cursor-pointer"
+        >
+          CONTINUE TO PAYMENT
+        </button>
       </div>
 
       <!-- State: Unavailable -->
-      <div id="overlay-unavailable" class="flex-1 overflow-y-auto bg-gray-50 hidden">
+      <div
+        id="overlay-unavailable"
+        class="flex-1 overflow-y-auto bg-gray-50 hidden"
+      >
         <div class="p-6 bg-white border-b border-gray-100 text-center">
           <div class="text-4xl mb-3">😔</div>
-          <h3 class="text-xl font-heading text-[#231F20] mb-2">Unavailable for your dates</h3>
-          <p class="text-sm text-gray-600 font-body">We're sorry, this villa is already booked. But don't worry, here are some great alternatives available for your dates:</p>
+          <h3 class="text-xl font-heading text-[#231F20] mb-2">
+            Unavailable for your dates
+          </h3>
+          <p class="text-sm text-gray-600 font-body">
+            We're sorry, this villa is already booked. But don't worry, here are
+            some great alternatives available for your dates:
+          </p>
         </div>
         <div id="overlay-alternatives" class="p-4 space-y-4">
           <!-- Alternative cards injected here -->
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
 <style>
-  .calendar-grid { font-family: "Inter", sans-serif; }
-  .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0 0.5rem; }
-  .calendar-header button { background: none; border: none; font-size: 1.25rem; cursor: pointer; padding: 0.25rem 0.75rem; border-radius: 0.375rem; transition: background 0.2s; color: #4b5563; }
-  .calendar-header button:hover { background: #f3f4f6; }
-  .calendar-header h4 { font-size: 1rem; font-weight: 600; color: #1f2937; }
-  .calendar-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.7rem; color: #6b7280; padding: 0.5rem 0; }
-  .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; }
-  .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 0.5rem; transition: all 0.2s; font-size: 0.8rem; font-weight: 500; background: white; }
-  .calendar-day:hover:not(.empty):not(.past) { background: #f3f4f6; }
-  .calendar-day.selected-start { background: #8b8635; color: white; border-top-right-radius: 0; border-bottom-right-radius: 0; }
-  .calendar-day.selected-end { background: #8b8635; color: white; border-top-left-radius: 0; border-bottom-left-radius: 0; }
-  .calendar-day.in-range { background: #e8e6d5; color: #4a4a2a; border-radius: 0; }
-  .calendar-day.past { background: #f9fafb; color: #d1d5db; cursor: not-allowed; opacity: 0.3; }
-  .calendar-day.empty { cursor: default; background: transparent; }
-  .calendar-day.today { border: 2px solid #8b8635; }
+  .calendar-grid {
+    font-family: "Inter", sans-serif;
+  }
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+  }
+  .calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.375rem;
+    transition: background 0.2s;
+    color: #4b5563;
+  }
+  .calendar-header button:hover {
+    background: #f3f4f6;
+  }
+  .calendar-header h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+  .calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: #6b7280;
+    padding: 0.5rem 0;
+  }
+  .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+  }
+  .calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: white;
+  }
+  .calendar-day:hover:not(.empty):not(.past) {
+    background: #f3f4f6;
+  }
+  .calendar-day.selected-start {
+    background: #8b8635;
+    color: white;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .calendar-day.selected-end {
+    background: #8b8635;
+    color: white;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .calendar-day.in-range {
+    background: #e8e6d5;
+    color: #4a4a2a;
+    border-radius: 0;
+  }
+  .calendar-day.past {
+    background: #f9fafb;
+    color: #d1d5db;
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
+  .calendar-day.empty {
+    cursor: default;
+    background: transparent;
+  }
+  .calendar-day.today {
+    border: 2px solid #8b8635;
+  }
 </style>
 
 <script>
@@ -300,7 +455,11 @@ assign max_guests = section_data.meta.guests | default: 10 %}
 
     function formatDisplayDate(dateStr) {
       const date = new Date(dateStr + "T00:00:00");
-      return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
     }
 
     function renderCalendar() {
@@ -311,7 +470,8 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const today = new Date().toISOString().split("T")[0];
       let html = `<div class="calendar-grid"><div class="calendar-header"><button class="prev-month-btn" type="button">&larr;</button><h4>${firstDay.toLocaleDateString("en-US", { month: "long", year: "numeric" })}</h4><button class="next-month-btn" type="button">&rarr;</button></div><div class="calendar-weekdays"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div class="calendar-days">`;
-      for (let i = 0; i < startOffset; i++) html += `<div class="calendar-day empty"></div>`;
+      for (let i = 0; i < startOffset; i++)
+        html += `<div class="calendar-day empty"></div>`;
       for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
         const isPast = dateStr < today;
@@ -320,20 +480,39 @@ assign max_guests = section_data.meta.guests | default: 10 %}
         if (selectedCheckin && selectedCheckout) {
           if (dateStr === selectedCheckin) cls += " selected-start";
           else if (dateStr === selectedCheckout) cls += " selected-end";
-          else if (dateStr > selectedCheckin && dateStr < selectedCheckout) cls += " in-range";
-        } else if (selectedCheckin && dateStr === selectedCheckin) cls += " selected-start";
+          else if (dateStr > selectedCheckin && dateStr < selectedCheckout)
+            cls += " in-range";
+        } else if (selectedCheckin && dateStr === selectedCheckin)
+          cls += " selected-start";
         if (dateStr === today && !isPast) cls += " today";
         html += `<div class="${cls}" data-date="${dateStr}" data-selectable="${!isPast}">${day}</div>`;
       }
       html += `</div></div>`;
       calendarContainer.innerHTML = html;
-      calendarContainer.querySelectorAll('.calendar-day[data-selectable="true"]').forEach(d => {
-        d.addEventListener("click", e => { e.stopPropagation(); handleDateSelection(d.dataset.date); });
-      });
+      calendarContainer
+        .querySelectorAll('.calendar-day[data-selectable="true"]')
+        .forEach((d) => {
+          d.addEventListener("click", (e) => {
+            e.stopPropagation();
+            handleDateSelection(d.dataset.date);
+          });
+        });
       const pBtn = calendarContainer.querySelector(".prev-month-btn");
       const nBtn = calendarContainer.querySelector(".next-month-btn");
-      if (pBtn) pBtn.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-      if (nBtn) nBtn.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+      if (pBtn)
+        pBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          currentDate.setMonth(currentDate.getMonth() - 1);
+          renderCalendar();
+        });
+      if (nBtn)
+        nBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          currentDate.setMonth(currentDate.getMonth() + 1);
+          renderCalendar();
+        });
     }
 
     function handleDateSelection(date) {
@@ -342,14 +521,24 @@ assign max_guests = section_data.meta.guests | default: 10 %}
         selectedCheckin = date;
         selectedCheckout = null;
       } else if (selectedCheckin && !selectedCheckout) {
-        let ci = selectedCheckin, co = date;
-        if (new Date(date) < new Date(selectedCheckin)) { co = selectedCheckin; ci = date; }
-        const diff = Math.ceil(Math.abs(new Date(co) - new Date(ci)) / 86400000);
+        let ci = selectedCheckin,
+          co = date;
+        if (new Date(date) < new Date(selectedCheckin)) {
+          co = selectedCheckin;
+          ci = date;
+        }
+        const diff = Math.ceil(
+          Math.abs(new Date(co) - new Date(ci)) / 86400000,
+        );
         if (diff < 2) {
           calendarError.textContent = "Minimum stay is 2 nights.";
           calendarError.classList.remove("hidden");
-          selectedCheckin = date; selectedCheckout = null;
-        } else { selectedCheckin = ci; selectedCheckout = co; }
+          selectedCheckin = date;
+          selectedCheckout = null;
+        } else {
+          selectedCheckin = ci;
+          selectedCheckout = co;
+        }
       }
       renderCalendar();
     }
@@ -362,7 +551,14 @@ assign max_guests = section_data.meta.guests | default: 10 %}
         bookBtn.disabled = false;
         bookBtn.classList.remove("opacity-50");
         hideCalendar();
-        sessionStorage.setItem("sharedDates", JSON.stringify({ checkin: selectedCheckin, checkout: selectedCheckout, guests: parseInt(document.getElementById("guests").value) }));
+        sessionStorage.setItem(
+          "sharedDates",
+          JSON.stringify({
+            checkin: selectedCheckin,
+            checkout: selectedCheckout,
+            guests: parseInt(document.getElementById("guests").value),
+          }),
+        );
       } else if (selectedCheckin) {
         calendarError.textContent = "Please select a check-out date.";
         calendarError.classList.remove("hidden");
@@ -370,10 +566,13 @@ assign max_guests = section_data.meta.guests | default: 10 %}
     }
 
     function clearSelection() {
-      selectedCheckin = null; selectedCheckout = null;
-      checkinInput.value = ""; checkoutInput.value = "";
+      selectedCheckin = null;
+      selectedCheckout = null;
+      checkinInput.value = "";
+      checkoutInput.value = "";
       checkoutInput.classList.add("opacity-50");
-      bookBtn.disabled = true; bookBtn.classList.add("opacity-50");
+      bookBtn.disabled = true;
+      bookBtn.classList.add("opacity-50");
       calendarError.classList.add("hidden");
       sessionStorage.removeItem("sharedDates");
       renderCalendar();
@@ -387,7 +586,7 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       isCalendarOpen = true;
       renderCalendar();
     }
-    
+
     function hideCalendar() {
       calendarWrapper.classList.add("hidden");
       isCalendarOpen = false;
@@ -409,21 +608,46 @@ assign max_guests = section_data.meta.guests | default: 10 %}
         bookBtn.classList.remove("opacity-50");
         if (shared.guests) {
           const guestsInput = document.getElementById("guests");
-          if (guestsInput) guestsInput.value = Math.min(shared.guests, document.getElementById("maxGuests")?.value || 10);
+          if (guestsInput)
+            guestsInput.value = Math.min(
+              shared.guests,
+              document.getElementById("maxGuests")?.value || 10,
+            );
         }
       }
-    } catch (e) { /* ignore parse errors */ }
+    } catch (e) {
+      /* ignore parse errors */
+    }
     renderCalendar();
 
     checkinInput.addEventListener("click", showCalendar);
     checkoutInput.addEventListener("click", showCalendar);
-    closeBtn.addEventListener("click", e => { e.stopPropagation(); hideCalendar(); });
-    clearBtn.addEventListener("click", e => { e.stopPropagation(); clearSelection(); });
-    confirmBtn.addEventListener("click", e => { e.stopPropagation(); confirmSelection(); });
-    document.addEventListener("click", e => {
-      if (isCalendarOpen && calendarWrapper && !calendarWrapper.contains(e.target) && !checkinInput.contains(e.target) && !checkoutInput.contains(e.target) && e.target.id !== 'bookNowBtn') hideCalendar();
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      hideCalendar();
     });
-    calendarWrapper.addEventListener("click", e => { e.stopPropagation(); });
+    clearBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      clearSelection();
+    });
+    confirmBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      confirmSelection();
+    });
+    document.addEventListener("click", (e) => {
+      if (
+        isCalendarOpen &&
+        calendarWrapper &&
+        !calendarWrapper.contains(e.target) &&
+        !checkinInput.contains(e.target) &&
+        !checkoutInput.contains(e.target) &&
+        e.target.id !== "bookNowBtn"
+      )
+        hideCalendar();
+    });
+    calendarWrapper.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
 
     const overlay = document.getElementById("booking-overlay");
     const sidebar = document.getElementById("booking-sidebar");
@@ -431,7 +655,7 @@ assign max_guests = section_data.meta.guests | default: 10 %}
     const ovAvailable = document.getElementById("overlay-available");
     const ovUnavailable = document.getElementById("overlay-unavailable");
 
-    window.closeOverlay = function() {
+    window.closeOverlay = function () {
       sidebar.classList.add("translate-x-full");
       setTimeout(() => overlay.classList.add("hidden"), 300);
     };
@@ -439,9 +663,18 @@ assign max_guests = section_data.meta.guests | default: 10 %}
     bookBtn.addEventListener("click", async () => {
       if (!selectedCheckin || !selectedCheckout) return;
       const guests = document.getElementById("guests").value;
-      const nights = Math.ceil((new Date(selectedCheckout) - new Date(selectedCheckin)) / 86400000);
+      const nights = Math.ceil(
+        (new Date(selectedCheckout) - new Date(selectedCheckin)) / 86400000,
+      );
 
-      sessionStorage.setItem("sharedDates", JSON.stringify({ checkin: selectedCheckin, checkout: selectedCheckout, guests: parseInt(guests) }));
+      sessionStorage.setItem(
+        "sharedDates",
+        JSON.stringify({
+          checkin: selectedCheckin,
+          checkout: selectedCheckout,
+          guests: parseInt(guests),
+        }),
+      );
 
       overlay.classList.remove("hidden");
       ovLoading.classList.remove("hidden");
@@ -451,17 +684,28 @@ assign max_guests = section_data.meta.guests | default: 10 %}
 
       // Variables to hold the final booking details for the overlay
       let bookingTargetId = listingId;
-      let bookingTargetName = document.getElementById("villaName")?.value || "Villa";
-      let bookingTargetImage = document.getElementById("villaImage")?.value || "";
+      let bookingTargetName =
+        document.getElementById("villaName")?.value || "Villa";
+      let bookingTargetImage =
+        document.getElementById("villaImage")?.value || "";
 
       // Function to load and show pricing for a specific villa
       async function loadVillaPricing(targetId, targetName, targetImage) {
         ovUnavailable.classList.add("hidden");
         ovAvailable.classList.add("hidden");
         ovLoading.classList.remove("hidden");
-        
+
         try {
-          const pr = await fetch("/.netlify/functions/calculate-price", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ listingId: targetId, startingDate: selectedCheckin, endingDate: selectedCheckout, numberOfGuests: guests }) });
+          const pr = await fetch("/.netlify/functions/calculate-price", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              listingId: targetId,
+              startingDate: selectedCheckin,
+              endingDate: selectedCheckout,
+              numberOfGuests: guests,
+            }),
+          });
           const pd = await pr.json();
           if (pd.success) {
             bookingTargetId = targetId;
@@ -469,18 +713,31 @@ assign max_guests = section_data.meta.guests | default: 10 %}
             bookingTargetImage = targetImage;
 
             document.getElementById("overlay-image").src = bookingTargetImage;
-            document.getElementById("overlay-title").textContent = bookingTargetName;
-            document.getElementById("overlay-desc").textContent = "Your selected tropical getaway";
-            document.getElementById("overlay-checkin").textContent = formatDisplayDate(selectedCheckin);
-            document.getElementById("overlay-checkout").textContent = formatDisplayDate(selectedCheckout);
+            document.getElementById("overlay-title").textContent =
+              bookingTargetName;
+            document.getElementById("overlay-desc").textContent =
+              "Your selected tropical getaway";
+            document.getElementById("overlay-checkin").textContent =
+              formatDisplayDate(selectedCheckin);
+            document.getElementById("overlay-checkout").textContent =
+              formatDisplayDate(selectedCheckout);
             document.getElementById("overlay-guests").textContent = guests;
-            
-            document.getElementById("overlay-rate-calc").textContent = `${formatIDR(pd.pricePerNight)} × ${nights} nights`;
-            document.getElementById("overlay-base-total").textContent = formatIDR(pd.pricePerNight * nights);
-            document.getElementById("overlay-processing").textContent = formatIDR(pd.fees.processingFee);
-            document.getElementById("overlay-flat").textContent = formatIDR(pd.fees.fixedFee);
-            document.getElementById("overlay-vat").textContent = formatIDR(pd.fees.vat);
-            document.getElementById("overlay-total").textContent = formatIDR(pd.totalPrice);
+
+            document.getElementById("overlay-rate-calc").textContent =
+              `${formatIDR(pd.pricePerNight)} × ${nights} nights`;
+            document.getElementById("overlay-base-total").textContent =
+              formatIDR(pd.pricePerNight * nights);
+            document.getElementById("overlay-processing").textContent =
+              formatIDR(pd.fees.processingFee);
+            document.getElementById("overlay-flat").textContent = formatIDR(
+              pd.fees.fixedFee,
+            );
+            document.getElementById("overlay-vat").textContent = formatIDR(
+              pd.fees.vat,
+            );
+            document.getElementById("overlay-total").textContent = formatIDR(
+              pd.totalPrice,
+            );
 
             ovLoading.classList.add("hidden");
             ovAvailable.classList.remove("hidden");
@@ -495,14 +752,26 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       }
 
       try {
-        const sr = await fetch(`/.netlify/functions/search-availability?startDate=${selectedCheckin}&endDate=${selectedCheckout}&guests=${guests}`);
+        const sr = await fetch(
+          `/.netlify/functions/search-availability?startDate=${selectedCheckin}&endDate=${selectedCheckout}&guests=${guests}`,
+        );
         const sd = await sr.json();
-        
-        const isCurrentAvailable = sd.listings && sd.listings.some(l => String(l.hostawayId) === String(listingId) || String(l.listingId) === String(listingId));
+
+        const isCurrentAvailable =
+          sd.listings &&
+          sd.listings.some(
+            (l) =>
+              String(l.hostawayId) === String(listingId) ||
+              String(l.listingId) === String(listingId),
+          );
 
         if (isCurrentAvailable) {
           // Load current villa
-          await loadVillaPricing(listingId, document.getElementById("villaName")?.value || "Tropical Villa", document.getElementById("villaImage")?.value || "");
+          await loadVillaPricing(
+            listingId,
+            document.getElementById("villaName")?.value || "Tropical Villa",
+            document.getElementById("villaImage")?.value || "",
+          );
         } else {
           // Unavailable -> Show alternatives
           ovLoading.classList.add("hidden");
@@ -510,18 +779,27 @@ assign max_guests = section_data.meta.guests | default: 10 %}
 
           const altContainer = document.getElementById("overlay-alternatives");
           altContainer.innerHTML = "";
-          
+
           if (!sd.listings || sd.listings.length === 0) {
             altContainer.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">No other villas are available for these dates.</p>`;
           } else {
-            sd.listings.forEach(l => {
-              const localVilla = window.allVillas ? window.allVillas.find(v => String(v.id) === String(l.hostawayId) || String(v.id) === String(l.listingId)) : null;
-              const vId = localVilla ? localVilla.id : (l.listingId || l.hostawayId);
+            sd.listings.forEach((l) => {
+              const localVilla = window.allVillas
+                ? window.allVillas.find(
+                    (v) =>
+                      String(v.id) === String(l.hostawayId) ||
+                      String(v.id) === String(l.listingId),
+                  )
+                : null;
+              const vId = localVilla
+                ? localVilla.id
+                : l.listingId || l.hostawayId;
               const vName = localVilla ? localVilla.name : l.name;
               const vImage = localVilla ? localVilla.image : l.image;
 
               const div = document.createElement("div");
-              div.className = "bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex gap-4 text-left";
+              div.className =
+                "bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex gap-4 text-left";
               div.innerHTML = `
                 <img src="${vImage}" class="w-20 h-20 object-cover rounded" alt="">
                 <div class="flex-1 flex flex-col justify-between">
@@ -529,19 +807,19 @@ assign max_guests = section_data.meta.guests | default: 10 %}
                     <h4 class="font-heading text-lg text-[#231F20]">${vName}</h4>
                     <p class="text-xs text-gray-500">From ${formatIDR(l.price)}/night</p>
                   </div>
-                  <button type="button" class="text-xs font-medium uppercase tracking-widest text-[#A6461F] hover:text-[#8B8635] self-start mt-2 cursor-pointer alt-select-btn" data-id="${vId}" data-name="${vName.replace(/"/g, '&quot;')}" data-image="${vImage}">SELECT VILLA &rarr;</button>
+                  <button type="button" class="text-xs font-medium uppercase tracking-widest text-[#A6461F] hover:text-[#8B8635] self-start mt-2 cursor-pointer alt-select-btn" data-id="${vId}" data-name="${vName.replace(/"/g, "&quot;")}" data-image="${vImage}">SELECT VILLA &rarr;</button>
                 </div>
               `;
               altContainer.appendChild(div);
             });
 
             // Attach click listeners to all select buttons
-            altContainer.querySelectorAll('.alt-select-btn').forEach(btn => {
-              btn.addEventListener('click', (e) => {
+            altContainer.querySelectorAll(".alt-select-btn").forEach((btn) => {
+              btn.addEventListener("click", (e) => {
                 e.preventDefault();
-                const targetId = btn.getAttribute('data-id');
-                const targetName = btn.getAttribute('data-name');
-                const targetImage = btn.getAttribute('data-image');
+                const targetId = btn.getAttribute("data-id");
+                const targetName = btn.getAttribute("data-name");
+                const targetImage = btn.getAttribute("data-image");
                 loadVillaPricing(targetId, targetName, targetImage);
               });
             });
@@ -560,14 +838,17 @@ assign max_guests = section_data.meta.guests | default: 10 %}
       oldSubmitBtn.parentNode.replaceChild(newSubmitBtn, oldSubmitBtn);
 
       newSubmitBtn.addEventListener("click", () => {
-        localStorage.setItem("bookingData", JSON.stringify({
-          listingId: bookingTargetId,
-          checkin: selectedCheckin,
-          checkout: selectedCheckout,
-          guests: parseInt(guests),
-          villaName: bookingTargetName,
-          villaImage: bookingTargetImage
-        }));
+        localStorage.setItem(
+          "bookingData",
+          JSON.stringify({
+            listingId: bookingTargetId,
+            checkin: selectedCheckin,
+            checkout: selectedCheckout,
+            guests: parseInt(guests),
+            villaName: bookingTargetName,
+            villaImage: bookingTargetImage,
+          }),
+        );
         window.location.href = "/booking-page.html";
       });
     });
