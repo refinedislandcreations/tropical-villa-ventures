@@ -279,7 +279,7 @@ title: Direct Bookings | Tropical Villa Ventures
       <!-- CALENDAR POPUP -->
       <div
         id="calendarWrapper"
-        class="hidden absolute left-1/2 transform -translate-x-1/2 top-full mt-4 z-[1000] bg-white rounded-2xl shadow-2xl p-6 w-105 max-w-[90vw]"
+        class="hidden fixed left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2 z-[1000] bg-white rounded-2xl shadow-2xl p-6 w-105 max-w-[90vw]"
       >
         <div class="flex justify-between items-center mb-4 pb-2 border-b">
           <h3 class="font-semibold text-[#231F20] text-base font-heading">
@@ -790,7 +790,7 @@ title: Direct Bookings | Tropical Villa Ventures
   window.renderResults = function () {
     const container = document.getElementById("villas-container");
     if (!currentSearchResults || currentSearchResults.length === 0) {
-      container.innerHTML = `<div class="py-16 text-center"><div class="max-w-lg mx-auto"><div class="text-6xl mb-6">\ud83c\udfdd\ufe0f</div><h3 class="text-3xl font-heading text-[#231F20] mb-4">No Villas Available</h3><p class="text-gray-600 font-body text-base leading-relaxed mb-8">Unfortunately, none of our villas are available for your selected dates. Please try different dates or reduce the number of guests.</p><button onclick="clearSelection(); renderAllVillas();"class="inline-block bg-[#A6461F] text-white uppercase text-xs tracking-widest py-3 px-4 rounded-sm transition hover:bg-[#8e3c1a] cursor-pointer">BROWSE ALL VILLAS</button></div></div>`;
+      container.innerHTML = `<div class="py-16 text-center"><div class="max-w-lg mx-auto"><div class="text-6xl mb-6">\ud83c\udfdd\ufe0f</div><h3 class="text-3xl font-heading text-[#231F20] mb-4">No Villas Available</h3><p class="text-gray-600 font-body text-base leading-relaxed mb-8">Unfortunately, none of our villas are available for your selected dates. Please try different dates.</p><button onclick="clearSelection(); renderAllVillas();"class="inline-block bg-[#A6461F] text-white uppercase text-xs tracking-widest py-3 px-4 rounded-sm transition hover:bg-[#8e3c1a] cursor-pointer">BROWSE ALL VILLAS</button></div></div>`;
       return;
     }
     container.innerHTML = "";

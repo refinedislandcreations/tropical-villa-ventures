@@ -134,7 +134,7 @@ section_data.meta.guests | default: 10 %}
                   <button
                     id="bookNowBtn"
                     disabled
-                    class="w-full uppercase bg-[#8B8635] text-white rounded-xl py-3 opacity-50 transition hover:bg-[#6B682A] text-sm font-heading font-medium tracking-widest"
+                    class="w-full uppercase bg-[#8B8635] text-white rounded-xl py-3 opacity-50 transition hover:bg-[#6B682A] text-sm font-heading font-medium tracking-widest cursor-pointer"
                   >
                     Book Now
                   </button>
@@ -176,13 +176,13 @@ section_data.meta.guests | default: 10 %}
                 <div class="flex justify-between mt-4 pt-3 border-t">
                   <button
                     id="clearDatesBtn"
-                    class="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded font-body"
+                    class="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded font-body cursor-pointer"
                   >
                     Clear
                   </button>
                   <button
                     id="confirmDatesBtn"
-                    class="bg-[#8B8635] text-white px-6 py-2 rounded-lg text-sm hover:bg-[#6B682A] transition font-heading font-medium"
+                    class="bg-[#8B8635] text-white px-6 py-2 rounded-lg text-sm hover:bg-[#6B682A] transition font-heading font-medium cursor-pointer"
                   >
                     Confirm
                   </button>
@@ -783,19 +783,50 @@ section_data.meta.guests | default: 10 %}
           if (!sd.listings || sd.listings.length === 0) {
             altContainer.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">No other villas are available for these dates.</p>`;
           } else {
-            sd.listings.forEach((l) => {
-              const localVilla = window.allVillas
-                ? window.allVillas.find(
-                    (v) =>
-                      String(v.id) === String(l.hostawayId) ||
-                      String(v.id) === String(l.listingId),
-                  )
-                : null;
-              const vId = localVilla
-                ? localVilla.id
-                : l.listingId || l.hostawayId;
-              const vName = localVilla ? localVilla.name : l.name;
-              const vImage = localVilla ? localVilla.image : l.image;
+            altContainer.innerHTML = `<div class="flex flex-col items-center justify-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#8B8635] mx-auto mb-2"></div><p class="text-xs text-gray-500 font-body">Finding the best prices for alternatives...</p></div>`;
+            // Fetch accurate prices for alternatives
+            const altResults = await Promise.all(
+              sd.listings.map(async (l) => {
+                const localVilla = window.allVillas
+                  ? window.allVillas.find(
+                      (v) =>
+                        String(v.id) === String(l.hostawayId) ||
+                        String(v.id) === String(l.listingId),
+                    )
+                  : null;
+                const vId = localVilla
+                  ? localVilla.id
+                  : l.listingId || l.hostawayId;
+                const vName = localVilla ? localVilla.name : l.name;
+                const vImage = localVilla ? localVilla.image : l.image;
+
+                try {
+                  const pr = await fetch(
+                    "/.netlify/functions/calculate-price",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        listingId: vId,
+                        startingDate: selectedCheckin,
+                        endingDate: selectedCheckout,
+                        numberOfGuests: guests,
+                      }),
+                    },
+                  );
+                  const pd = await pr.json();
+                  return { l, localVilla, vId, vName, vImage, pd };
+                } catch (e) {
+                  return { l, localVilla, vId, vName, vImage, pd: null };
+                }
+              }),
+            );
+
+            altContainer.innerHTML = "";
+            altResults.forEach(({ l, localVilla, vId, vName, vImage, pd }) => {
+              if (!pd || !pd.success) return;
+
+              const displayPrice = pd.pricePerNight;
 
               const div = document.createElement("div");
               div.className =
@@ -805,13 +836,17 @@ section_data.meta.guests | default: 10 %}
                 <div class="flex-1 flex flex-col justify-between">
                   <div>
                     <h4 class="font-heading text-lg text-[#231F20]">${vName}</h4>
-                    <p class="text-xs text-gray-500">From ${formatIDR(l.price)}/night</p>
+                    <p class="text-xs text-gray-500">From ${formatIDR(displayPrice)}/night</p>
                   </div>
                   <button type="button" class="text-xs font-medium uppercase tracking-widest text-[#A6461F] hover:text-[#8B8635] self-start mt-2 cursor-pointer alt-select-btn" data-id="${vId}" data-name="${vName.replace(/"/g, "&quot;")}" data-image="${vImage}">SELECT VILLA &rarr;</button>
                 </div>
               `;
               altContainer.appendChild(div);
             });
+
+            if (altContainer.children.length === 0) {
+              altContainer.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">No other villas are available for these dates.</p>`;
+            }
 
             // Attach click listeners to all select buttons
             altContainer.querySelectorAll(".alt-select-btn").forEach((btn) => {
