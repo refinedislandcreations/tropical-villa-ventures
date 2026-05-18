@@ -20,6 +20,7 @@ const AXIOS_TIMEOUT = 15000; // 15 seconds for all external requests
 const STORE_NAME = "temp-bookings";
 const IDEMPOTENCY_STORE_NAME = "processed-webhooks";
 const { getBooking, removeBooking } = require("./store-temp-booking");
+const { releaseHold, buildHoldKey } = require("./create-invoice");
 
 // ─── Storage Layer ───────────────────────────────────────────────────────────
 
@@ -263,7 +264,7 @@ async function createHostawayReservation(token, bookingData) {
   console.log(`[HOSTAWAY] Dates: ${bookingData.checkin} → ${bookingData.checkout}, Total: IDR ${totalAmount}`);
 
   const response = await axios.post(
-    "https://api.hostaway.com/v1/reservations?forceOverbooking=1",
+    "https://api.hostaway.com/v1/reservations",
     reservationData,
     {
       timeout: AXIOS_TIMEOUT,
@@ -292,36 +293,59 @@ function buildConfirmationMessage(bookingData) {
   const villaName = bookingData.villaName || "our villa";
   const checkin = bookingData.checkin;
   const checkout = bookingData.checkout;
+  const guests = bookingData.guests || 2;
+  const nights = bookingData.nights || 1;
+  const baseAmount = bookingData.baseAmount || 0;
   const totalAmount = bookingData.totalAmount || 0;
+  
+  const fees = bookingData.feeBreakdown || {};
+  const processingFee = fees.processingFee || 0;
+  const fixedFee = fees.fixedFee || 0;
+  const vat = fees.vat || 0;
+  const feeSubtotal = bookingData.totalFee || (processingFee + fixedFee + vat);
 
-  const formatDate = (dateStr) => {
+  const formatDateShort = (dateStr) => {
     const d = new Date(dateStr + "T00:00:00");
-    return d.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" });
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
   const formatCurrency = (amount) => `IDR ${Math.round(amount).toLocaleString("id-ID")}`;
 
-  return `🌺 Hi ${guestFirstName},
+  return `Message from your host at [${villaName}]
 
-Thank you for choosing ${villaName} for your upcoming Bali getaway from ${formatDate(checkin)} to ${formatDate(checkout)}. We can't wait to welcome you to our tropical haven and provide you with the best experience during your stay! 🌴😊
+🌺 Hi ${guestFirstName},
 
-💰 **Payment Confirmed**: ${formatCurrency(totalAmount)}
+Thank you for choosing ${villaName} for your upcoming Bali getaway! This message serves as your payment confirmation and receipt. 🌴😊
 
-To ensure a smooth check-in process and to tailor your experience to your preferences, we kindly request some additional information from you.
+--------------------------------------------------
 
-Could you please provide us with the following details:
+Cancellation Policy
 
-🏡 **Arrival Time**: Please let us know your expected arrival time at the Villa. This will help us arrange for a seamless check-in experience and ensure that our staff is ready to welcome you upon your arrival.
+100% refund up to 14 days before arrival
 
-✈️ **Airport Transfer**: Would you like us to arrange airport transfer services for you? If so, kindly provide us with your flight details (arrival time, flight number, etc.) so we can make the necessary arrangements. The arranged transport fee is IDR 300.000 between 06:00 - 21:00 and IDR 350.000 between 22:00-05:00.
+50% refund up to 7 days before arrival
 
-Closer to your arrival date we will send you our Villa Manager contact number and the link to our Villa location.
+Trip Details
 
-If you have any special requests or requirements, please feel free to contact us via WhatsApp and we will do our best to accommodate them.
+${formatDateShort(checkin)} — ${formatDateShort(checkout)}
 
-☎️ https://wa.me/message/BBYXJ5GNJ5N3D1
+${guests} guests
 
-Kind regards,
-Tropical Villa Ventures🫶🏼🏝️`;
+Price Details
+
+${formatCurrency(Math.round(baseAmount / nights))} x ${nights} nights
+${formatCurrency(baseAmount)}
+Payment Fee
+
+Payment Processing Fee (2.9%)
+${formatCurrency(processingFee)}
+Flat Fee
+${formatCurrency(fixedFee)}
+VAT (11%)
+${formatCurrency(vat)}
+Fee Subtotal
+${formatCurrency(feeSubtotal)}
+Total
+${formatCurrency(totalAmount)}`;
 }
 
 /**
@@ -487,7 +511,17 @@ async function handlePaid(externalId, webhookData) {
     console.error(`[PAID] ⚠️ Confirmation message error (non-critical): ${msgError.message}`);
   }
 
-  // ── Step 7: Cleanup temp booking ──────────────────────────────────────────
+  // ── Step 7: Release date-hold (non-critical) ─────────────────────────────
+  // Dates are now officially booked in Hostaway, so the hold can be released
+  try {
+    const holdKey = buildHoldKey(bookingData.listingId, bookingData.checkin, bookingData.checkout);
+    await releaseHold(holdKey);
+    console.log(`[PAID] ✅ Date hold released`);
+  } catch (holdError) {
+    console.warn(`[PAID] ⚠️ Hold release failed (non-critical): ${holdError.message}`);
+  }
+
+  // ── Step 8: Cleanup temp booking ──────────────────────────────────────────
   try {
     await cleanupTempBooking(externalId);
     console.log(`[PAID] ✅ Temp booking cleaned up`);
@@ -534,12 +568,25 @@ function handlePending(externalId, webhookData) {
   return { acknowledged: true, status: "PENDING" };
 }
 
-function handleExpired(externalId, webhookData) {
+async function handleExpired(externalId, webhookData) {
   console.log(`\n${"=".repeat(60)}`);
   console.log(`[EXPIRED] Invoice expired: ${externalId}`);
   console.log(`[EXPIRED] Invoice ID: ${webhookData.id}`);
   console.log(`[EXPIRED] Amount: ${webhookData.amount} ${webhookData.currency}`);
   console.log(`${"=".repeat(60)}\n`);
+
+  // Release date-hold so the dates become available again
+  try {
+    const bookingData = await getTempBooking(externalId);
+    if (bookingData) {
+      const holdKey = buildHoldKey(bookingData.listingId, bookingData.checkin, bookingData.checkout);
+      await releaseHold(holdKey);
+      console.log(`[EXPIRED] ✅ Date hold released: ${holdKey}`);
+    }
+  } catch (holdError) {
+    console.warn(`[EXPIRED] ⚠️ Hold release failed: ${holdError.message}`);
+  }
+
   cleanupTempBooking(externalId).catch((e) =>
     console.warn(`[EXPIRED] Cleanup failed: ${e.message}`),
   );

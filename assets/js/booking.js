@@ -345,6 +345,12 @@ class VillaBookingManager {
 
       const result = await response.json();
 
+      // Handle date-conflict (another guest is booking the same dates)
+      if (response.status === 409) {
+        this.showError(result.details || "These dates are no longer available. Please select different dates.");
+        return false;
+      }
+
       if (result.invoiceUrl) {
         // Redirect to Xendit payment page
         window.location.href = result.invoiceUrl;
