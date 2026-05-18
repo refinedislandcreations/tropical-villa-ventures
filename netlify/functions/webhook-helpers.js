@@ -316,36 +316,39 @@ function buildConfirmationMessage(bookingData) {
 
 Thank you for choosing ${villaName} for your upcoming Bali getaway! This message serves as your payment confirmation and receipt. 🌴😊
 
---------------------------------------------------
+━━━━━━━━━━━━━━━
+CANCELLATION POLICY
+━━━━━━━━━━━━━━━
+• 100% refund up to 14 days before arrival
+• 50% refund up to 7 days before arrival
 
-Cancellation Policy
+━━━━━━━━━━━━━━━
+TRIP DETAILS
+━━━━━━━━━━━━━━━
+Dates: ${formatDateShort(checkin)} — ${formatDateShort(checkout)}
+Guests: ${guests}
 
-100% refund up to 14 days before arrival
-
-50% refund up to 7 days before arrival
-
-Trip Details
-
-${formatDateShort(checkin)} — ${formatDateShort(checkout)}
-
-${guests} guests
-
-Price Details
-
-${formatCurrency(Math.round(baseAmount / nights))} x ${nights} nights
+━━━━━━━━━━━━━━━
+PRICE BREAKDOWN
+━━━━━━━━━━━━━━━
+Room Rate (${nights} nights @ ${formatCurrency(Math.round(baseAmount / nights))})
 ${formatCurrency(baseAmount)}
-Payment Fee
 
-Payment Processing Fee (2.9%)
+Processing Fee (2.9%)
 ${formatCurrency(processingFee)}
+
 Flat Fee
 ${formatCurrency(fixedFee)}
+
 VAT (11%)
 ${formatCurrency(vat)}
+
 Fee Subtotal
 ${formatCurrency(feeSubtotal)}
-Total
-${formatCurrency(totalAmount)}`;
+
+━━━━━━━━━━━━━━━
+TOTAL PAID: ${formatCurrency(totalAmount)}
+━━━━━━━━━━━━━━━`;
 }
 
 /**

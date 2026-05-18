@@ -347,7 +347,9 @@ class VillaBookingManager {
 
       // Handle date-conflict (another guest is booking the same dates)
       if (response.status === 409) {
-        this.showError(result.details || "These dates are no longer available. Please select different dates.");
+        const msg = result.details || "These dates are no longer available. Please select different dates.";
+        alert("Oops! Another guest just completed a booking for these dates. You will be redirected to search for new dates.");
+        window.location.href = "/direct-booking.html";
         return false;
       }
 
