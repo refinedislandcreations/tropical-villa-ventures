@@ -1,6 +1,6 @@
 main_nav:
   - title: Villas
-    url: "/villas-page.html"
+    url: "/our-villas.html"
     submenu:
       - title: Villa Indah
         url: "/villa-indah.html"

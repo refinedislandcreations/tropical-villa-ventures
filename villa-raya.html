@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Villa Raya | Tropical Villa Ventures
+description: "Villa Raya is a sophisticated tropical villa in Ungasan, Bali with 2 king bedrooms, a private pool, and open-concept living. Book your island escape."
 
 hostaway:
   listing_id: 477120
@@ -21,7 +22,7 @@ stay_at_villa_section:
     - "The villa features 2 king bedrooms, a spacious open living area, and a fully equipped kitchen, flowing seamlessly into a lush garden with a private pool, sun loungers, and a gazebo."
     - "Located in Ungasan, just minutes from Melasti Beach, Uluwatu, restaurants, and beach clubs, Villa Raya offers the perfect balance of relaxation and convenience."
   button: "Book Now"
-  button_url: "/book-now"
+  button_url: "/villa-raya.html#hero-section"
   image: "/assets/images/villas/villa-raya/villa-raya-king-bedroom-ensuite.webp"
 
 gallery:
@@ -48,7 +49,7 @@ features_section:
     - "Outdoor dining and gazebo"
     - "Easy access to Melasti Beach and Uluwatu"
   button: "BOOK NOW"
-  button_url: "/booking"
+  button_url: "/villa-raya.html#hero-section"
   image: "/assets/images/villas/villa-raya/villa-raya-poolside-sun-loungers.webp"
 
 testimonials_section:
@@ -90,7 +91,7 @@ gallery_cta:
     - /assets/images/villas/villa-raya/villa-raya-evening-dining-patio.webp
     - /assets/images/villas/villa-raya/villa-raya-minimalist-kitchen-design.webp
   button: "Book Now"
-  button_url: "/contact"
+  button_url: "/villa-raya.html#hero-section"
 
 location_section:
   title: "Where To Find Villa Raya"
@@ -128,10 +129,13 @@ faq_section:
           answer: "Yes, transport, scooter rental, massages, and meals can be arranged."
 ---
 
-{% include villas/hero-villa.html section=page.hero
-listing_id=page.hostaway.listing_id %} {% include
-content-image-reverse-section.html section=page.stay_at_villa_section %} {%
-include villas/gallery-section.html section=page.gallery %} {% include
+<div id="hero-section">
+  {% include villas/hero-villa.html section=page.hero
+  listing_id=page.hostaway.listing_id %}
+</div>
+
+{% include content-image-reverse-section.html section=page.stay_at_villa_section
+%} {% include villas/gallery-section.html section=page.gallery %} {% include
 content-image-section.html section=page.features_section bg_color="bg-[#F3F0E7]"
 %} {% include location-map-section.html section=page.location_section %} {%
 include editorial-testimonials-carousel-section.html
