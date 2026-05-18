@@ -213,6 +213,7 @@ exports.handler = async (event) => {
       phone,
       specialRequests,
       couponCode,
+      origin,
     } = JSON.parse(event.body);
 
     // totalAmount is the BASE room price only (no fees included).
@@ -370,8 +371,8 @@ exports.handler = async (event) => {
       payer_email: email,
       description: description,
       currency: "IDR",
-      success_redirect_url: `${process.env.URL}/booking-success.html?ref=${externalId}`,
-      failure_redirect_url: `${process.env.URL}/booking-failed.html`,
+      success_redirect_url: `${origin || process.env.URL}/booking-success.html?ref=${externalId}`,
+      failure_redirect_url: `${origin || process.env.URL}/booking-failed.html`,
       invoice_duration: 86400,
       customer: customer,
       customer_notification_preference: {

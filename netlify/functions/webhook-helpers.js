@@ -296,7 +296,7 @@ function buildConfirmationMessage(bookingData) {
   const guests = bookingData.guests || 2;
   const nights = bookingData.nights || 1;
   const baseAmount = bookingData.baseAmount || 0;
-  const totalAmount = bookingData.totalAmount || 0;
+  const totalAmount = bookingData.finalAmount || bookingData.totalAmount || 0;
   
   const fees = bookingData.feeBreakdown || {};
   const processingFee = fees.processingFee || 0;

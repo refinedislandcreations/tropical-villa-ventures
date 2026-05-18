@@ -50,13 +50,36 @@ title: Complete Your Booking | Tropical Villa Ventures
     <div
       id="bookingLoader"
       style="display: none"
-      class="fixed inset-0 bg-black/50 flex items-center justify-center z-1000"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
     >
       <div class="bg-white rounded-lg p-8 text-center shadow-xl">
         <div class="loader-spinner"></div>
         <p class="text-[#231F20] text-sm font-body">
           Processing your booking...
         </p>
+      </div>
+    </div>
+
+    <!-- Double Booking Modal -->
+    <div
+      id="raceConditionModal"
+      class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100] font-body"
+    >
+      <div class="bg-white p-8 md:p-12 max-w-lg mx-auto text-center shadow-2xl relative border-t-4 border-[#8B8635]">
+        <h2 class="text-3xl font-heading font-extralight text-[#231F20] mb-4 uppercase tracking-widest">
+          Dates No Longer Available
+        </h2>
+        <p class="text-[#231F20]/70 text-sm leading-relaxed mb-8">
+          We're so sorry! Another guest just completed a reservation for these exact dates while you were checking out.
+          <br><br>
+          Please search for new dates or check our other amazing villas.
+        </p>
+        <button
+          onclick="window.location.href='/direct-booking.html'"
+          class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-8 py-3 w-full transition hover:bg-[#6B682A] text-white text-sm"
+        >
+          FIND NEW DATES
+        </button>
       </div>
     </div>
 
