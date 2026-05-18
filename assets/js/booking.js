@@ -295,6 +295,28 @@ class VillaBookingManager {
       const bookingData = JSON.parse(localStorage.getItem("bookingData"));
       const villaName = bookingData?.villaName || this.villaName || "Villa";
 
+      // IMPORTANT: Send basePrice (room cost only), NOT totalPrice (which includes fees).
+      // create-invoice.js is the single source of truth for fee calculation.
+      // Sending totalPrice here would cause fees to be applied twice (double-charge bug).
+      const basePrice = this.priceBreakdown.basePrice;
+      const expectedTotal = this.priceBreakdown.totalPrice;
+
+      if (!basePrice || basePrice <= 0) {
+        this.showError("Price calculation error. Please refresh and try again.");
+        return false;
+      }
+
+      // Safeguard: validate that fee math is consistent before proceeding
+      if (this.priceBreakdown.fees) {
+        const recalcTotal = basePrice + this.priceBreakdown.fees.totalFee;
+        const tolerance = 2; // allow IDR 2 rounding tolerance
+        if (Math.abs(recalcTotal - expectedTotal) > tolerance) {
+          console.error(`[BOOKING] Price mismatch! basePrice=${basePrice}, fees=${this.priceBreakdown.fees.totalFee}, expected=${expectedTotal}, recalc=${recalcTotal}`);
+          this.showError("Price validation error. Please refresh and try again.");
+          return false;
+        }
+      }
+
       const bookingPayload = {
         listingId: this.listingId,
         villaName: villaName,
@@ -302,7 +324,8 @@ class VillaBookingManager {
         checkout: this.checkoutDate,
         guests: this.guests,
         nights: nights,
-        totalAmount: this.priceBreakdown.totalPrice,
+        totalAmount: basePrice,  // Room cost ONLY — fees added by create-invoice.js
+        expectedTotal: expectedTotal,  // For backend validation
         firstName: firstName,
         lastName: lastName,
         email: formData.email,

@@ -41,6 +41,7 @@ exports.handler = async (event) => {
       guests,
       nights,
       totalAmount,
+      expectedTotal,
       firstName,
       lastName,
       email,
@@ -49,9 +50,11 @@ exports.handler = async (event) => {
       couponCode,
     } = JSON.parse(event.body);
 
+    // totalAmount is the BASE room price only (no fees included).
+    // Fees are calculated here as the single source of truth.
     const baseAmount = Math.round(totalAmount);
 
-    // Calculate Fees (ensure consistency with calculate-price.js)
+    // Calculate Fees (single source of truth — matches calculate-price.js formula)
     const processingRate = 0.029; // 2.9%
     const fixedFee = 2000;
     const vatRate = 0.11;         // 11%
@@ -63,13 +66,38 @@ exports.handler = async (event) => {
 
     const finalAmount = baseAmount + totalFee;
 
+    // ── Safeguard: validate frontend/backend total agreement ──
+    if (expectedTotal) {
+      const tolerance = 5; // allow IDR 5 rounding tolerance
+      if (Math.abs(finalAmount - expectedTotal) > tolerance) {
+        console.error(`[INVOICE] ❌ PRICE MISMATCH DETECTED`);
+        console.error(`[INVOICE]   Frontend expectedTotal: IDR ${expectedTotal}`);
+        console.error(`[INVOICE]   Backend finalAmount:    IDR ${finalAmount}`);
+        console.error(`[INVOICE]   Difference:             IDR ${Math.abs(finalAmount - expectedTotal)}`);
+        console.error(`[INVOICE]   baseAmount (room):      IDR ${baseAmount}`);
+        console.error(`[INVOICE]   totalFee (calculated):  IDR ${totalFee}`);
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            error: "Price validation failed",
+            details: "The calculated total does not match the expected total. Please refresh and try again.",
+          }),
+        };
+      }
+    }
+
     console.log(`\n[INVOICE] ── Creating invoice ──────────────────────────`);
     console.log(`[INVOICE] Villa: ${villaName} (listing: ${listingId})`);
     console.log(`[INVOICE] Guest: ${firstName} ${lastName} <${email}>`);
     console.log(`[INVOICE] Dates: ${checkin} → ${checkout} (${nights} nights)`);
-    console.log(`[INVOICE] Base Amount: IDR ${baseAmount}`);
-    console.log(`[INVOICE] Total Fees: IDR ${totalFee}`);
-    console.log(`[INVOICE] Final Amount: IDR ${finalAmount}`);
+    console.log(`[INVOICE] ── Price Breakdown ──`);
+    console.log(`[INVOICE]   Room Base Amount:    IDR ${baseAmount}`);
+    console.log(`[INVOICE]   Processing Fee 2.9%: IDR ${processingFee}`);
+    console.log(`[INVOICE]   Flat Fee:            IDR ${fixedFee}`);
+    console.log(`[INVOICE]   VAT 11%:             IDR ${vat}`);
+    console.log(`[INVOICE]   Total Fees:          IDR ${totalFee}`);
+    console.log(`[INVOICE]   Final Amount:        IDR ${finalAmount}`);
+    console.log(`[INVOICE]   Frontend Expected:   IDR ${expectedTotal || 'N/A'}`);
     console.log(`[INVOICE] Phone: ${phone || "(none)"}`);
 
     const fullName = `${firstName} ${lastName}`.trim();
@@ -210,6 +238,11 @@ exports.handler = async (event) => {
 
     const data = response.data;
     console.log(`[INVOICE] ✅ Invoice created: ${data.id}`);
+    console.log(`[INVOICE] ── Xendit Confirmation ──`);
+    console.log(`[INVOICE]   Invoice ID:     ${data.id}`);
+    console.log(`[INVOICE]   Amount sent:    IDR ${finalAmount}`);
+    console.log(`[INVOICE]   Amount in Xendit: IDR ${data.amount}`);
+    console.log(`[INVOICE]   Match: ${data.amount === finalAmount ? '✅ YES' : '❌ NO — INVESTIGATE'}`);
 
     if (data.id) {
       return {
