@@ -2,18 +2,34 @@
 {% assign section_data = include.section %}
 
 <section class="bg-[#FCFBF8] section">
+  <!-- Note -->
+  <div
+    class="flex justify-center my-4 text-[#231F20]/50 text-xs sm:text-sm font-body"
+  >
+    <!-- Mobile & Tablet -->
+    <span class="block lg:hidden">Tap to view more images</span>
+
+    <!-- Desktop -->
+    <span class="hidden lg:block">Click to view details</span>
+  </div>
+
   <div class="max-w-screen-2xl mx-auto px-6 lg:px-8">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for image in section_data.images %}
       <div
         class="{% if forloop.index > 3 %} hidden md:block {% endif %} {% if forloop.index > 6 %} md:hidden lg:block {% endif %}"
       >
-        <img
-          src="{{ image | relative_url }}"
-          class="w-full h-[260px] md:h-[320px] lg:h-[360px] object-cover"
-          alt="Gallery image"
-          loading="lazy"
-        />
+        <a
+          href="{{ image | relative_url }}"
+          class="gallery-lightbox-trigger cursor-pointer"
+        >
+          <img
+            src="{{ image | relative_url }}"
+            class="w-full h-[260px] md:h-[320px] lg:h-[360px] object-cover"
+            alt="Gallery image {{ forloop.index }}"
+            loading="lazy"
+          />
+        </a>
       </div>
       {% endfor %}
     </div>
