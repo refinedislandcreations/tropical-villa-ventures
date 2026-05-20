@@ -151,6 +151,7 @@ class VillaBookingManager {
     const basePrice = data.basePrice || totalPrice;
     const nights = data.nights || 1;
     const pricePerNight = data.pricePerNight || Math.round(basePrice / nights);
+    const couponDiscount = data.couponDiscount || 0;
 
     const formatIDR = (num) =>
       `IDR ${Math.round(num).toLocaleString("id-ID", {
@@ -169,6 +170,17 @@ class VillaBookingManager {
             <span>${formatIDR(pricePerNight)} x ${nights} night${nights > 1 ? "s" : ""}</span>
             <span>${formatIDR(pricePerNight * nights)}</span>
           </div>
+
+          ${
+            couponDiscount > 0
+              ? `
+            <div class="flex justify-between text-white font-medium">
+              <span>Coupon discount</span>
+              <span>-${formatIDR(couponDiscount)}</span>
+            </div>
+          `
+              : ""
+          }
 
           ${
             data.breakdown.discounts > 0
@@ -227,10 +239,10 @@ class VillaBookingManager {
     const fields = [
       { id: "fullName", name: "full name", type: "text" },
       { id: "email", name: "email address", type: "email" },
-      { id: "phone", name: "phone number", type: "tel" }
+      { id: "phone", name: "phone number", type: "tel" },
     ];
 
-    fields.forEach(field => {
+    fields.forEach((field) => {
       const el = document.getElementById(field.id);
       if (!el) return;
 
@@ -253,7 +265,7 @@ class VillaBookingManager {
         // Highlight field with red border
         el.classList.add("border-red-500", "text-red-500");
         el.classList.remove("border-[#231F20]/40");
-        
+
         // Remove error style when user starts typing again
         el.addEventListener("input", function removeError() {
           el.classList.remove("border-red-500", "text-red-500");
@@ -295,14 +307,15 @@ class VillaBookingManager {
       const bookingData = JSON.parse(localStorage.getItem("bookingData"));
       const villaName = bookingData?.villaName || this.villaName || "Villa";
 
-      // IMPORTANT: Send basePrice (room cost only), NOT totalPrice (which includes fees).
-      // create-invoice.js is the single source of truth for fee calculation.
-      // Sending totalPrice here would cause fees to be applied twice (double-charge bug).
+      // IMPORTANT: Send the Hostaway reservation total as basePrice.
+      // create-invoice.js adds the Xendit processing fees on top of that amount.
       const basePrice = this.priceBreakdown.basePrice;
       const expectedTotal = this.priceBreakdown.totalPrice;
 
       if (!basePrice || basePrice <= 0) {
-        this.showError("Price calculation error. Please refresh and try again.");
+        this.showError(
+          "Price calculation error. Please refresh and try again.",
+        );
         return false;
       }
 
@@ -311,8 +324,12 @@ class VillaBookingManager {
         const recalcTotal = basePrice + this.priceBreakdown.fees.totalFee;
         const tolerance = 2; // allow IDR 2 rounding tolerance
         if (Math.abs(recalcTotal - expectedTotal) > tolerance) {
-          console.error(`[BOOKING] Price mismatch! basePrice=${basePrice}, fees=${this.priceBreakdown.fees.totalFee}, expected=${expectedTotal}, recalc=${recalcTotal}`);
-          this.showError("Price validation error. Please refresh and try again.");
+          console.error(
+            `[BOOKING] Price mismatch! basePrice=${basePrice}, fees=${this.priceBreakdown.fees.totalFee}, expected=${expectedTotal}, recalc=${recalcTotal}`,
+          );
+          this.showError(
+            "Price validation error. Please refresh and try again.",
+          );
           return false;
         }
       }
@@ -324,8 +341,8 @@ class VillaBookingManager {
         checkout: this.checkoutDate,
         guests: this.guests,
         nights: nights,
-        totalAmount: basePrice,  // Room cost ONLY — fees added by create-invoice.js
-        expectedTotal: expectedTotal,  // For backend validation
+        totalAmount: basePrice, // Room cost ONLY — fees added by create-invoice.js
+        expectedTotal: expectedTotal, // For backend validation
         firstName: firstName,
         lastName: lastName,
         email: formData.email,
@@ -334,6 +351,13 @@ class VillaBookingManager {
         city: formData.city || "",
         specialRequests: formData.specialRequests || "",
         couponCode: this.couponCode || null,
+        reservationCouponId: this.priceBreakdown.reservationCouponId || null,
+        financeFields:
+          this.priceBreakdown.financeFields ||
+          this.priceBreakdown.components ||
+          [],
+        reservationSubtotal:
+          this.priceBreakdown.reservationSubtotal || basePrice,
       };
 
       // Create invoice — this also stores temp booking data via Blobs
@@ -347,8 +371,12 @@ class VillaBookingManager {
 
       // Handle date-conflict (another guest is booking the same dates)
       if (response.status === 409) {
-        const msg = result.details || "These dates are no longer available. Please select different dates.";
-        alert("Oops! Another guest just completed a booking for these dates. You will be redirected to search for new dates.");
+        const msg =
+          result.details ||
+          "These dates are no longer available. Please select different dates.";
+        alert(
+          "Oops! Another guest just completed a booking for these dates. You will be redirected to search for new dates.",
+        );
         window.location.href = "/direct-booking.html";
         return false;
       }
@@ -390,8 +418,10 @@ class VillaBookingManager {
       }
     } catch (e) {
       this.couponCode = null;
-      try { await this.calculatePrice(); } catch(err) {} // recalculate without coupon
-      
+      try {
+        await this.calculatePrice();
+      } catch (err) {} // recalculate without coupon
+
       const message = document.getElementById("couponMessage");
       if (message) {
         message.innerText = "Coupon not found or invalid";

@@ -76,11 +76,13 @@ async function acquireHold(holdKey, externalId, guestEmail) {
   // Check for existing active hold
   const existing = await getActiveHold(holdKey);
   if (existing) {
-    console.log(`[HOLD] ❌ Dates already held by ${existing.externalId} (expires ${new Date(existing.expiresAt).toISOString()})`);
+    console.log(
+      `[HOLD] ❌ Dates already held by ${existing.externalId} (expires ${new Date(existing.expiresAt).toISOString()})`,
+    );
     return false;
   }
 
-// Acquire the hold
+  // Acquire the hold
   const holdData = {
     externalId,
     guestEmail,
@@ -94,13 +96,15 @@ async function acquireHold(holdKey, externalId, guestEmail) {
     console.warn("[HOLD] No blob store available — using in-memory hold");
     memoryHoldStore.set(holdKey, holdData);
   }
-  
+
   // Distributed lock verification (mitigate concurrent overwrite race conditions)
-  await new Promise(r => setTimeout(r, 100 + Math.random() * 100)); // 100-200ms jitter
-  
+  await new Promise((r) => setTimeout(r, 100 + Math.random() * 100)); // 100-200ms jitter
+
   const verifiedHold = await getActiveHold(holdKey);
   if (verifiedHold && verifiedHold.externalId !== externalId) {
-    console.log(`[HOLD] ❌ Race condition detected! Lost hold to ${verifiedHold.externalId}`);
+    console.log(
+      `[HOLD] ❌ Race condition detected! Lost hold to ${verifiedHold.externalId}`,
+    );
     return false;
   }
 
@@ -128,7 +132,9 @@ async function checkHostawayAvailability(listingId, checkin, checkout) {
   const clientId = process.env.HOSTAWAY_ACCOUNT_ID;
   const clientSecret = process.env.HOSTAWAY_API_KEY;
   if (!clientId || !clientSecret) {
-    console.warn("[INVOICE] Missing Hostaway credentials — skipping availability check");
+    console.warn(
+      "[INVOICE] Missing Hostaway credentials — skipping availability check",
+    );
     return true;
   }
 
@@ -141,7 +147,10 @@ async function checkHostawayAvailability(listingId, checkin, checkout) {
   const tokenRes = await axios.post(
     "https://api.hostaway.com/v1/accessTokens",
     params.toString(),
-    { timeout: 10000, headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+    {
+      timeout: 10000,
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    },
   );
   const token = tokenRes.data?.access_token;
   if (!token) return true; // fail open if token issues
@@ -149,18 +158,26 @@ async function checkHostawayAvailability(listingId, checkin, checkout) {
   // Check calendar
   const calendarRes = await axios.get(
     `https://api.hostaway.com/v1/listings/${listingId}/calendar?startDate=${checkin}&endDate=${checkout}&includeResources=0`,
-    { timeout: 10000, headers: { Authorization: `Bearer ${token}` } }
+    { timeout: 10000, headers: { Authorization: `Bearer ${token}` } },
   );
 
   if (calendarRes.data?.result) {
-    const days = calendarRes.data.result.filter(d => d.date >= checkin && d.date < checkout);
-    const isAvailable = days.length > 0 && days.every(d => d.status === "available" || d.isAvailable === 1);
+    const days = calendarRes.data.result.filter(
+      (d) => d.date >= checkin && d.date < checkout,
+    );
+    const isAvailable =
+      days.length > 0 &&
+      days.every((d) => d.status === "available" || d.isAvailable === 1);
     if (!isAvailable) {
-      console.log(`[INVOICE] ❌ Dates ${checkin}→${checkout} NOT available for listing ${listingId}`);
+      console.log(
+        `[INVOICE] ❌ Dates ${checkin}→${checkout} NOT available for listing ${listingId}`,
+      );
       return false;
     }
   }
-  console.log(`[INVOICE] ✅ Dates ${checkin}→${checkout} confirmed available for listing ${listingId}`);
+  console.log(
+    `[INVOICE] ✅ Dates ${checkin}→${checkout} confirmed available for listing ${listingId}`,
+  );
   return true;
 }
 
@@ -213,16 +230,19 @@ exports.handler = async (event) => {
       phone,
       specialRequests,
       couponCode,
+      reservationCouponId,
+      financeFields,
+      reservationSubtotal,
     } = JSON.parse(event.body);
 
-    // totalAmount is the BASE room price only (no fees included).
-    // Fees are calculated here as the single source of truth.
+    // totalAmount is the reservation total coming from Hostaway pricing
+    // (after coupon handling, before Xendit processing fees).
     const baseAmount = Math.round(totalAmount);
 
     // Calculate Fees (single source of truth — matches calculate-price.js formula)
     const processingRate = 0.029; // 2.9%
     const fixedFee = 2000;
-    const vatRate = 0.11;         // 11%
+    const vatRate = 0.11; // 11%
 
     const processingFee = Math.round(baseAmount * processingRate);
     const feeBeforeVAT = processingFee + fixedFee;
@@ -236,16 +256,21 @@ exports.handler = async (event) => {
       const tolerance = 5; // allow IDR 5 rounding tolerance
       if (Math.abs(finalAmount - expectedTotal) > tolerance) {
         console.error(`[INVOICE] ❌ PRICE MISMATCH DETECTED`);
-        console.error(`[INVOICE]   Frontend expectedTotal: IDR ${expectedTotal}`);
+        console.error(
+          `[INVOICE]   Frontend expectedTotal: IDR ${expectedTotal}`,
+        );
         console.error(`[INVOICE]   Backend finalAmount:    IDR ${finalAmount}`);
-        console.error(`[INVOICE]   Difference:             IDR ${Math.abs(finalAmount - expectedTotal)}`);
+        console.error(
+          `[INVOICE]   Difference:             IDR ${Math.abs(finalAmount - expectedTotal)}`,
+        );
         console.error(`[INVOICE]   baseAmount (room):      IDR ${baseAmount}`);
         console.error(`[INVOICE]   totalFee (calculated):  IDR ${totalFee}`);
         return {
           statusCode: 400,
           body: JSON.stringify({
             error: "Price validation failed",
-            details: "The calculated total does not match the expected total. Please refresh and try again.",
+            details:
+              "The calculated total does not match the expected total. Please refresh and try again.",
           }),
         };
       }
@@ -253,13 +278,18 @@ exports.handler = async (event) => {
 
     // ── Layer 1: Re-verify Hostaway availability ──
     // The frontend already checked, but another guest may have booked in the meantime
-    const available = await checkHostawayAvailability(listingId, checkin, checkout);
+    const available = await checkHostawayAvailability(
+      listingId,
+      checkin,
+      checkout,
+    );
     if (!available) {
       return {
         statusCode: 409,
         body: JSON.stringify({
           error: "Dates no longer available",
-          details: "Sorry, these dates were just booked by another guest. Please select different dates.",
+          details:
+            "Sorry, these dates were just booked by another guest. Please select different dates.",
         }),
       };
     }
@@ -267,13 +297,18 @@ exports.handler = async (event) => {
     // ── Layer 2: Acquire date-hold lock ──
     // Prevents two simultaneous invoice creations for the same dates
     holdKey = buildHoldKey(listingId, checkin, checkout);
-    const holdAcquired = await acquireHold(holdKey, `BOOKING_${listingId}_${Date.now()}`, email);
+    const holdAcquired = await acquireHold(
+      holdKey,
+      `BOOKING_${listingId}_${Date.now()}`,
+      email,
+    );
     if (!holdAcquired) {
       return {
         statusCode: 409,
         body: JSON.stringify({
           error: "Dates no longer available",
-          details: "Another guest is currently completing a booking for these dates. Please try again shortly or select different dates.",
+          details:
+            "Another guest is currently completing a booking for these dates. Please try again shortly or select different dates.",
         }),
       };
     }
@@ -283,13 +318,15 @@ exports.handler = async (event) => {
     console.log(`[INVOICE] Guest: ${firstName} ${lastName} <${email}>`);
     console.log(`[INVOICE] Dates: ${checkin} → ${checkout} (${nights} nights)`);
     console.log(`[INVOICE] ── Price Breakdown ──`);
-    console.log(`[INVOICE]   Room Base Amount:    IDR ${baseAmount}`);
+    console.log(`[INVOICE]   Reservation Total:   IDR ${baseAmount}`);
     console.log(`[INVOICE]   Processing Fee 2.9%: IDR ${processingFee}`);
     console.log(`[INVOICE]   Flat Fee:            IDR ${fixedFee}`);
     console.log(`[INVOICE]   VAT 11%:             IDR ${vat}`);
     console.log(`[INVOICE]   Total Fees:          IDR ${totalFee}`);
     console.log(`[INVOICE]   Final Amount:        IDR ${finalAmount}`);
-    console.log(`[INVOICE]   Frontend Expected:   IDR ${expectedTotal || 'N/A'}`);
+    console.log(
+      `[INVOICE]   Frontend Expected:   IDR ${expectedTotal || "N/A"}`,
+    );
     console.log(`[INVOICE] Phone: ${phone || "(none)"}`);
 
     const fullName = `${firstName} ${lastName}`.trim();
@@ -306,12 +343,13 @@ exports.handler = async (event) => {
       guests,
       nights,
       baseAmount: baseAmount,
+      reservationSubtotal: reservationSubtotal || baseAmount,
       totalAmount: finalAmount,
       totalFee: totalFee,
       feeBreakdown: {
         processingFee,
         fixedFee,
-        vat
+        vat,
       },
       guestName: fullName,
       guestFirstName: firstName || "Guest",
@@ -321,6 +359,8 @@ exports.handler = async (event) => {
       villaName: villaName,
       specialRequests: specialRequests || "",
       couponCode: couponCode || null,
+      reservationCouponId: reservationCouponId || null,
+      financeFields: Array.isArray(financeFields) ? financeFields : [],
     });
 
     // Sanitize phone — universal format
@@ -333,26 +373,26 @@ exports.handler = async (event) => {
         quantity: 1,
         price: baseAmount,
         category: "Accommodation",
-        description: `${nights} nights (${checkin} - ${checkout})`
+        description: `${nights} nights (${checkin} - ${checkout})`,
       },
       {
         name: "Payment Processing Fee (2.9%)",
         quantity: 1,
         price: processingFee,
-        category: "Fees"
+        category: "Fees",
       },
       {
         name: "Flat Processing Fee",
         quantity: 1,
         price: fixedFee,
-        category: "Fees"
+        category: "Fees",
       },
       {
         name: "VAT on Fees (11%)",
         quantity: 1,
         price: vat,
-        category: "Fees"
-      }
+        category: "Fees",
+      },
     ];
 
     // Build customer object (only include valid fields)
@@ -387,7 +427,7 @@ exports.handler = async (event) => {
         "EWALLET",
         "QRIS",
         "DIRECT_DEBIT",
-        "RETAIL_OUTLET"
+        "RETAIL_OUTLET",
       ],
       metadata: {
         bookingData: {
@@ -398,23 +438,29 @@ exports.handler = async (event) => {
           guests,
           nights,
           baseAmount,
+          reservationSubtotal: reservationSubtotal || baseAmount,
           totalFee,
           finalAmount,
           feeBreakdown: {
             processingFee,
             fixedFee,
-            vat
+            vat,
           },
           guestName: fullName,
           guestEmail: email,
           guestPhone: sanitizedPhone || phone || "",
           specialRequests: specialRequests || "",
           couponCode: couponCode || null,
-        }
-      }
+          reservationCouponId: reservationCouponId || null,
+          financeFields: Array.isArray(financeFields) ? financeFields : [],
+        },
+      },
     };
 
-    console.log("[INVOICE] Xendit payload:", JSON.stringify(xenditPayload, null, 2));
+    console.log(
+      "[INVOICE] Xendit payload:",
+      JSON.stringify(xenditPayload, null, 2),
+    );
 
     const secretKey = process.env.XENDIT_SECRET_KEY;
     if (!secretKey) {
@@ -440,7 +486,9 @@ exports.handler = async (event) => {
     console.log(`[INVOICE]   Invoice ID:     ${data.id}`);
     console.log(`[INVOICE]   Amount sent:    IDR ${finalAmount}`);
     console.log(`[INVOICE]   Amount in Xendit: IDR ${data.amount}`);
-    console.log(`[INVOICE]   Match: ${data.amount === finalAmount ? '✅ YES' : '❌ NO — INVESTIGATE'}`);
+    console.log(
+      `[INVOICE]   Match: ${data.amount === finalAmount ? "✅ YES" : "❌ NO — INVESTIGATE"}`,
+    );
 
     if (data.id) {
       return {
@@ -468,7 +516,10 @@ exports.handler = async (event) => {
       }
     }
 
-    console.error("[INVOICE] ❌ Error:", JSON.stringify(error.response?.data || error.message, null, 2));
+    console.error(
+      "[INVOICE] ❌ Error:",
+      JSON.stringify(error.response?.data || error.message, null, 2),
+    );
     return {
       statusCode: 500,
       body: JSON.stringify({

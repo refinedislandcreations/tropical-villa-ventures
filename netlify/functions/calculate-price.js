@@ -2,6 +2,11 @@
 const axios = require("axios");
 
 const { getToken } = require("./hostaway-token");
+const {
+  calculateReservationTotals,
+  normalizeFinanceFields,
+  resolveCouponContext,
+} = require("./hostaway-pricing");
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
@@ -16,6 +21,31 @@ exports.handler = async (event) => {
       JSON.parse(event.body);
 
     const token = await getToken();
+    const start = new Date(startingDate);
+    const end = new Date(endingDate);
+    const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+
+    let couponContext = null;
+    if (couponCode) {
+      try {
+        couponContext = await resolveCouponContext(token, {
+          couponCode,
+          listingMapId: listingId,
+          startingDate,
+          endingDate,
+          nights,
+        });
+      } catch (couponError) {
+        console.log("Coupon not found or invalid:", couponCode);
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            success: false,
+            error: couponError.message || "Coupon not found or invalid",
+          }),
+        };
+      }
+    }
 
     // Calculate price using Hostaway API
     const requestBody = {
@@ -25,59 +55,31 @@ exports.handler = async (event) => {
       version: 2,
     };
 
-    // Add coupon if provided
-    if (couponCode) {
-      try {
-        const couponResponse = await axios.post(
-          "https://api.hostaway.com/v1/reservationCoupons",
-          {
-            couponName: couponCode,
-            listingMapId: parseInt(listingId),
-            startingDate,
-            endingDate,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          },
-        );
-
-        const couponData = couponResponse.data;
-        if (
-          couponData.status === "success" &&
-          couponData.result &&
-          couponData.result.id
-        ) {
-          requestBody.reservationCouponId = couponData.result.id;
-        }
-      } catch (couponError) {
-        console.log("Coupon not found or invalid:", couponCode);
-        return {
-          statusCode: 400,
-          body: JSON.stringify({
-            success: false,
-            error: "Coupon not found or invalid",
-          }),
-        };
-      }
+    if (couponContext?.reservationCouponId) {
+      requestBody.reservationCouponId = couponContext.reservationCouponId;
     }
 
     // CHECK AVAILABILITY FIRST
     const calendarResponse = await axios.get(
       `https://api.hostaway.com/v1/listings/${listingId}/calendar?startDate=${startingDate}&endDate=${endingDate}&includeResources=0`,
-      { headers: { Authorization: `Bearer ${token}` } }
+      { headers: { Authorization: `Bearer ${token}` } },
     );
-    
+
     if (calendarResponse.data && calendarResponse.data.result) {
       // Only check up to the night before checkout
-      const days = calendarResponse.data.result.filter(d => d.date >= startingDate && d.date < endingDate);
-      const isAvailable = days.every(d => d.status === "available" || d.isAvailable === 1);
+      const days = calendarResponse.data.result.filter(
+        (d) => d.date >= startingDate && d.date < endingDate,
+      );
+      const isAvailable = days.every(
+        (d) => d.status === "available" || d.isAvailable === 1,
+      );
       if (!isAvailable || days.length === 0) {
         return {
           statusCode: 200,
-          body: JSON.stringify({ success: false, error: "Dates not available" })
+          body: JSON.stringify({
+            success: false,
+            error: "Dates not available",
+          }),
         };
       }
     }
@@ -96,7 +98,16 @@ exports.handler = async (event) => {
     const data = response.data;
 
     if (data.status === "success" && data.result) {
-      const components = data.result.components || [];
+      const components = normalizeFinanceFields(
+        data.result.components ||
+          data.result.financeField ||
+          data.result.financeFields ||
+          [],
+      );
+      const pricingTotals = calculateReservationTotals(
+        components,
+        couponContext?.coupon,
+      );
 
       const breakdown = {
         baseRate: 0,
@@ -125,21 +136,17 @@ exports.handler = async (event) => {
         }
       });
 
-      // Calculate nights for accurate breakdown
-      const start = new Date(startingDate);
-      const end = new Date(endingDate);
-      const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+      breakdown.couponDiscount = pricingTotals.couponDiscount;
 
-      // Remove cleaning fee and service fee/taxes from baseAmount
-      const cleanBaseAmount = data.result.totalPrice - breakdown.cleaningFee - breakdown.taxes - breakdown.otherFees;
-      const pricePerNight = cleanBaseAmount / nights;
+      const reservationBaseAmount = pricingTotals.total;
+      const pricePerNight = reservationBaseAmount / nights;
 
       // Calculate Payment Processing Fee
       // Formula provided by user: 2.9% + 2000 + 11% VAT
-      const baseAmount = cleanBaseAmount;
+      const baseAmount = reservationBaseAmount;
       const processingRate = 0.029; // 2.9%
       const fixedFee = 2000;
-      const vatRate = 0.11;         // 11%
+      const vatRate = 0.11; // 11%
 
       const processingFee = baseAmount * processingRate;
       const feeBeforeVAT = processingFee + fixedFee;
@@ -154,6 +161,11 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           success: true,
           basePrice: baseAmount,
+          reservationSubtotal: pricingTotals.subtotal,
+          couponDiscount: pricingTotals.couponDiscount,
+          reservationCouponId: couponContext?.reservationCouponId || null,
+          couponName: couponContext?.coupon?.name || couponCode || null,
+          financeFields: components,
           totalPrice: finalTotalPrice,
           pricePerNight: pricePerNight,
           nights: nights,
@@ -163,7 +175,7 @@ exports.handler = async (event) => {
             processingFee,
             fixedFee,
             vat,
-            totalFee
+            totalFee,
           },
           components: components.map((c) => ({
             name: c.title || c.name,

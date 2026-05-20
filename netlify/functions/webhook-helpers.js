@@ -21,6 +21,7 @@ const STORE_NAME = "temp-bookings";
 const IDEMPOTENCY_STORE_NAME = "processed-webhooks";
 const { getBooking, removeBooking } = require("./store-temp-booking");
 const { releaseHold, buildHoldKey } = require("./create-invoice");
+const { buildReservationFinanceFields } = require("./hostaway-pricing");
 
 // ─── Storage Layer ───────────────────────────────────────────────────────────
 
@@ -28,8 +29,7 @@ let blobsAvailable = true;
 let getStore;
 try {
   ({ getStore } = require("@netlify/blobs"));
-} catch (e) {
-}
+} catch (e) {}
 
 // In-memory fallback for local development (when Netlify Blobs is unavailable)
 const memoryIdempotencyStore = new Map();
@@ -94,7 +94,9 @@ async function markAsProcessed(invoiceId, externalId, reservationId) {
       await store.set(key, JSON.stringify(payload));
       console.log(`[IDEMPOTENCY] Marked processed in Blobs: ${key}`);
     } catch (e) {
-      console.warn(`[IDEMPOTENCY] Blobs write failed (memory fallback active): ${e.message}`);
+      console.warn(
+        `[IDEMPOTENCY] Blobs write failed (memory fallback active): ${e.message}`,
+      );
     }
   } else {
     console.log(`[IDEMPOTENCY] Marked processed in memory: ${key}`);
@@ -186,7 +188,7 @@ async function getHostawayToken() {
     {
       timeout: AXIOS_TIMEOUT,
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    }
+    },
   );
 
   if (!response.data?.access_token) {
@@ -206,11 +208,21 @@ async function createHostawayReservation(token, bookingData) {
   const nameParts = (bookingData.guestName || "").trim().split(" ");
   const firstName = nameParts[0] || "";
   const lastName = nameParts.slice(1).join(" ") || "";
-  const totalAmount = parseFloat(bookingData.totalAmount);
+  const totalAmount = parseFloat(
+    bookingData.reservationSubtotal ||
+      bookingData.baseAmount ||
+      bookingData.totalAmount,
+  );
+  const financeField = buildReservationFinanceFields(
+    bookingData.financeFields,
+    totalAmount,
+  );
 
   const listingMapId = parseInt(bookingData.listingId);
   if (!listingMapId || isNaN(listingMapId)) {
-    throw new Error(`Invalid or missing listingMapId: ${bookingData.listingId}`);
+    throw new Error(
+      `Invalid or missing listingMapId: ${bookingData.listingId}`,
+    );
   }
 
   // Use only documented fields from Hostaway API
@@ -241,27 +253,19 @@ async function createHostawayReservation(token, bookingData) {
     isPaid: 1,
     currency: "IDR",
     status: "confirmed",
-    hostNote: `Paid via Xendit. Booking ref: ${bookingData.externalId || "N/A"}. Total including fees: IDR ${totalAmount}`,
+    hostNote: `Paid via Xendit. Booking ref: ${bookingData.externalId || "N/A"}. Reservation total: IDR ${totalAmount}`,
     guestNote: bookingData.specialRequests || null,
-    comment: `Base Price: IDR ${bookingData.baseAmount || "N/A"}. Fees: IDR ${bookingData.totalFee || "N/A"}`,
+    comment: `Reservation total: IDR ${bookingData.baseAmount || "N/A"}. Xendit fees: IDR ${bookingData.totalFee || "N/A"}`,
     couponName: bookingData.couponCode || null,
-    financeField: [
-      {
-        type: "price",
-        name: "baseRate",
-        title: "Base rate",
-        value: totalAmount,
-        total: totalAmount,
-        isIncludedInTotalPrice: 1,
-        isOverriddenByUser: 0,
-        isQuantitySelectable: 0,
-        isDeleted: 0
-      }
-    ]
+    financeField: financeField,
   };
 
-  console.log(`[HOSTAWAY] Creating reservation for ${bookingData.guestName} at listing ${bookingData.listingId}`);
-  console.log(`[HOSTAWAY] Dates: ${bookingData.checkin} → ${bookingData.checkout}, Total: IDR ${totalAmount}`);
+  console.log(
+    `[HOSTAWAY] Creating reservation for ${bookingData.guestName} at listing ${bookingData.listingId}`,
+  );
+  console.log(
+    `[HOSTAWAY] Dates: ${bookingData.checkin} → ${bookingData.checkout}, Total: IDR ${totalAmount}`,
+  );
 
   const response = await axios.post(
     "https://api.hostaway.com/v1/reservations",
@@ -279,8 +283,13 @@ async function createHostawayReservation(token, bookingData) {
   console.log(`[HOSTAWAY] Response status: ${response.data?.status}`);
 
   if (response.data?.status !== "success") {
-    console.error(`[HOSTAWAY] Unexpected response:`, JSON.stringify(response.data, null, 2));
-    throw new Error(`Hostaway reservation failed: ${JSON.stringify(response.data?.result || response.data)}`);
+    console.error(
+      `[HOSTAWAY] Unexpected response:`,
+      JSON.stringify(response.data, null, 2),
+    );
+    throw new Error(
+      `Hostaway reservation failed: ${JSON.stringify(response.data?.result || response.data)}`,
+    );
   }
 
   return response.data;
@@ -289,7 +298,10 @@ async function createHostawayReservation(token, bookingData) {
 // ─── Guest Messaging ─────────────────────────────────────────────────────────
 
 function buildConfirmationMessage(bookingData) {
-  const guestFirstName = bookingData.guestFirstName || bookingData.guestName?.split(" ")[0] || "Guest";
+  const guestFirstName =
+    bookingData.guestFirstName ||
+    bookingData.guestName?.split(" ")[0] ||
+    "Guest";
   const villaName = bookingData.villaName || "our villa";
   const checkin = bookingData.checkin;
   const checkout = bookingData.checkout;
@@ -297,18 +309,23 @@ function buildConfirmationMessage(bookingData) {
   const nights = bookingData.nights || 1;
   const baseAmount = bookingData.baseAmount || 0;
   const totalAmount = bookingData.totalAmount || 0;
-  
+
   const fees = bookingData.feeBreakdown || {};
   const processingFee = fees.processingFee || 0;
   const fixedFee = fees.fixedFee || 0;
   const vat = fees.vat || 0;
-  const feeSubtotal = bookingData.totalFee || (processingFee + fixedFee + vat);
+  const feeSubtotal = bookingData.totalFee || processingFee + fixedFee + vat;
 
   const formatDateShort = (dateStr) => {
     const d = new Date(dateStr + "T00:00:00");
-    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    return d.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
   };
-  const formatCurrency = (amount) => `IDR ${Math.round(amount).toLocaleString("id-ID")}`;
+  const formatCurrency = (amount) =>
+    `IDR ${Math.round(amount).toLocaleString("id-ID")}`;
 
   return `Message from your host at [${villaName}]
 
@@ -361,7 +378,9 @@ TOTAL PAID: ${formatCurrency(totalAmount)}
  */
 async function sendConfirmationViaHostaway(token, reservationId, bookingData) {
   const messageBody = buildConfirmationMessage(bookingData);
-  console.log(`[MESSAGING] Sending confirmation for reservation ${reservationId}`);
+  console.log(
+    `[MESSAGING] Sending confirmation for reservation ${reservationId}`,
+  );
 
   try {
     // First, get the conversation for this reservation
@@ -377,11 +396,16 @@ async function sendConfirmationViaHostaway(token, reservationId, bookingData) {
     );
 
     let conversationId;
-    if (convResponse.data?.status === "success" && convResponse.data?.result?.length > 0) {
+    if (
+      convResponse.data?.status === "success" &&
+      convResponse.data?.result?.length > 0
+    ) {
       conversationId = convResponse.data.result[0].id;
       console.log(`[MESSAGING] Found conversation: ${conversationId}`);
     } else {
-      console.warn(`[MESSAGING] No conversation found for reservation ${reservationId}, skipping message`);
+      console.warn(
+        `[MESSAGING] No conversation found for reservation ${reservationId}, skipping message`,
+      );
       return false;
     }
 
@@ -398,7 +422,10 @@ async function sendConfirmationViaHostaway(token, reservationId, bookingData) {
         },
       },
     );
-    console.log(`[MESSAGING] Sent successfully:`, response.data?.status || "OK");
+    console.log(
+      `[MESSAGING] Sent successfully:`,
+      response.data?.status || "OK",
+    );
     return true;
   } catch (error) {
     console.error(`[MESSAGING] Failed:`, error.response?.data || error.message);
@@ -440,7 +467,9 @@ async function handlePaid(externalId, webhookData) {
   // ── Step 1: Idempotency check ──────────────────────────────────────────────
   const alreadyDone = await isAlreadyProcessed(invoiceId, externalId);
   if (alreadyDone) {
-    console.log(`[IDEMPOTENCY] Duplicate webhook ignored: ${invoiceId} / ${externalId}`);
+    console.log(
+      `[IDEMPOTENCY] Duplicate webhook ignored: ${invoiceId} / ${externalId}`,
+    );
     return { success: true, duplicate: true, message: "Already processed" };
   }
 
@@ -469,17 +498,23 @@ async function handlePaid(externalId, webhookData) {
         bookingData = invoice.metadata.bookingData;
         dataSource = "xendit-invoice";
       } else {
-        console.warn(`[PAID] Xendit invoice ${invoiceId} has no metadata.bookingData`);
+        console.warn(
+          `[PAID] Xendit invoice ${invoiceId} has no metadata.bookingData`,
+        );
       }
     } catch (e) {
-      console.error(`[PAID] Failed to fetch invoice from Xendit: ${e.response?.data || e.message}`);
+      console.error(
+        `[PAID] Failed to fetch invoice from Xendit: ${e.response?.data || e.message}`,
+      );
     }
   }
 
   if (!bookingData) {
     // No booking data from any source. This is a permanent failure —
     // do NOT throw, since retries won't help.
-    console.error(`[PAID] ❌ No booking data found for ${externalId} (tried metadata, temp storage, Xendit GET). Cannot create reservation.`);
+    console.error(
+      `[PAID] ❌ No booking data found for ${externalId} (tried metadata, temp storage, Xendit GET). Cannot create reservation.`,
+    );
     return { success: false, error: "No booking data found" };
   }
 
@@ -488,7 +523,9 @@ async function handlePaid(externalId, webhookData) {
   // Attach externalId for the hostNote
   bookingData.externalId = externalId;
 
-  console.log(`[PAID] Booking loaded: ${bookingData.villaName} | ${bookingData.guestName} | ${bookingData.checkin} → ${bookingData.checkout}`);
+  console.log(
+    `[PAID] Booking loaded: ${bookingData.villaName} | ${bookingData.guestName} | ${bookingData.checkin} → ${bookingData.checkout}`,
+  );
 
   // ── Step 3: Get Hostaway token ─────────────────────────────────────────────
   // Throws on failure → webhook handler returns 500 → Xendit retries
@@ -508,20 +545,34 @@ async function handlePaid(externalId, webhookData) {
   // ── Step 6: Send confirmation message (non-critical) ──────────────────────
   let messageSent = false;
   try {
-    messageSent = await sendConfirmationViaHostaway(token, reservationId, bookingData);
-    console.log(`[PAID] ${messageSent ? "✅" : "⚠️"} Confirmation message ${messageSent ? "sent" : "failed (non-critical)"}`);
+    messageSent = await sendConfirmationViaHostaway(
+      token,
+      reservationId,
+      bookingData,
+    );
+    console.log(
+      `[PAID] ${messageSent ? "✅" : "⚠️"} Confirmation message ${messageSent ? "sent" : "failed (non-critical)"}`,
+    );
   } catch (msgError) {
-    console.error(`[PAID] ⚠️ Confirmation message error (non-critical): ${msgError.message}`);
+    console.error(
+      `[PAID] ⚠️ Confirmation message error (non-critical): ${msgError.message}`,
+    );
   }
 
   // ── Step 7: Release date-hold (non-critical) ─────────────────────────────
   // Dates are now officially booked in Hostaway, so the hold can be released
   try {
-    const holdKey = buildHoldKey(bookingData.listingId, bookingData.checkin, bookingData.checkout);
+    const holdKey = buildHoldKey(
+      bookingData.listingId,
+      bookingData.checkin,
+      bookingData.checkout,
+    );
     await releaseHold(holdKey);
     console.log(`[PAID] ✅ Date hold released`);
   } catch (holdError) {
-    console.warn(`[PAID] ⚠️ Hold release failed (non-critical): ${holdError.message}`);
+    console.warn(
+      `[PAID] ⚠️ Hold release failed (non-critical): ${holdError.message}`,
+    );
   }
 
   // ── Step 8: Cleanup temp booking ──────────────────────────────────────────
@@ -529,7 +580,9 @@ async function handlePaid(externalId, webhookData) {
     await cleanupTempBooking(externalId);
     console.log(`[PAID] ✅ Temp booking cleaned up`);
   } catch (cleanupError) {
-    console.warn(`[PAID] ⚠️ Cleanup failed (non-critical): ${cleanupError.message}`);
+    console.warn(
+      `[PAID] ⚠️ Cleanup failed (non-critical): ${cleanupError.message}`,
+    );
   }
 
   return { success: true, reservationId, messageSent };
@@ -565,8 +618,12 @@ function handlePending(externalId, webhookData) {
   console.log(`\n${"=".repeat(60)}`);
   console.log(`[PENDING] Invoice pending: ${externalId}`);
   console.log(`[PENDING] Invoice ID: ${webhookData.id}`);
-  console.log(`[PENDING] Amount: ${webhookData.amount} ${webhookData.currency}`);
-  console.log(`[PENDING] Payment method: ${webhookData.payment_method || "not selected"}`);
+  console.log(
+    `[PENDING] Amount: ${webhookData.amount} ${webhookData.currency}`,
+  );
+  console.log(
+    `[PENDING] Payment method: ${webhookData.payment_method || "not selected"}`,
+  );
   console.log(`${"=".repeat(60)}\n`);
   return { acknowledged: true, status: "PENDING" };
 }
@@ -575,14 +632,20 @@ async function handleExpired(externalId, webhookData) {
   console.log(`\n${"=".repeat(60)}`);
   console.log(`[EXPIRED] Invoice expired: ${externalId}`);
   console.log(`[EXPIRED] Invoice ID: ${webhookData.id}`);
-  console.log(`[EXPIRED] Amount: ${webhookData.amount} ${webhookData.currency}`);
+  console.log(
+    `[EXPIRED] Amount: ${webhookData.amount} ${webhookData.currency}`,
+  );
   console.log(`${"=".repeat(60)}\n`);
 
   // Release date-hold so the dates become available again
   try {
     const bookingData = await getTempBooking(externalId);
     if (bookingData) {
-      const holdKey = buildHoldKey(bookingData.listingId, bookingData.checkin, bookingData.checkout);
+      const holdKey = buildHoldKey(
+        bookingData.listingId,
+        bookingData.checkin,
+        bookingData.checkout,
+      );
       await releaseHold(holdKey);
       console.log(`[EXPIRED] ✅ Date hold released: ${holdKey}`);
     }

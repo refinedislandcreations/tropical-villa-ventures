@@ -1,5 +1,6 @@
 // netlify/functions/create-reservation.js
 const axios = require("axios");
+const { buildReservationFinanceFields } = require("./hostaway-pricing");
 
 async function getHostawayToken() {
   const response = await axios.get(
@@ -29,6 +30,9 @@ exports.handler = async (event) => {
       guestCity,
       guestCountry,
       totalPrice,
+      reservationSubtotal,
+      financeFields,
+      couponName,
       specialRequests,
     } = JSON.parse(event.body);
 
@@ -38,6 +42,11 @@ exports.handler = async (event) => {
     const nameParts = guestName.trim().split(" ");
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
+    const reservationTotal = parseFloat(reservationSubtotal || totalPrice);
+    const financeField = buildReservationFinanceFields(
+      financeFields,
+      reservationTotal,
+    );
 
     const reservationData = {
       channelId: 2000, // Direct booking channel
@@ -56,10 +65,12 @@ exports.handler = async (event) => {
       adults: parseInt(guests),
       arrivalDate: checkin,
       departureDate: checkout,
-      totalPrice: parseFloat(totalPrice),
+      totalPrice: reservationTotal,
       currency: "IDR",
       status: "new",
       guestNote: specialRequests || "",
+      couponName: couponName || null,
+      financeField: financeField,
     };
 
     const response = await axios.post(
