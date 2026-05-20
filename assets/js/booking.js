@@ -358,6 +358,7 @@ class VillaBookingManager {
           [],
         reservationSubtotal:
           this.priceBreakdown.reservationSubtotal || basePrice,
+        origin: window.location.origin,
       };
 
       // Create invoice — this also stores temp booking data via Blobs
@@ -371,13 +372,18 @@ class VillaBookingManager {
 
       // Handle date-conflict (another guest is booking the same dates)
       if (response.status === 409) {
-        const msg =
-          result.details ||
-          "These dates are no longer available. Please select different dates.";
-        alert(
-          "Oops! Another guest just completed a booking for these dates. You will be redirected to search for new dates.",
-        );
-        window.location.href = "/direct-booking.html";
+        const modal = document.getElementById("raceConditionModal");
+        if (modal) {
+          modal.classList.remove("hidden");
+          modal.classList.add("flex");
+        } else {
+          // Fallback if modal doesn't exist on page
+          alert(
+            result.details ||
+              "Oops! Another guest just completed a booking for these dates. You will be redirected to search for new dates.",
+          );
+          window.location.href = "/direct-booking.html";
+        }
         return false;
       }
 
