@@ -208,14 +208,23 @@ async function createHostawayReservation(token, bookingData) {
   const nameParts = (bookingData.guestName || "").trim().split(" ");
   const firstName = nameParts[0] || "";
   const lastName = nameParts.slice(1).join(" ") || "";
+
+  // Use the full amount including all fees (finalAmount > totalAmount > baseAmount)
+  // finalAmount = base accommodation + processing fee + flat fee + VAT
   const totalAmount = parseFloat(
-    bookingData.reservationSubtotal ||
+    bookingData.finalAmount ||
+      bookingData.totalAmount ||
       bookingData.baseAmount ||
-      bookingData.totalAmount,
+      0,
   );
+  const baseAmount = parseFloat(bookingData.baseAmount || totalAmount);
+  const totalFee = parseFloat(bookingData.totalFee || 0);
+  const feeBreakdown = bookingData.feeBreakdown || {};
+
   const financeField = buildReservationFinanceFields(
     bookingData.financeFields,
-    totalAmount,
+    baseAmount,
+    feeBreakdown,
   );
 
   const listingMapId = parseInt(bookingData.listingId);
@@ -253,9 +262,9 @@ async function createHostawayReservation(token, bookingData) {
     isPaid: 1,
     currency: "IDR",
     status: "confirmed",
-    hostNote: `Paid via Xendit. Booking ref: ${bookingData.externalId || "N/A"}. Reservation total: IDR ${totalAmount}`,
+    hostNote: `Paid via Xendit. Booking ref: ${bookingData.externalId || "N/A"}. Total paid: IDR ${totalAmount} (Room: IDR ${baseAmount} + Fees: IDR ${totalFee})`,
     guestNote: bookingData.specialRequests || null,
-    comment: `Reservation total: IDR ${bookingData.baseAmount || "N/A"}. Xendit fees: IDR ${bookingData.totalFee || "N/A"}`,
+    comment: `Room rate: IDR ${baseAmount}. Processing fee (2.9%): IDR ${feeBreakdown.processingFee || 0}. Flat fee: IDR ${feeBreakdown.fixedFee || 0}. VAT (11%): IDR ${feeBreakdown.vat || 0}. Total fees: IDR ${totalFee}. Total paid: IDR ${totalAmount}`,
     couponName: bookingData.couponCode || null,
     financeField: financeField,
   };

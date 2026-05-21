@@ -346,6 +346,7 @@ exports.handler = async (event) => {
       baseAmount: baseAmount,
       reservationSubtotal: reservationSubtotal || baseAmount,
       totalAmount: finalAmount,
+      finalAmount: finalAmount,
       totalFee: totalFee,
       feeBreakdown: {
         processingFee,

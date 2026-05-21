@@ -223,29 +223,88 @@ function calculateReservationTotals(financeFields, coupon) {
   };
 }
 
-function buildReservationFinanceFields(financeFields, fallbackTotal) {
+function buildReservationFinanceFields(financeFields, fallbackTotal, feeBreakdown) {
   const normalizedFields = normalizeFinanceFields(financeFields);
-  if (normalizedFields.length > 0) {
-    return normalizedFields;
+
+  // Start with Hostaway's own finance fields if available, otherwise create base rate
+  const fields = normalizedFields.length > 0
+    ? [...normalizedFields]
+    : [
+        {
+          type: "price",
+          name: "baseRate",
+          title: "Base rate",
+          alias: null,
+          quantity: null,
+          value: roundAmount(fallbackTotal),
+          total: roundAmount(fallbackTotal),
+          isIncludedInTotalPrice: 1,
+          isOverriddenByUser: 0,
+          isQuantitySelectable: 0,
+          isMandatory: null,
+          isDeleted: 0,
+        },
+      ];
+
+  // Append payment processing fees as separate finance field entries
+  if (feeBreakdown && typeof feeBreakdown === "object") {
+    const processingFee = roundAmount(feeBreakdown.processingFee || 0);
+    const fixedFee = roundAmount(feeBreakdown.fixedFee || 0);
+    const vat = roundAmount(feeBreakdown.vat || 0);
+
+    if (processingFee > 0) {
+      fields.push({
+        type: "fee",
+        name: "paymentProcessingFee",
+        title: "Payment Processing Fee (2.9%)",
+        alias: null,
+        quantity: null,
+        value: processingFee,
+        total: processingFee,
+        isIncludedInTotalPrice: 1,
+        isOverriddenByUser: 1,
+        isQuantitySelectable: 0,
+        isMandatory: null,
+        isDeleted: 0,
+      });
+    }
+
+    if (fixedFee > 0) {
+      fields.push({
+        type: "fee",
+        name: "flatProcessingFee",
+        title: "Flat Processing Fee",
+        alias: null,
+        quantity: null,
+        value: fixedFee,
+        total: fixedFee,
+        isIncludedInTotalPrice: 1,
+        isOverriddenByUser: 1,
+        isQuantitySelectable: 0,
+        isMandatory: null,
+        isDeleted: 0,
+      });
+    }
+
+    if (vat > 0) {
+      fields.push({
+        type: "tax",
+        name: "vatOnFees",
+        title: "VAT on Fees (11%)",
+        alias: null,
+        quantity: null,
+        value: vat,
+        total: vat,
+        isIncludedInTotalPrice: 1,
+        isOverriddenByUser: 1,
+        isQuantitySelectable: 0,
+        isMandatory: null,
+        isDeleted: 0,
+      });
+    }
   }
 
-  const total = roundAmount(fallbackTotal);
-  return [
-    {
-      type: "price",
-      name: "baseRate",
-      title: "Base rate",
-      alias: null,
-      quantity: null,
-      value: total,
-      total,
-      isIncludedInTotalPrice: 1,
-      isOverriddenByUser: 0,
-      isQuantitySelectable: 0,
-      isMandatory: null,
-      isDeleted: 0,
-    },
-  ];
+  return fields;
 }
 
 module.exports = {
