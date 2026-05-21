@@ -206,8 +206,8 @@ async function getHostawayToken() {
  */
 async function createHostawayReservation(token, bookingData) {
   const nameParts = (bookingData.guestName || "").trim().split(" ");
-  const firstName = nameParts[0] || "";
-  const lastName = nameParts.slice(1).join(" ") || "";
+  const firstName = bookingData.guestFirstName || nameParts[0] || "";
+  const lastName = bookingData.guestLastName || nameParts.slice(1).join(" ") || "";
 
   // Use the full amount including all fees (finalAmount > totalAmount > baseAmount)
   // finalAmount = base accommodation + processing fee + flat fee + VAT
@@ -234,13 +234,13 @@ async function createHostawayReservation(token, bookingData) {
     );
   }
 
-  // Use only documented fields from Hostaway API
+  // Build reservation payload with ALL guest data + full pricing
   const reservationData = {
     channelId: 2000,
     listingMapId: listingMapId,
     isManuallyChecked: 0,
     isInitial: 0,
-    guestName: bookingData.guestName || "",
+    guestName: bookingData.guestName || `${firstName} ${lastName}`.trim(),
     guestFirstName: firstName,
     guestLastName: lastName,
     guestEmail: bookingData.guestEmail || "",
@@ -254,6 +254,9 @@ async function createHostawayReservation(token, bookingData) {
     checkInTime: null,
     checkOutTime: null,
     phone: bookingData.guestPhone || "",
+    guestAddress: bookingData.guestAddress || "",
+    guestCity: bookingData.guestCity || "",
+    guestCountry: bookingData.guestCountry || "ID",
     totalPrice: totalAmount,
     taxAmount: null,
     channelCommissionAmount: null,
@@ -266,14 +269,24 @@ async function createHostawayReservation(token, bookingData) {
     guestNote: bookingData.specialRequests || null,
     comment: `Room rate: IDR ${baseAmount}. Processing fee (2.9%): IDR ${feeBreakdown.processingFee || 0}. Flat fee: IDR ${feeBreakdown.fixedFee || 0}. VAT (11%): IDR ${feeBreakdown.vat || 0}. Total fees: IDR ${totalFee}. Total paid: IDR ${totalAmount}`,
     couponName: bookingData.couponCode || null,
+    reservationCouponId: bookingData.reservationCouponId ? parseInt(bookingData.reservationCouponId) : null,
     financeField: financeField,
   };
 
   console.log(
-    `[HOSTAWAY] Creating reservation for ${bookingData.guestName} at listing ${bookingData.listingId}`,
+    `[HOSTAWAY] Creating reservation for ${reservationData.guestName} at listing ${bookingData.listingId}`,
   );
   console.log(
-    `[HOSTAWAY] Dates: ${bookingData.checkin} → ${bookingData.checkout}, Total: IDR ${totalAmount}`,
+    `[HOSTAWAY] Guest: ${reservationData.guestEmail} | Phone: ${reservationData.phone} | Address: ${reservationData.guestAddress}, ${reservationData.guestCity}`,
+  );
+  console.log(
+    `[HOSTAWAY] Dates: ${bookingData.checkin} → ${bookingData.checkout} | Guests: ${reservationData.numberOfGuests}`,
+  );
+  console.log(
+    `[HOSTAWAY] Pricing: Base IDR ${baseAmount} + Fees IDR ${totalFee} = Total IDR ${totalAmount}`,
+  );
+  console.log(
+    `[HOSTAWAY] Finance fields: ${financeField.length} entries | Coupon: ${reservationData.couponName || "none"} | ResCouponId: ${reservationData.reservationCouponId || "none"}`,
   );
 
   const response = await axios.post(

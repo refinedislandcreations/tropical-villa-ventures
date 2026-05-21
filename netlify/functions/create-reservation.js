@@ -32,7 +32,9 @@ exports.handler = async (event) => {
       totalPrice,
       reservationSubtotal,
       financeFields,
+      feeBreakdown,
       couponName,
+      reservationCouponId,
       specialRequests,
     } = JSON.parse(event.body);
 
@@ -46,6 +48,7 @@ exports.handler = async (event) => {
     const financeField = buildReservationFinanceFields(
       financeFields,
       reservationTotal,
+      feeBreakdown || {},
     );
 
     const reservationData = {
@@ -70,6 +73,7 @@ exports.handler = async (event) => {
       status: "new",
       guestNote: specialRequests || "",
       couponName: couponName || null,
+      reservationCouponId: reservationCouponId ? parseInt(reservationCouponId) : null,
       financeField: financeField,
     };
 
