@@ -255,7 +255,7 @@ function buildReservationFinanceFields(financeFields, fallbackTotal, feeBreakdow
     if (processingFee > 0) {
       fields.push({
         type: "fee",
-        name: "paymentProcessingFee",
+        name: "creditCardFee",
         title: "Payment Processing Fee (2.9%)",
         alias: null,
         quantity: null,
@@ -272,7 +272,7 @@ function buildReservationFinanceFields(financeFields, fallbackTotal, feeBreakdow
     if (fixedFee > 0) {
       fields.push({
         type: "fee",
-        name: "flatProcessingFee",
+        name: "otherFees",
         title: "Flat Processing Fee",
         alias: null,
         quantity: null,
@@ -289,7 +289,7 @@ function buildReservationFinanceFields(financeFields, fallbackTotal, feeBreakdow
     if (vat > 0) {
       fields.push({
         type: "tax",
-        name: "vatOnFees",
+        name: "vat",
         title: "VAT on Fees (11%)",
         alias: null,
         quantity: null,
