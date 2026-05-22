@@ -328,6 +328,35 @@ section_data.meta.guests | default: 10 %}
       </div>
     </div>
   </div>
+
+  <!-- Race Condition Modal -->
+  <div
+    id="raceConditionModal"
+    class="fixed inset-0 bg-black/50 hidden items-center justify-center z-3000 font-body"
+  >
+    <div
+      class="bg-white p-8 md:p-12 max-w-lg mx-auto text-center shadow-2xl relative border-t-4 border-[#8B8635]"
+    >
+      <h2
+        class="text-3xl font-heading font-extralight text-[#231F20] mb-4 uppercase tracking-widest"
+      >
+        Dates No Longer Available
+      </h2>
+      <p class="text-[#231F20]/70 text-sm leading-relaxed mb-8">
+        We're so sorry! Another guest just completed a reservation for these
+        exact dates while you were checking out.
+        <br /><br />
+        Please search for new dates or check our other amazing villas.
+      </p>
+      <button
+        type="button"
+        onclick="window.location.href = '/direct-booking.html'"
+        class="uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-8 py-3 w-full transition hover:bg-[#6B682A] text-white text-sm"
+      >
+        FIND NEW DATES
+      </button>
+    </div>
+  </div>
 </section>
 
 <style>
@@ -654,11 +683,24 @@ section_data.meta.guests | default: 10 %}
     const ovLoading = document.getElementById("overlay-loading");
     const ovAvailable = document.getElementById("overlay-available");
     const ovUnavailable = document.getElementById("overlay-unavailable");
+    const raceConditionModal = document.getElementById("raceConditionModal");
 
     window.closeOverlay = function () {
       sidebar.classList.add("translate-x-full");
       setTimeout(() => overlay.classList.add("hidden"), 300);
     };
+
+    function showRaceConditionModal() {
+      if (!raceConditionModal) return;
+      raceConditionModal.classList.remove("hidden");
+      raceConditionModal.classList.add("flex");
+    }
+
+    function hideRaceConditionModal() {
+      if (!raceConditionModal) return;
+      raceConditionModal.classList.add("hidden");
+      raceConditionModal.classList.remove("flex");
+    }
 
     bookBtn.addEventListener("click", async () => {
       if (!selectedCheckin || !selectedCheckout) return;
@@ -872,7 +914,39 @@ section_data.meta.guests | default: 10 %}
       const newSubmitBtn = oldSubmitBtn.cloneNode(true);
       oldSubmitBtn.parentNode.replaceChild(newSubmitBtn, oldSubmitBtn);
 
-      newSubmitBtn.addEventListener("click", () => {
+      async function confirmVillaStillAvailable() {
+        try {
+          const availabilityRes = await fetch(
+            `/.netlify/functions/search-availability?startDate=${selectedCheckin}&endDate=${selectedCheckout}&guests=${guests}`,
+          );
+          const availabilityData = await availabilityRes.json();
+
+          const stillAvailable =
+            availabilityData.listings &&
+            availabilityData.listings.some(
+              (l) =>
+                String(l.hostawayId) === String(bookingTargetId) ||
+                String(l.listingId) === String(bookingTargetId),
+            );
+
+          if (!stillAvailable) {
+            showRaceConditionModal();
+            closeOverlay();
+            return false;
+          }
+
+          return true;
+        } catch (error) {
+          console.error("Availability re-check failed:", error);
+          showRaceConditionModal();
+          return false;
+        }
+      }
+
+      newSubmitBtn.addEventListener("click", async () => {
+        const isStillAvailable = await confirmVillaStillAvailable();
+        if (!isStillAvailable) return;
+
         localStorage.setItem(
           "bookingData",
           JSON.stringify({
