@@ -81,7 +81,7 @@ class VillaBookingManager {
   initCouponHandler() {
     const applyBtn = document.getElementById("applyCouponBtn");
     const couponInput = document.getElementById("couponInput");
-    if (applyBtn && couponInput) {
+    if (applyBtn && couponInput && !applyBtn.getAttribute("onclick")) {
       applyBtn.addEventListener("click", async () => {
         const code = couponInput.value.trim().toUpperCase();
         if (code) {

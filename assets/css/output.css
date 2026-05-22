@@ -344,14 +344,14 @@
   .z-50 {
     z-index: 50;
   }
-  .z-1000 {
-    z-index: 1000;
-  }
   .z-2000 {
     z-index: 2000;
   }
   .z-\[50\] {
     z-index: 50;
+  }
+  .z-\[100\] {
+    z-index: 100;
   }
   .z-\[999\] {
     z-index: 999;
@@ -1017,6 +1017,10 @@
   .border-t {
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
+  }
+  .border-t-4 {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 4px;
   }
   .border-r {
     border-right-style: var(--tw-border-style);
@@ -2566,6 +2570,11 @@
   .md\:p-10 {
     @media (width >= 48rem) {
       padding: calc(var(--spacing) * 10);
+    }
+  }
+  .md\:p-12 {
+    @media (width >= 48rem) {
+      padding: calc(var(--spacing) * 12);
     }
   }
   .md\:px-5 {

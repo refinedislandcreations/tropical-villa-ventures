@@ -1,12 +1,10 @@
 // netlify/functions/create-reservation.js
 const axios = require("axios");
+const { getToken } = require("./hostaway-token");
 const { buildReservationFinanceFields } = require("./hostaway-pricing");
 
 async function getHostawayToken() {
-  const response = await axios.get(
-    `${process.env.URL}/.netlify/functions/hostaway-token`,
-  );
-  return response.data.access_token;
+  return getToken();
 }
 
 exports.handler = async (event) => {
@@ -73,7 +71,9 @@ exports.handler = async (event) => {
       status: "new",
       guestNote: specialRequests || "",
       couponName: couponName || null,
-      reservationCouponId: reservationCouponId ? parseInt(reservationCouponId) : null,
+      reservationCouponId: reservationCouponId
+        ? parseInt(reservationCouponId)
+        : null,
       financeField: financeField,
     };
 

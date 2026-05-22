@@ -212,8 +212,21 @@ async function updateReservationFinanceField(
 function calculateReservationTotals(financeFields, coupon) {
   const normalizedFields = normalizeFinanceFields(financeFields);
   const subtotal = sumFinanceFieldTotals(normalizedFields);
-  const couponDiscount = calculateCouponDiscount(coupon, subtotal);
-  const total = roundAmount(subtotal - couponDiscount);
+  const existingDiscount = normalizedFields.reduce(
+    (sum, field) =>
+      field.type === "discount" ? sum + Math.abs(toNumber(field.total)) : sum,
+    0,
+  );
+
+  let couponDiscount = 0;
+  let total = subtotal;
+
+  if (existingDiscount > 0) {
+    couponDiscount = roundAmount(existingDiscount);
+  } else {
+    couponDiscount = calculateCouponDiscount(coupon, subtotal);
+    total = roundAmount(subtotal - couponDiscount);
+  }
 
   return {
     financeFields: normalizedFields,
@@ -223,28 +236,33 @@ function calculateReservationTotals(financeFields, coupon) {
   };
 }
 
-function buildReservationFinanceFields(financeFields, fallbackTotal, feeBreakdown) {
+function buildReservationFinanceFields(
+  financeFields,
+  fallbackTotal,
+  feeBreakdown,
+) {
   const normalizedFields = normalizeFinanceFields(financeFields);
 
   // Start with Hostaway's own finance fields if available, otherwise create base rate
-  const fields = normalizedFields.length > 0
-    ? [...normalizedFields]
-    : [
-        {
-          type: "price",
-          name: "baseRate",
-          title: "Base rate",
-          alias: null,
-          quantity: null,
-          value: roundAmount(fallbackTotal),
-          total: roundAmount(fallbackTotal),
-          isIncludedInTotalPrice: 1,
-          isOverriddenByUser: 0,
-          isQuantitySelectable: 0,
-          isMandatory: null,
-          isDeleted: 0,
-        },
-      ];
+  const fields =
+    normalizedFields.length > 0
+      ? [...normalizedFields]
+      : [
+          {
+            type: "price",
+            name: "baseRate",
+            title: "Base rate",
+            alias: null,
+            quantity: null,
+            value: roundAmount(fallbackTotal),
+            total: roundAmount(fallbackTotal),
+            isIncludedInTotalPrice: 1,
+            isOverriddenByUser: 0,
+            isQuantitySelectable: 0,
+            isMandatory: null,
+            isDeleted: 0,
+          },
+        ];
 
   // Append payment processing fees as separate finance field entries
   if (feeBreakdown && typeof feeBreakdown === "object") {

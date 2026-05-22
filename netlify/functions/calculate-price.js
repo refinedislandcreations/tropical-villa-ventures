@@ -6,6 +6,7 @@ const {
   calculateReservationTotals,
   normalizeFinanceFields,
   resolveCouponContext,
+  roundAmount,
 } = require("./hostaway-pricing");
 
 exports.handler = async (event) => {
@@ -117,6 +118,11 @@ exports.handler = async (event) => {
         otherFees: 0,
       };
 
+      const componentDiscountTotal = components.reduce((sum, comp) => {
+        if (comp.type !== "discount") return sum;
+        return sum + Math.abs(comp.total || comp.value || 0);
+      }, 0);
+
       components.forEach((comp) => {
         const amount = comp.total || comp.value || 0;
         switch (comp.type) {
@@ -136,6 +142,10 @@ exports.handler = async (event) => {
         }
       });
 
+      breakdown.discounts = Math.max(
+        0,
+        roundAmount(componentDiscountTotal - pricingTotals.couponDiscount),
+      );
       breakdown.couponDiscount = pricingTotals.couponDiscount;
 
       const reservationBaseAmount = pricingTotals.total;
