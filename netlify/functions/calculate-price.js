@@ -85,6 +85,8 @@ exports.handler = async (event) => {
       }
     }
 
+    const availabilityVerifiedAt = Date.now();
+
     const response = await axios.post(
       `https://api.hostaway.com/v1/listings/${listingId}/calendar/priceDetails`,
       requestBody,
@@ -185,6 +187,7 @@ exports.handler = async (event) => {
           totalPrice: finalTotalPrice,
           pricePerNight: pricePerNight,
           nights: nights,
+          availabilityVerifiedAt,
           currency: "IDR",
           breakdown,
           fees: {

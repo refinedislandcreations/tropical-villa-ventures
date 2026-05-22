@@ -360,6 +360,8 @@ class VillaBookingManager {
           [],
         reservationSubtotal:
           this.priceBreakdown.reservationSubtotal || basePrice,
+        availabilityVerifiedAt:
+          this.priceBreakdown.availabilityVerifiedAt || Date.now(),
         origin: window.location.origin,
       };
 

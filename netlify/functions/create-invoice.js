@@ -15,6 +15,7 @@ try {
 
 const HOLD_STORE_NAME = "date-holds";
 const HOLD_TTL_MS = 30 * 60 * 1000; // 30 minutes
+const AVAILABILITY_CHECK_FRESHNESS_MS = 60 * 1000;
 
 // In-memory fallback for local development (won't persist across function invocations, but helps somewhat)
 // In production, Netlify functions might spin up multiple instances, so blobs are required for true safety.
@@ -220,6 +221,13 @@ function formatIDR(amount) {
   })}`;
 }
 
+function shouldSkipAvailabilityRecheck(availabilityVerifiedAt) {
+  if (!availabilityVerifiedAt) return false;
+  const verifiedAt = Number(availabilityVerifiedAt);
+  if (!Number.isFinite(verifiedAt)) return false;
+  return Date.now() - verifiedAt <= AVAILABILITY_CHECK_FRESHNESS_MS;
+}
+
 function getCouponSummary({
   couponCode,
   reservationCouponId,
@@ -288,6 +296,7 @@ exports.handler = async (event) => {
       reservationCouponId,
       financeFields,
       reservationSubtotal,
+      availabilityVerifiedAt,
       origin,
     } = JSON.parse(event.body);
 
@@ -340,21 +349,31 @@ exports.handler = async (event) => {
     }
 
     // ── Layer 1: Re-verify Hostaway availability ──
-    // The frontend already checked, but another guest may have booked in the meantime
-    const available = await checkHostawayAvailability(
-      listingId,
-      checkin,
-      checkout,
+    // If the frontend just checked availability, skip the duplicate calendar call.
+    const skipAvailabilityRecheck = shouldSkipAvailabilityRecheck(
+      availabilityVerifiedAt,
     );
-    if (!available) {
-      return {
-        statusCode: 409,
-        body: JSON.stringify({
-          error: "Dates no longer available",
-          details:
-            "Sorry, these dates were just booked by another guest. Please select different dates.",
-        }),
-      };
+
+    if (!skipAvailabilityRecheck) {
+      const available = await checkHostawayAvailability(
+        listingId,
+        checkin,
+        checkout,
+      );
+      if (!available) {
+        return {
+          statusCode: 409,
+          body: JSON.stringify({
+            error: "Dates no longer available",
+            details:
+              "Sorry, these dates were just booked by another guest. Please select different dates.",
+          }),
+        };
+      }
+    } else {
+      console.log(
+        `[INVOICE] Skipping duplicate availability check (verified ${new Date(availabilityVerifiedAt).toISOString()})`,
+      );
     }
 
     // ── Layer 2: Acquire date-hold lock ──
@@ -536,6 +555,8 @@ exports.handler = async (event) => {
           nights,
           baseAmount,
           reservationSubtotal: reservationSubtotal || baseAmount,
+          availabilityVerifiedAt: availabilityVerifiedAt || null,
+          availabilityVerifiedAt: availabilityVerifiedAt || null,
           totalFee,
           finalAmount,
           feeBreakdown: {
