@@ -23,6 +23,75 @@ const { getBooking, removeBooking } = require("./store-temp-booking");
 const { releaseHold, buildHoldKey } = require("./create-invoice");
 const { buildReservationFinanceFields } = require("./hostaway-pricing");
 
+function toNumber(value) {
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : 0;
+}
+
+function roundAmount(value) {
+  return Math.round(toNumber(value));
+}
+
+function formatIDR(amount) {
+  return `IDR ${Math.round(toNumber(amount)).toLocaleString("id-ID", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })}`;
+}
+
+function getCouponSummary(bookingData) {
+  if (bookingData?.couponSummary) {
+    const couponSummary = bookingData.couponSummary;
+    return {
+      hasCoupon: Boolean(couponSummary.hasCoupon),
+      couponCode: couponSummary.couponCode || null,
+      reservationCouponId: couponSummary.reservationCouponId
+        ? parseInt(couponSummary.reservationCouponId)
+        : null,
+      reservationSubtotal: toNumber(couponSummary.reservationSubtotal),
+      discountedRoomTotal: toNumber(couponSummary.discountedTotal),
+      discountAmount: toNumber(couponSummary.discountAmount),
+    };
+  }
+
+  const couponCode = bookingData.couponCode || null;
+  const reservationCouponId = bookingData.reservationCouponId
+    ? parseInt(bookingData.reservationCouponId)
+    : null;
+  const reservationSubtotal = toNumber(bookingData.reservationSubtotal);
+  const discountedRoomTotal = toNumber(
+    bookingData.baseAmount || bookingData.totalAmount,
+  );
+
+  const financeFields = Array.isArray(bookingData.financeFields)
+    ? bookingData.financeFields
+    : [];
+
+  const financeFieldDiscount = financeFields.reduce((sum, field) => {
+    if (field?.type !== "discount") return sum;
+    return sum + Math.abs(toNumber(field.total ?? field.value));
+  }, 0);
+
+  const derivedDiscount =
+    reservationSubtotal > 0 && discountedRoomTotal > 0
+      ? Math.max(0, roundAmount(reservationSubtotal - discountedRoomTotal))
+      : 0;
+
+  const discountAmount = derivedDiscount || roundAmount(financeFieldDiscount);
+  const hasCoupon = Boolean(
+    couponCode || reservationCouponId || discountAmount > 0,
+  );
+
+  return {
+    hasCoupon,
+    couponCode,
+    reservationCouponId,
+    reservationSubtotal,
+    discountedRoomTotal,
+    discountAmount,
+  };
+}
+
 // ─── Storage Layer ───────────────────────────────────────────────────────────
 
 let blobsAvailable = true;
@@ -207,7 +276,9 @@ async function getHostawayToken() {
 async function createHostawayReservation(token, bookingData) {
   const nameParts = (bookingData.guestName || "").trim().split(" ");
   const firstName = bookingData.guestFirstName || nameParts[0] || "";
-  const lastName = bookingData.guestLastName || nameParts.slice(1).join(" ") || "";
+  const lastName =
+    bookingData.guestLastName || nameParts.slice(1).join(" ") || "";
+  const couponSummary = getCouponSummary(bookingData);
 
   // Use the full amount including all fees (finalAmount > totalAmount > baseAmount)
   // finalAmount = base accommodation + processing fee + flat fee + VAT
@@ -265,11 +336,13 @@ async function createHostawayReservation(token, bookingData) {
     isPaid: 1,
     currency: "IDR",
     status: "confirmed",
-    hostNote: `Paid via Xendit. Booking ref: ${bookingData.externalId || "N/A"}. Total paid: IDR ${totalAmount} (Room: IDR ${baseAmount} + Fees: IDR ${totalFee})`,
+    hostNote: `Paid via Xendit. Booking ref: ${bookingData.externalId || "N/A"}. Total paid: IDR ${totalAmount} (Room: IDR ${baseAmount} + Fees: IDR ${totalFee})${couponSummary.hasCoupon ? `\nCoupon applied: ${couponSummary.couponCode || "Discount coupon"}${couponSummary.discountAmount > 0 ? `\nOriginal room subtotal: ${formatIDR(couponSummary.reservationSubtotal)}` : ""}${couponSummary.discountAmount > 0 ? `\nCoupon discount: -${formatIDR(couponSummary.discountAmount)}` : ""}` : ""}`,
     guestNote: bookingData.specialRequests || null,
-    comment: `Room rate: IDR ${baseAmount}. Processing fee (2.9%): IDR ${feeBreakdown.processingFee || 0}. Flat fee: IDR ${feeBreakdown.fixedFee || 0}. VAT (11%): IDR ${feeBreakdown.vat || 0}. Total fees: IDR ${totalFee}. Total paid: IDR ${totalAmount}`,
+    comment: `Room rate: IDR ${baseAmount}. Processing fee (2.9%): IDR ${feeBreakdown.processingFee || 0}. Flat fee: IDR ${feeBreakdown.fixedFee || 0}. VAT (11%): IDR ${feeBreakdown.vat || 0}. Total fees: IDR ${totalFee}. Total paid: IDR ${totalAmount}${couponSummary.hasCoupon ? ` | Coupon: ${couponSummary.couponCode || "Discount coupon"}${couponSummary.discountAmount > 0 ? ` | Original room subtotal: ${couponSummary.reservationSubtotal} | Discount: -${couponSummary.discountAmount}` : ""}` : ""}`,
     couponName: bookingData.couponCode || null,
-    reservationCouponId: bookingData.reservationCouponId ? parseInt(bookingData.reservationCouponId) : null,
+    reservationCouponId: bookingData.reservationCouponId
+      ? parseInt(bookingData.reservationCouponId)
+      : null,
     financeField: financeField,
   };
 
@@ -286,7 +359,7 @@ async function createHostawayReservation(token, bookingData) {
     `[HOSTAWAY] Pricing: Base IDR ${baseAmount} + Fees IDR ${totalFee} = Total IDR ${totalAmount}`,
   );
   console.log(
-    `[HOSTAWAY] Finance fields: ${financeField.length} entries | Coupon: ${reservationData.couponName || "none"} | ResCouponId: ${reservationData.reservationCouponId || "none"}`,
+    `[HOSTAWAY] Finance fields: ${financeField.length} entries | Coupon: ${reservationData.couponName || "none"} | ResCouponId: ${reservationData.reservationCouponId || "none"}${couponSummary.hasCoupon && couponSummary.discountAmount > 0 ? ` | Discount: -${formatIDR(couponSummary.discountAmount)}` : ""}`,
   );
 
   const response = await axios.post(
@@ -336,6 +409,7 @@ function buildConfirmationMessage(bookingData) {
   const fixedFee = fees.fixedFee || 0;
   const vat = fees.vat || 0;
   const feeSubtotal = bookingData.totalFee || processingFee + fixedFee + vat;
+  const couponSummary = getCouponSummary(bookingData);
 
   const formatDateShort = (dateStr) => {
     const d = new Date(dateStr + "T00:00:00");
@@ -383,6 +457,8 @@ ${formatCurrency(vat)}
 
 Fee Subtotal
 ${formatCurrency(feeSubtotal)}
+
+${couponSummary.hasCoupon ? `COUPON APPLIED\nCode: ${couponSummary.couponCode || "Discount coupon"}\n${couponSummary.discountAmount > 0 ? `Original Room Subtotal: ${formatCurrency(couponSummary.reservationSubtotal)}\nCoupon Discount: -${formatCurrency(couponSummary.discountAmount)}\nDiscounted Room Total: ${formatCurrency(couponSummary.discountedRoomTotal)}\n` : ""}` : ""}
 
 ━━━━━━━━━━━━━━━
 TOTAL PAID: ${formatCurrency(totalAmount)}

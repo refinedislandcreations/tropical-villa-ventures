@@ -204,6 +204,59 @@ function sanitizePhone(phone) {
   return "+" + cleaned;
 }
 
+function toNumber(value) {
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : 0;
+}
+
+function roundAmount(value) {
+  return Math.round(toNumber(value));
+}
+
+function formatIDR(amount) {
+  return `IDR ${Math.round(toNumber(amount)).toLocaleString("id-ID", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })}`;
+}
+
+function getCouponSummary({
+  couponCode,
+  reservationCouponId,
+  reservationSubtotal,
+  baseAmount,
+  financeFields,
+}) {
+  const subtotal = toNumber(reservationSubtotal);
+  const discountedTotal = toNumber(baseAmount);
+  const fieldDiscount = Array.isArray(financeFields)
+    ? financeFields.reduce((sum, field) => {
+        if (field?.type !== "discount") return sum;
+        return sum + Math.abs(toNumber(field.total ?? field.value));
+      }, 0)
+    : 0;
+
+  const discountAmount =
+    subtotal > 0 && discountedTotal > 0
+      ? Math.max(0, roundAmount(subtotal - discountedTotal))
+      : roundAmount(fieldDiscount);
+
+  const hasCoupon = Boolean(
+    couponCode || reservationCouponId || discountAmount > 0,
+  );
+
+  return {
+    hasCoupon,
+    couponCode: couponCode || null,
+    reservationCouponId: reservationCouponId
+      ? parseInt(reservationCouponId)
+      : null,
+    reservationSubtotal: subtotal,
+    discountedTotal,
+    discountAmount,
+  };
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return {
@@ -241,6 +294,13 @@ exports.handler = async (event) => {
     // totalAmount is the reservation total coming from Hostaway pricing
     // (after coupon handling, before Xendit processing fees).
     const baseAmount = Math.round(totalAmount);
+    const couponSummary = getCouponSummary({
+      couponCode,
+      reservationCouponId,
+      reservationSubtotal,
+      baseAmount,
+      financeFields,
+    });
 
     // Calculate Fees (single source of truth — matches calculate-price.js formula)
     const processingRate = 0.029; // 2.9%
@@ -331,12 +391,42 @@ exports.handler = async (event) => {
       `[INVOICE]   Frontend Expected:   IDR ${expectedTotal || "N/A"}`,
     );
     console.log(`[INVOICE] Phone: ${phone || "(none)"}`);
+    if (couponSummary.hasCoupon) {
+      console.log(`[INVOICE] ── Coupon Breakdown ──`);
+      console.log(
+        `[INVOICE]   Coupon:             ${couponSummary.couponCode || "(reservation coupon)"}`,
+      );
+      if (couponSummary.discountAmount > 0) {
+        console.log(
+          `[INVOICE]   Original subtotal:   ${formatIDR(couponSummary.reservationSubtotal)}`,
+        );
+        console.log(
+          `[INVOICE]   Discount applied:    -${formatIDR(couponSummary.discountAmount)}`,
+        );
+        console.log(
+          `[INVOICE]   Discounted room:     ${formatIDR(couponSummary.discountedTotal)}`,
+        );
+      }
+    }
 
     const fullName = `${firstName} ${lastName}`.trim();
     const externalId = `BOOKING_${listingId}_${Date.now()}`;
     console.log(`[INVOICE] External ID: ${externalId}`);
 
-    const description = `Booking for ${villaName}\nStay: ${checkin} to ${checkout} (${nights} nights)\nGuests: ${guests}\nGuest: ${fullName}`;
+    const descriptionParts = [
+      `Booking for ${villaName}`,
+      `Stay: ${checkin} to ${checkout} (${nights} nights)`,
+      `Guests: ${guests}`,
+      `Guest: ${fullName}`,
+    ];
+
+    if (couponSummary.hasCoupon) {
+      descriptionParts.push(
+        `Coupon: ${couponSummary.couponCode || "Discount coupon"}${couponSummary.discountAmount > 0 ? ` | Original subtotal: ${formatIDR(couponSummary.reservationSubtotal)} | Discount: -${formatIDR(couponSummary.discountAmount)} | Discounted room: ${formatIDR(couponSummary.discountedTotal)}` : ""}`,
+      );
+    }
+
+    const description = descriptionParts.join("\n");
 
     // Store booking data for webhook retrieval
     await storeTempBooking(externalId, {
@@ -366,6 +456,7 @@ exports.handler = async (event) => {
       specialRequests: specialRequests || "",
       couponCode: couponCode || null,
       reservationCouponId: reservationCouponId || null,
+      couponSummary,
       financeFields: Array.isArray(financeFields) ? financeFields : [],
     });
 
@@ -462,6 +553,7 @@ exports.handler = async (event) => {
           specialRequests: specialRequests || "",
           couponCode: couponCode || null,
           reservationCouponId: reservationCouponId || null,
+          couponSummary,
           financeFields: Array.isArray(financeFields) ? financeFields : [],
         },
       },
