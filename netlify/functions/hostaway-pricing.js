@@ -211,7 +211,15 @@ async function updateReservationFinanceField(
 
 function calculateReservationTotals(financeFields, coupon) {
   const normalizedFields = normalizeFinanceFields(financeFields);
+  // subtotal (legacy): sum of all finance field totals (may include fees/taxes/discounts)
   const subtotal = sumFinanceFieldTotals(normalizedFields);
+  // roomSubtotal: sum of only price-type fields (this represents the real room amount before discounts/fees)
+  const roomSubtotal = normalizedFields.reduce((sum, field) => {
+    if (field.type === "price" || field.type === "accommodation") {
+      return sum + Math.abs(toNumber(field.total));
+    }
+    return sum;
+  }, 0);
   const existingDiscount = normalizedFields.reduce(
     (sum, field) =>
       field.type === "discount" ? sum + Math.abs(toNumber(field.total)) : sum,
@@ -231,6 +239,7 @@ function calculateReservationTotals(financeFields, coupon) {
   return {
     financeFields: normalizedFields,
     subtotal,
+    roomSubtotal,
     couponDiscount,
     total,
   };

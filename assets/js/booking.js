@@ -149,8 +149,10 @@ class VillaBookingManager {
 
     const totalPrice = data.totalPrice;
     const basePrice = data.basePrice || totalPrice;
+    const roomSubtotal = data.reservationSubtotal || basePrice;
     const nights = data.nights || 1;
     const pricePerNight = data.pricePerNight || Math.round(basePrice / nights);
+    const displayPricePerNight = Math.round(roomSubtotal / nights);
     const couponDiscount = data.couponDiscount || 0;
 
     const formatIDR = (num) =>
@@ -167,8 +169,8 @@ class VillaBookingManager {
       breakdownElement.innerHTML = `
         <div class="space-y-2 text-sm pt-1">
           <div class="flex justify-between">
-            <span>${formatIDR(pricePerNight)} x ${nights} night${nights > 1 ? "s" : ""}</span>
-            <span>${formatIDR(pricePerNight * nights)}</span>
+            <span>${formatIDR(displayPricePerNight)} x ${nights} night${nights > 1 ? "s" : ""}</span>
+            <span>${formatIDR(roomSubtotal)}</span>
           </div>
 
           ${

@@ -148,8 +148,14 @@ exports.handler = async (event) => {
       );
       breakdown.couponDiscount = pricingTotals.couponDiscount;
 
+      // reservationBaseAmount is the final amount used for payment (after discounts)
       const reservationBaseAmount = pricingTotals.total;
-      const pricePerNight = reservationBaseAmount / nights;
+      // Use the room subtotal (pre-discount) to display the real per-night price
+      const reservationSubtotal =
+        pricingTotals.roomSubtotal ??
+        pricingTotals.subtotal ??
+        reservationBaseAmount;
+      const pricePerNight = reservationSubtotal / nights;
 
       // Calculate Payment Processing Fee
       // Formula provided by user: 2.9% + 2000 + 11% VAT
@@ -171,7 +177,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           success: true,
           basePrice: baseAmount,
-          reservationSubtotal: pricingTotals.subtotal,
+          reservationSubtotal: reservationSubtotal,
           couponDiscount: pricingTotals.couponDiscount,
           reservationCouponId: couponContext?.reservationCouponId || null,
           couponName: couponContext?.coupon?.name || couponCode || null,

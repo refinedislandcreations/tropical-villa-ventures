@@ -36,9 +36,7 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
     >
       <div class="flex gap-6 w-max">
         {% for item in section_data.items %}
-        <article
-          class="snap-start shrink-0 w-[82vw] sm:w-[520px] lg:w-[540px] group"
-        >
+        <article class="snap-start shrink-0 w-[82vw] sm:w-130 lg:w-135 group">
           {% assign has_popup = item.popup and item.popup != blank %} {% if
           has_popup %}
           <button
@@ -50,7 +48,7 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
             <img
               src="{{ item.image | relative_url }}"
               alt="{{ item.name }}"
-              class="w-full h-[260px] sm:h-[340px] lg:h-[380px] object-cover transition-transform duration-700 group-hover:scale-105"
+              class="w-full h-65 sm:h-85 lg:h-95 object-cover transition-transform duration-700 group-hover:scale-105"
               loading="lazy"
             />
             <div class="pt-5">
@@ -74,11 +72,11 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
         <!-- MODAL -->
         <div
           id="explore-modal-{{ slider_id }}-{{ forloop.index }}"
-          class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/60 p-6"
+          class="fixed inset-0 z-999 hidden items-center justify-center bg-black/60 p-6"
         >
           <!-- GRADIENT BORDER WRAPPER -->
           <div
-            class="w-full max-w-2xl p-[8px] bg-gradient-to-r from-[#7F361C] to-[#D06223]"
+            class="w-full max-w-2xl p-2 bg-linear-to-r from-[#7F361C] to-[#D06223]"
           >
             <!-- WHITE CONTENT BOX -->
             <div

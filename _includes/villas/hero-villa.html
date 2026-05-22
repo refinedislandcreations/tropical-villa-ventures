@@ -143,7 +143,7 @@ section_data.meta.guests | default: 10 %}
               <!-- CALENDAR POPUP -->
               <div
                 id="calendarWrapper"
-                class="hidden fixed left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2 z-[1000] bg-white rounded-2xl shadow-2xl p-6 w-105 max-w-[90vw]"
+                class="hidden fixed left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2 z-1000 bg-white rounded-2xl shadow-2xl p-6 w-105 max-w-[90vw]"
               >
                 <div
                   class="flex justify-between items-center mb-4 pb-2 border-b"
@@ -196,7 +196,7 @@ section_data.meta.guests | default: 10 %}
   </div>
 
   <!-- OVERLAY -->
-  <div id="booking-overlay" class="fixed inset-0 z-[2000] hidden text-left">
+  <div id="booking-overlay" class="fixed inset-0 z-2000 hidden text-left">
     <div
       class="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer"
       onclick="closeOverlay()"
@@ -225,7 +225,7 @@ section_data.meta.guests | default: 10 %}
       <!-- State: Loading -->
       <div
         id="overlay-loading"
-        class="flex-1 flex flex-col items-center justify-center p-6 hidden"
+        class="flex-1 flex-col items-center justify-center p-6 hidden"
       >
         <div
           class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B8635] mx-auto mb-4"
