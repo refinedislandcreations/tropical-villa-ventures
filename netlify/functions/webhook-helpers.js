@@ -422,11 +422,11 @@ function buildConfirmationMessage(bookingData) {
   const formatCurrency = (amount) =>
     `IDR ${Math.round(amount).toLocaleString("id-ID")}`;
 
-  return `Message from your host at [${villaName}]
+  return `Message from your host at Tropical ${villaName}
 
 🌺 Hi ${guestFirstName},
 
-Thank you for choosing ${villaName} for your upcoming Bali getaway! This message serves as your payment confirmation and receipt. 🌴😊
+Thank you for choosing Tropical ${villaName} for your upcoming Bali getaway! This message serves as your payment confirmation and receipt. 🌴😊
 
 ━━━━━━━━━━━━━━━
 CANCELLATION POLICY
