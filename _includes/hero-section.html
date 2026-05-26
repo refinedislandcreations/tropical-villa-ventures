@@ -2,23 +2,28 @@
 {% assign section_data = include.section %} {% assign bg_image =
 section_data.background_image | default: '/assets/images/hero-image.jpg' %}
 
-<section id="hero" class="relative min-h-dvh overflow-hidden bg-[#FCFBF8]">
+<section
+  id="hero"
+  class="relative min-h-dvh max-h-screen overflow-hidden bg-[#FCFBF8]"
+>
   <!-- Background Image -->
-  <div class="absolute inset-0">
-    <img
-      src="{{ bg_image | relative_url }}"
-      alt="{{ section_data.title | default: 'Hero background' }}"
-      class="w-full h-full object-cover"
-      loading="eager"
-      fetchpriority="high"
-    />
-    <!-- Dark overlay only visible on desktop when text panel is used -->
-    <div class="absolute inset-0 bg-black/40 lg:hidden"></div>
+  <div class="absolute inset-0 flex justify-center">
+    <div class="relative h-full w-full max-w-screen-2xl overflow-hidden">
+      <img
+        src="{{ bg_image | relative_url }}"
+        alt="{{ section_data.title | default: 'Hero background' }}"
+        class="w-full h-full object-cover"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <!-- Dark overlay only visible on desktop when text panel is used -->
+      <div class="absolute inset-0 bg-black/40 lg:hidden"></div>
+    </div>
   </div>
 
   <!-- DESKTOP STYLE (lg and above) - Left panel with gradient overlay -->
   <div
-    class="hidden lg:block relative z-10 max-w-screen-2xl mx-auto h-full min-h-screen"
+    class="hidden lg:block relative z-10 max-w-screen-2xl mx-auto h-full min-h-screen max-h-screen"
   >
     <div class="absolute inset-y-0 left-0 flex items-center">
       <div class="relative h-full flex items-center">

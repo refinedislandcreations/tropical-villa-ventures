@@ -317,6 +317,18 @@
   .bottom-10 {
     bottom: calc(var(--spacing) * 10);
   }
+  .bottom-15 {
+    bottom: calc(var(--spacing) * 15);
+  }
+  .bottom-16 {
+    bottom: calc(var(--spacing) * 16);
+  }
+  .bottom-20 {
+    bottom: calc(var(--spacing) * 20);
+  }
+  .bottom-24 {
+    bottom: calc(var(--spacing) * 24);
+  }
   .left-0 {
     left: calc(var(--spacing) * 0);
   }
@@ -325,6 +337,9 @@
   }
   .left-4 {
     left: calc(var(--spacing) * 4);
+  }
+  .left-5 {
+    left: calc(var(--spacing) * 5);
   }
   .z-0 {
     z-index: 0;
@@ -583,6 +598,15 @@
   }
   .max-h-\[240px\] {
     max-height: 240px;
+  }
+  .max-h-screen {
+    max-height: 100vh;
+  }
+  .min-h-\[75vh\] {
+    min-height: 75vh;
+  }
+  .min-h-\[80vh\] {
+    min-height: 80vh;
   }
   .min-h-\[520px\] {
     min-height: 520px;
@@ -1271,6 +1295,9 @@
   }
   .object-cover {
     object-fit: cover;
+  }
+  .object-center {
+    object-position: center;
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);
@@ -2813,6 +2840,16 @@
       height: 100%;
     }
   }
+  .lg\:min-h-\[85vh\] {
+    @media (width >= 64rem) {
+      min-height: 85vh;
+    }
+  }
+  .lg\:min-h-\[90vh\] {
+    @media (width >= 64rem) {
+      min-height: 90vh;
+    }
+  }
   .lg\:min-h-\[720px\] {
     @media (width >= 64rem) {
       min-height: 720px;
@@ -2973,6 +3010,16 @@
   .xl\:grid-cols-3 {
     @media (width >= 80rem) {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .\32 xl\:h-\[900px\] {
+    @media (width >= 96rem) {
+      height: 900px;
+    }
+  }
+  .\32 xl\:max-h-\[900px\] {
+    @media (width >= 96rem) {
+      max-height: 900px;
     }
   }
 }
