@@ -261,66 +261,21 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
       </div>
     </div>
 
-    <div class="mt-4 flex justify-center">
-      <div
-        class="inline-flex items-center gap-3 rounded-full border border-[#231F20]/10 bg-white/50 px-4 py-2 text-[#231F20]/55 shadow-sm backdrop-blur-sm"
-      >
-        <span
-          class="indicator-track relative block h-2 w-16 overflow-hidden rounded-full"
-        >
-          <span
-            class="indicator-dot absolute left-0 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[#9D8B2F]"
-          ></span>
-        </span>
-        <span class="text-xs sm:text-sm font-body">Swipe to explore</span>
-      </div>
+    <div
+      class="flex justify-center my-4 text-[#231F20]/50 text-xs sm:text-sm font-body"
+    >
+      <!-- Mobile & Tablet -->
+      <span class="block lg:hidden">
+        Swipe to explore • Tap to see more details
+      </span>
+
+      <!-- Desktop -->
+      <span class="hidden lg:block">
+        Swipe to explore • Click to see more details
+      </span>
     </div>
   </div>
 </section>
-
-<style>
-  #explore-{{ slider_id }} .overflow-x-auto {
-    scrollbar-width: thin;
-    scrollbar-color: #9d8b2f #e9e6de;
-    -webkit-overflow-scrolling: touch;
-  }
-  #explore-{{ slider_id }} .overflow-x-auto::-webkit-scrollbar {
-    height: 6px;
-  }
-  #explore-{{ slider_id }} .overflow-x-auto::-webkit-scrollbar-track {
-    background: #e9e6de;
-    border-radius: 9999px;
-  }
-  #explore-{{ slider_id }} .overflow-x-auto::-webkit-scrollbar-thumb {
-    background: #9d8b2f;
-    border-radius: 9999px;
-  }
-
-  #explore-{{ slider_id }} .indicator-track::before {
-    content: "";
-    position: absolute;
-    inset: 50% 0 auto 0;
-    height: 1px;
-    transform: translateY(-50%);
-    background: linear-gradient(90deg, rgba(157, 139, 47, 0.18), rgba(157, 139, 47, 0.45), rgba(157, 139, 47, 0.18));
-  }
-
-  #explore-{{ slider_id }} .indicator-dot {
-    animation: explore-swipe-indicator 1.8s ease-in-out infinite;
-  }
-
-  @keyframes explore-swipe-indicator {
-    0%,
-    100% {
-      transform: translate(0, -50%);
-      opacity: 0.55;
-    }
-    50% {
-      transform: translate(48px, -50%);
-      opacity: 1;
-    }
-  }
-</style>
 
 <!-- MODAL SCRIPT -->
 <script>
