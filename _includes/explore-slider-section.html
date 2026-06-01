@@ -82,30 +82,31 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
             <div
               class="relative flex max-h-[calc(100dvh-6rem)] flex-col overflow-hidden bg-white shadow-2xl sm:max-h-[90vh]"
             >
-              <div
-                class="sticky top-0 z-10 bg-white/95 backdrop-blur px-6 pb-4 pt-6 sm:px-8 md:px-10 md:pb-5 md:pt-8"
-              >
-                <!-- Close -->
+              <!-- STICKY CLOSE BUTTON -->
+              <div class="sticky top-0 z-10 bg-white">
                 <button
                   type="button"
                   data-modal-close="explore-modal-{{ slider_id }}-{{ forloop.index }}"
-                  class="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-2xl text-[#231F20]/60 shadow-sm transition-colors duration-300 hover:text-[#231F20] sm:right-4 sm:top-4"
+                  class="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-2xl text-[#231F20]/60 shadow-sm transition-colors duration-300 hover:text-[#231F20] sm:right-4 sm:top-4 z-20"
                   aria-label="Close modal"
                 >
                   ×
                 </button>
-
-                <!-- Title -->
-                <h3
-                  class="pr-12 text-3xl font-extralight uppercase tracking-wide text-[#231F20] font-heading leading-[1.1] sm:text-4xl"
-                >
-                  {{ item.popup.title }}
-                </h3>
               </div>
 
+              <!-- SCROLLABLE CONTENT AREA -->
               <div class="overflow-y-auto px-6 pb-6 sm:px-8 md:px-10 md:pb-10">
+                <!-- Title -->
+                <div class="pt-8 sm:pt-10">
+                  <h3
+                    class="text-3xl font-extralight uppercase tracking-wide text-[#231F20] font-heading leading-[1.1] sm:text-4xl pr-8"
+                  >
+                    {{ item.popup.title }}
+                  </h3>
+                </div>
+
                 <!-- Duration & Pickup Info -->
-                <div class="space-y-2">
+                <div class="mt-4 space-y-2">
                   {% if item.popup.duration %}
                   <div
                     class="flex items-center gap-2 text-sm text-[#231F20]/70"
