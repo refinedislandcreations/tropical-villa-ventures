@@ -72,122 +72,46 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
         <!-- MODAL -->
         <div
           id="explore-modal-{{ slider_id }}-{{ forloop.index }}"
-          class="fixed inset-0 z-999 hidden items-center justify-center bg-black/60 p-6"
+          class="fixed inset-0 z-9999 hidden items-start justify-center overflow-y-auto bg-black/60 p-4 sm:items-center sm:p-6"
         >
           <!-- GRADIENT BORDER WRAPPER -->
           <div
-            class="w-full max-w-2xl p-2 bg-linear-to-r from-[#7F361C] to-[#D06223]"
+            class="my-6 w-full max-w-2xl p-2 bg-linear-to-r from-[#7F361C] to-[#D06223] sm:my-0"
           >
             <!-- WHITE CONTENT BOX -->
             <div
-              class="relative bg-white p-8 md:p-10 shadow-2xl overflow-y-auto max-h-[90vh]"
+              class="relative flex max-h-[calc(100dvh-2rem)] flex-col overflow-hidden bg-white shadow-2xl sm:max-h-[90vh]"
             >
-              <!-- Close -->
-              <button
-                type="button"
-                data-modal-close="explore-modal-{{ slider_id }}-{{ forloop.index }}"
-                class="absolute top-4 right-4 text-2xl text-[#231F20]/60 hover:text-[#231F20] transition-colors duration-300 cursor-pointer"
+              <div
+                class="sticky top-0 z-10 bg-white/95 backdrop-blur px-6 pb-4 pt-6 sm:px-8 md:px-10 md:pb-5 md:pt-8"
               >
-                ×
-              </button>
+                <!-- Close -->
+                <button
+                  type="button"
+                  data-modal-close="explore-modal-{{ slider_id }}-{{ forloop.index }}"
+                  class="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-2xl text-[#231F20]/60 shadow-sm transition-colors duration-300 hover:text-[#231F20] sm:right-4 sm:top-4"
+                  aria-label="Close modal"
+                >
+                  ×
+                </button>
 
-              <!-- Title -->
-              <h3
-                class="text-3xl sm:text-4xl font-extralight uppercase tracking-wide text-[#231F20] font-heading pr-8 leading-[1.1]"
-              >
-                {{ item.popup.title }}
-              </h3>
-
-              <!-- Duration & Pickup Info -->
-              <div class="mt-4 space-y-2">
-                {% if item.popup.duration %}
-                <div class="flex items-center gap-2 text-sm text-[#231F20]/70">
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
-                  <span>Duration: {{ item.popup.duration }}</span>
-                </div>
-                {% endif %} {% if item.popup.pickup_time %}
-                <div class="flex items-center gap-2 text-sm text-[#231F20]/70">
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    ></path>
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    ></path>
-                  </svg>
-                  <span>Pick-up: {{ item.popup.pickup_time }}</span>
-                </div>
-                {% endif %} {% if item.popup.boat_departure %}
-                <div class="flex items-center gap-2 text-sm text-[#231F20]/70">
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
-                  <span>Boat Departure: {{ item.popup.boat_departure }}</span>
-                </div>
-                {% endif %} {% if item.popup.boat_return %}
-                <div class="flex items-center gap-2 text-sm text-[#231F20]/70">
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
-                  <span>Boat Return: {{ item.popup.boat_return }}</span>
-                </div>
-                {% endif %}
+                <!-- Title -->
+                <h3
+                  class="pr-12 text-3xl font-extralight uppercase tracking-wide text-[#231F20] font-heading leading-[1.1] sm:text-4xl"
+                >
+                  {{ item.popup.title }}
+                </h3>
               </div>
 
-              <!-- Included Items -->
-              {% if item.popup.included %}
-              <div class="mt-6">
-                <h4 class="text-lg font-semibold text-[#231F20] mb-3">
-                  Included:
-                </h4>
-                <ul class="space-y-2">
-                  {% for inc in item.popup.included %}
-                  <li class="flex items-start gap-2 text-sm text-[#231F20]/80">
+              <div class="overflow-y-auto px-6 pb-6 sm:px-8 md:px-10 md:pb-10">
+                <!-- Duration & Pickup Info -->
+                <div class="space-y-2">
+                  {% if item.popup.duration %}
+                  <div
+                    class="flex items-center gap-2 text-sm text-[#231F20]/70"
+                  >
                     <svg
-                      class="w-4 h-4 text-green-600 mt-0.5 shrink-0"
+                      class="w-4 h-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -196,30 +120,139 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="2"
-                        d="M5 13l4 4L19 7"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                       ></path>
                     </svg>
-                    <span>{{ inc }}</span>
-                  </li>
-                  {% endfor %}
-                </ul>
-              </div>
-              {% endif %}
+                    <span>Duration: {{ item.popup.duration }}</span>
+                  </div>
+                  {% endif %} {% if item.popup.pickup_time %}
+                  <div
+                    class="flex items-center gap-2 text-sm text-[#231F20]/70"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      ></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      ></path>
+                    </svg>
+                    <span>Pick-up: {{ item.popup.pickup_time }}</span>
+                  </div>
+                  {% endif %} {% if item.popup.boat_departure %}
+                  <div
+                    class="flex items-center gap-2 text-sm text-[#231F20]/70"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    <span>Boat Departure: {{ item.popup.boat_departure }}</span>
+                  </div>
+                  {% endif %} {% if item.popup.boat_return %}
+                  <div
+                    class="flex items-center gap-2 text-sm text-[#231F20]/70"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    <span>Boat Return: {{ item.popup.boat_return }}</span>
+                  </div>
+                  {% endif %}
+                </div>
 
-              <!-- Note -->
-              {% if item.popup.note %}
-              <div class="mt-4 p-3 bg-amber-50 rounded-lg">
-                <p class="text-xs text-amber-700">{{ item.popup.note }}</p>
-              </div>
-              {% endif %}
+                <!-- Included Items -->
+                {% if item.popup.included %}
+                <div class="mt-6">
+                  <h4 class="mb-3 text-lg font-semibold text-[#231F20]">
+                    Included:
+                  </h4>
+                  <ul class="space-y-2">
+                    {% for inc in item.popup.included %}
+                    <li
+                      class="flex items-start gap-2 text-sm text-[#231F20]/80"
+                    >
+                      <svg
+                        class="w-4 h-4 text-green-600 mt-0.5 shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 13l4 4L19 7"
+                        ></path>
+                      </svg>
+                      <span>{{ inc }}</span>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endif %}
 
-              <!-- Description -->
-              <div class="mt-6">
-                <p
-                  class="text-sm md:text-base leading-relaxed text-[#231F20]/80 font-body"
-                >
-                  {{ item.popup.description }}
-                </p>
+                <!-- Note -->
+                {% if item.popup.note %}
+                <div class="mt-4 rounded-lg bg-amber-50 p-3">
+                  <p class="text-xs text-amber-700">{{ item.popup.note }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Description -->
+                <div class="mt-6">
+                  <p
+                    class="text-sm leading-relaxed text-[#231F20]/80 font-body md:text-base"
+                  >
+                    {{ item.popup.description }}
+                  </p>
+                </div>
+
+                <div class="mt-8 flex justify-end">
+                  {% assign phone = "628158819533" %} {% assign message =
+                  item.popup.whatsapp_message | default: "Hello, I would like to
+                  inquire about " | append: item.popup.title %}
+
+                  <a
+                    href="https://wa.me/{{ phone }}?text={{ message | uri_escape }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-out hover:bg-[#6B682A] hover:scale-105 hover:-translate-y-0.5 active:scale-95 active:translate-y-0 text-white rounded-xl text-sm sm:text-base shadow-md hover:shadow-lg"
+                    aria-label="Inquire now about {{ item.popup.title }} on WhatsApp"
+                  >
+                    Inquire Now
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -228,18 +261,19 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
       </div>
     </div>
 
-    <div
-      class="flex justify-center my-4 text-[#231F20]/50 text-xs sm:text-sm font-body"
-    >
-      <!-- Mobile & Tablet -->
-      <span class="block lg:hidden">
-        Swipe to explore • Tap to see more details
-      </span>
-
-      <!-- Desktop -->
-      <span class="hidden lg:block">
-        Swipe to explore • Click to see more details
-      </span>
+    <div class="mt-4 flex justify-center">
+      <div
+        class="inline-flex items-center gap-3 rounded-full border border-[#231F20]/10 bg-white/50 px-4 py-2 text-[#231F20]/55 shadow-sm backdrop-blur-sm"
+      >
+        <span
+          class="indicator-track relative block h-2 w-16 overflow-hidden rounded-full"
+        >
+          <span
+            class="indicator-dot absolute left-0 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[#9D8B2F]"
+          ></span>
+        </span>
+        <span class="text-xs sm:text-sm font-body">Swipe to explore</span>
+      </div>
     </div>
   </div>
 </section>
@@ -260,6 +294,31 @@ assign bg_color = "#F3F0E7" %} {% if modulo_check == 0 %} {% assign bg_color =
   #explore-{{ slider_id }} .overflow-x-auto::-webkit-scrollbar-thumb {
     background: #9d8b2f;
     border-radius: 9999px;
+  }
+
+  #explore-{{ slider_id }} .indicator-track::before {
+    content: "";
+    position: absolute;
+    inset: 50% 0 auto 0;
+    height: 1px;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, rgba(157, 139, 47, 0.18), rgba(157, 139, 47, 0.45), rgba(157, 139, 47, 0.18));
+  }
+
+  #explore-{{ slider_id }} .indicator-dot {
+    animation: explore-swipe-indicator 1.8s ease-in-out infinite;
+  }
+
+  @keyframes explore-swipe-indicator {
+    0%,
+    100% {
+      transform: translate(0, -50%);
+      opacity: 0.55;
+    }
+    50% {
+      transform: translate(48px, -50%);
+      opacity: 1;
+    }
   }
 </style>
 
