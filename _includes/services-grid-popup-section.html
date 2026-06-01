@@ -238,6 +238,18 @@
                 </div>
                 {% endfor %}
               </div>
+              {% endif %} {% if item.popup.whatsapp_message %}
+              <div class="mt-8 flex justify-end">
+                <a
+                  href="https://wa.me/628158819533?text={{ item.popup.whatsapp_message | uri_escape }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex uppercase font-heading font-medium tracking-widest bg-[#8B8635] px-4 py-2 transition-all duration-300 ease-out hover:bg-[#6B682A] hover:scale-105 hover:-translate-y-0.5 active:scale-95 active:translate-y-0 text-white rounded-xl text-sm sm:text-base shadow-md hover:shadow-lg"
+                  aria-label="Inquire now about {{ item.popup.title }} on WhatsApp"
+                >
+                  Inquire Now
+                </a>
+              </div>
               {% endif %}
             </div>
           </div>
