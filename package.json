@@ -25,7 +25,8 @@
   },
   "dependencies": {
     "@netlify/blobs": "^8.1.0",
-    "axios": "^1.15.2"
+    "axios": "^1.15.2",
+    "dotenv": "^17.4.2"
   },
   "description": ""
 }

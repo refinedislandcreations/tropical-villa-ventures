@@ -87,6 +87,24 @@ exports.handler = async (event) => {
 
     const availabilityVerifiedAt = Date.now();
 
+    // Fetch Listing to get bookingEngineMarkup
+    let bookingEngineMarkup = 0.9;
+    try {
+      const listingResponse = await axios.get(
+        `https://api.hostaway.com/v1/listings/${listingId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (listingResponse.data?.result?.bookingEngineMarkup !== undefined) {
+        bookingEngineMarkup = listingResponse.data.result.bookingEngineMarkup;
+      }
+    } catch (e) {
+      console.error("Failed to fetch listing for markup", e.message);
+    }
+
+    if (typeof bookingEngineMarkup === 'number' && bookingEngineMarkup !== 1 && bookingEngineMarkup !== 0) {
+      requestBody.markup = bookingEngineMarkup;
+    }
+
     const response = await axios.post(
       `https://api.hostaway.com/v1/listings/${listingId}/calendar/priceDetails`,
       requestBody,
@@ -103,10 +121,11 @@ exports.handler = async (event) => {
     if (data.status === "success" && data.result) {
       const components = normalizeFinanceFields(
         data.result.components ||
-          data.result.financeField ||
-          data.result.financeFields ||
-          [],
+        data.result.financeField ||
+        data.result.financeFields ||
+        [],
       );
+
       const pricingTotals = calculateReservationTotals(
         components,
         couponContext?.coupon,

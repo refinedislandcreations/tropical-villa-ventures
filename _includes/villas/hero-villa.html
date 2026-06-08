@@ -706,6 +706,15 @@ section_data.meta.guests | default: 10 %}
 
     bookBtn.addEventListener("click", async () => {
       if (!selectedCheckin || !selectedCheckout) return;
+
+      if (typeof fbq === 'function') {
+        fbq('trackCustom', 'book_now', {
+          content_ids: [listingId],
+          content_type: 'product',
+          content_name: document.getElementById("villaName")?.value || "Villa"
+        });
+      }
+
       const guests = document.getElementById("guests").value;
       const nights = Math.ceil(
         (new Date(selectedCheckout) - new Date(selectedCheckin)) / 86400000,

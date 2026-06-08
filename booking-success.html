@@ -122,6 +122,15 @@ title: Booking Confirmed | Tropical Villa Ventures
         bookingRefEl.textContent = bookingRef;
       }
 
+      // Fire Meta Pixel Purchase event
+      if (typeof fbq === 'function' && result.amount) {
+        fbq('track', 'Purchase', {
+          value: result.amount,
+          currency: result.currency || 'IDR',
+          transaction_id: bookingRef
+        });
+      }
+
       // REMOVE EVERYTHING STORED
       localStorage.clear();
       sessionStorage.clear();

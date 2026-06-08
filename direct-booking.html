@@ -822,6 +822,15 @@ title: Direct Bookings | Tropical Villa Ventures
     if (!res || !res.available) return;
     const v = res.villa,
       d = res.data;
+
+    if (typeof fbq === 'function') {
+      fbq('trackCustom', 'book_now', {
+        content_ids: [v.id],
+        content_type: 'product',
+        content_name: v.name
+      });
+    }
+
     const nights = Math.ceil(
       (new Date(selectedCheckout) - new Date(selectedCheckin)) / 86400000,
     );
