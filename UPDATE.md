@@ -1,462 +1,92 @@
-# UPDATE.md
+# UPDATE.md — tvvbali.com Mobile Performance Fixes
 
-## Objective
-
-Implement Meta Pixel tracking for the TVV website and investigate a Hostaway pricing discrepancy where the direct booking website is displaying the base price instead of the expected website-adjusted price.
-
----
-
-# CLIENT REQUEST
-
-Meta Pixel ID:
-
-1551563185525446
-
-Dataset:
-
-TVV Website dataset
-
-Client requirements:
-
-1. Add Meta Pixel base code to all pages.
-2. Fire ViewContent on villa/property pages.
-3. Fire book_now when Book Now is clicked.
-4. Fire Purchase or booking_confirmed on successful booking confirmation page.
-5. Investigate pricing issue with Hostaway direct booking pricing.
+**Priority:** High  
+**Trigger:** Instagram ad traffic showing ~44% bounce rate due to slow mobile load times  
+**Source:** Google PageSpeed Insights + real-world user reports (Europe 4G, ~4s TTFB)
 
 ---
 
-# TASK 1: META PIXEL IMPLEMENTATION
+## Current Scores (Mobile)
 
-## Pixel ID
+| Page | Score | Status |
+|---|---|---|
+| Homepage (`/`) | 75/100 | Needs improvement |
+| Direct Booking (`/direct-booking`) | 54/100 | Poor ❌ |
 
-1551563185525446
+### Key Failing Metrics on `/direct-booking`
 
-## IMPORTANT IMPLEMENTATION REQUIREMENT
-
-Do NOT blindly implement generic examples.
-
-Before writing any code:
-
-1. Inspect the existing codebase.
-2. Understand:
-   - Current architecture
-   - Existing analytics implementation
-   - Existing tracking events
-   - Villa/property data models
-   - Booking flow
-   - Reservation flow
-   - Checkout flow
-   - Payment flow
-
-3. Reuse existing tracking hooks whenever possible.
-4. Reuse existing identifiers and data structures.
-5. Follow current project conventions.
-6. Avoid introducing duplicate event logic.
-7. Avoid duplicate event firing.
-
-The goal is to achieve the requested Meta tracking behavior while fitting naturally into the existing application architecture.
+| Metric | Estimated Current | Target |
+|---|---|---|
+| First Contentful Paint (FCP) | ~5–6s | < 1.8s |
+| Largest Contentful Paint (LCP) | ~5–6s | < 2.5s |
+| Total Page Payload | > 5MB | < 1.5MB ideally |
 
 ---
 
-## REQUIRED TRACKING OBJECTIVES
+## Tasks
 
-### PageView
+### 1. Image Optimisation (Highest Impact)
+- [ ] Convert all images to **WebP** format (fallback: JPEG for older browsers)
+- [ ] Add `width` and `height` attributes to all `<img>` tags to prevent layout shift
+- [ ] Implement **lazy loading** on all below-the-fold images (`loading="lazy"`)
+- [ ] Set the **hero/LCP image** to `loading="eager"` and add `fetchpriority="high"`
+- [ ] Compress all images — target under 150KB each, hero under 200KB
+- [ ] Use responsive images with `srcset` for different screen sizes
 
-Fire when any page loads.
+### 2. Reduce Total Page Payload
+- [ ] Audit and remove unused CSS (check for large framework imports)
+- [ ] Audit and remove unused JavaScript
+- [ ] Enable **Gzip or Brotli compression** on the server/CDN
+- [ ] Minify all CSS, JS, and HTML files
 
-Purpose:
+### 3. Critical Rendering Path (FCP Fix)
+- [ ] Inline critical CSS directly in `<head>` for above-the-fold content
+- [ ] Defer or async all non-critical JavaScript (`<script defer>` or `<script async>`)
+- [ ] Remove or defer any **render-blocking resources** flagged by PageSpeed
+- [ ] Preload the LCP image using `<link rel="preload" as="image">`
 
-- Track all website visits.
+### 4. Caching & CDN
+- [ ] Confirm static assets (images, CSS, JS) are served with long **cache-control headers** (e.g. `max-age=31536000`)
+- [ ] Verify the site is behind a **CDN** (Cloudflare recommended) — this is the main reason European 4G users see ~4s load vs Singapore users seeing fast loads
+- [ ] Enable CDN edge caching for HTML pages too, not just static assets
 
-Implementation details should follow existing project patterns.
+### 5. Font Loading
+- [ ] Add `font-display: swap` to all `@font-face` declarations
+- [ ] Preload key font files: `<link rel="preload" as="font">`
+- [ ] Reduce number of font weights/variants loaded — only load what's actually used
 
----
+### 6. Third-Party Scripts (Common Culprits)
+- [ ] Audit all third-party scripts: chat widgets, analytics, booking plugins, pixel trackers
+- [ ] Load non-critical third-party scripts with `defer` or after user interaction
+- [ ] Consider loading Meta Pixel / Google Analytics asynchronously and only after page load
 
-### ViewContent
-
-Fire when a visitor views a villa/property detail page.
-
-Purpose:
-
-- Track property interest.
-- Enable Meta retargeting and optimization.
-
-Use property information already available in the application.
-
-Possible fields may include:
-
-- property id
-- villa id
-- listing id
-- slug
-- title
-- displayed price
-
-Use actual project fields, not assumptions.
-
----
-
-### book_now
-
-Fire when a visitor initiates a booking by clicking a booking CTA.
-
-Purpose:
-
-- Track booking intent.
-
-Use whichever booking trigger currently exists in the codebase.
-
-Examples:
-
-- Book Now button
-- Reserve button
-- Start booking flow
-- Continue checkout action
-
-Reuse existing event handlers where possible.
+### 7. `/direct-booking` Page Specifically
+This page scores 54/100 and is the conversion destination for the Instagram ads — it needs the most urgent attention.
+- [ ] Check if a heavy booking widget or iframe is loading synchronously
+- [ ] If using an embedded booking system (e.g. Beds24, Bokun, Lodgify), check if it can be lazy-loaded or replaced with a lightweight form that calls the API
+- [ ] Remove any animations or heavy UI libraries not essential to booking flow
 
 ---
 
-### Purchase / booking_confirmed
+## Suggested Priority Order
 
-Fire after a successful booking is completed.
-
-Purpose:
-
-- Track actual conversions.
-
-Trigger only after successful booking confirmation.
-
-Potential data may include:
-
-- reservation id
-- booking id
-- order id
-- transaction id
-- total amount
-- currency
-- guest count
-- stay dates
-
-Use actual available project data.
-
-Do not invent fields.
+1. **Images** — likely responsible for the majority of the 5MB+ payload
+2. **CDN setup** — single biggest fix for the Europe vs Singapore speed gap
+3. **Defer JS / inline critical CSS** — will directly improve FCP and LCP numbers
+4. **Booking widget audit** — likely the reason `/direct-booking` scores 20 points lower than homepage
 
 ---
 
-# TASK 2: ANALYZE CURRENT EVENT FLOW
+## How to Verify Fixes
 
-Before implementation, document:
-
-## Existing Analytics
-
-Identify:
-
-- Existing analytics providers
-- Existing event tracking
-- Existing conversion tracking
-
-Examples:
-
-- Google Analytics
-- GTM
-- Segment
-- PostHog
-- Custom tracking
+After each change, re-test using:
+- [PageSpeed Insights](https://pagespeed.web.dev/) — mobile tab, test `/direct-booking`
+- [WebPageTest](https://www.webpagetest.org/) — set location to **Frankfurt, Germany**, connection **4G**
+- Target: `/direct-booking` score above **80/100** and LCP under **2.5s**
 
 ---
 
-## Existing Booking Flow
+## Notes
 
-Document:
-
-- Property page
-- Availability check
-- Booking initiation
-- Checkout
-- Payment
-- Booking confirmation
-
-Map where Meta events should be attached.
-
----
-
-## Existing Data Availability
-
-Document which fields are available at:
-
-### Property View
-
-Available data:
-
-- TBD after inspection
-
-### Booking Initiation
-
-Available data:
-
-- TBD after inspection
-
-### Booking Confirmation
-
-Available data:
-
-- TBD after inspection
-
----
-
-## Meta Event Mapping
-
-Before implementation create a mapping table:
-
-| Meta Event  | Existing Trigger | Available Data |
-| ----------- | ---------------- | -------------- |
-| PageView    | TBD              | TBD            |
-| ViewContent | TBD              | TBD            |
-| book_now    | TBD              | TBD            |
-| Purchase    | TBD              | TBD            |
-
----
-
-# TASK 3: VERIFY META PIXEL IMPLEMENTATION
-
-After implementation:
-
-Verify:
-
-- PageView fires correctly.
-- ViewContent fires correctly.
-- book_now fires correctly.
-- Purchase (or booking_confirmed) fires correctly.
-
-Validation methods:
-
-- Meta Pixel Helper
-- Browser DevTools
-- Meta Events Manager
-- Network inspection
-
-Document findings.
-
----
-
-# TASK 4: INVESTIGATE HOSTAWAY PRICING ISSUE
-
-## Reported Problem
-
-Hostaway contains:
-
-- Base Price
-- Channel-specific pricing adjustments
-
-Client expectation:
-
-Website Price = Base Price - 10%
-
-Current behavior:
-
-Website Price = Base Price
-
-The website appears to ignore the website-specific pricing adjustment.
-
----
-
-# TASK 5: REVIEW HOSTAWAY DOCUMENTATION
-
-Documentation:
-
-https://api.hostaway.com/documentation
-
-Review the documentation before making implementation assumptions.
-
-Focus specifically on:
-
-- Listing pricing
-- Reservation pricing
-- Booking engine pricing
-- Channel pricing
-- Financial fields
-- Price calculation endpoints
-
----
-
-# TASK 6: VERIFY HOSTAWAY CONFIGURATION
-
-Investigate whether the direct booking website is configured correctly.
-
-Verify:
-
-- Website channel exists
-- Website channel pricing rules exist
-- Website channel adjustments exist
-- Dynamic pricing settings
-- Discounts
-- Markups
-- Overrides
-
-Confirm whether the intended rule is:
-
-Website Price = Base Price - 10%
-
-Document findings.
-
----
-
-# TASK 7: INSPECT HOSTAWAY API RESPONSES
-
-Review actual API responses.
-
-Identify pricing-related fields returned by Hostaway.
-
-Examples may include:
-
-- baseRate
-- totalPrice
-- totalPriceFromChannel
-- adjustedPrice
-- nightlyRate
-- markup
-- discount
-- channelAdjustment
-
-Do not assume field names.
-
-Use actual API responses.
-
-Document all relevant pricing fields.
-
----
-
-# TASK 8: TRACE PRICE FLOW
-
-Trace pricing through the full system.
-
-Map:
-
-Hostaway
-↓
-Hostaway API
-↓
-Backend
-↓
-Transformation Layer
-↓
-Frontend
-↓
-Website Display
-
-Determine:
-
-1. Which pricing field enters the application.
-2. Which pricing field is stored.
-3. Which pricing field is rendered.
-4. Whether adjustments are applied.
-5. Whether adjustments are ignored.
-
-Document the complete flow.
-
----
-
-# TASK 9: COMPARE EXPECTED VS ACTUAL PRICING
-
-Use at least one real property.
-
-For each property document:
-
-- Base Price
-- Website Adjustment
-- API Response Values
-- Backend Values
-- Frontend Values
-- Displayed Price
-
-Example format:
-
-Base Price: $100
-
-Website Adjustment: -10%
-
-Expected Website Price: $90
-
-Actual Website Price: TBD
-
----
-
-# TASK 10: IDENTIFY ROOT CAUSE
-
-Determine whether the issue is:
-
-## A. Hostaway Configuration
-
-Examples:
-
-- Website adjustment missing
-- Channel setup incorrect
-- Pricing rule disabled
-
-## B. API Integration
-
-Examples:
-
-- Wrong field consumed
-- Adjusted price ignored
-- Incorrect endpoint used
-
-## C. Application Logic
-
-Examples:
-
-- Base price rendered directly
-- Discount calculation skipped
-- Channel pricing never applied
-
-Document exact root cause.
-
----
-
-# TASK 11: DELIVERABLES
-
-Provide a final report containing:
-
-## Meta Pixel
-
-- Implementation locations
-- Event mapping
-- Payload structure used
-- Validation results
-- Screenshots if available
-
-## Hostaway Investigation
-
-- Documentation sections reviewed
-- Endpoints reviewed
-- API response findings
-- Pricing flow diagram
-- Root cause analysis
-
-## Final Recommendation
-
-Clearly state:
-
-1. Why the website displays the wrong price.
-2. Whether the issue belongs in Hostaway or application code.
-3. Exact fix required.
-4. Files changed.
-5. Risks or follow-up work.
-
----
-
-# SUCCESS CRITERIA
-
-The task is complete when:
-
-- Meta Pixel is installed.
-- PageView tracking works.
-- ViewContent tracking works.
-- book_now tracking works.
-- Purchase/booking_confirmed tracking works.
-- Hostaway pricing behavior is fully understood.
-- Root cause is documented.
-- Recommended fix is provided.
-- Any applicable fixes are implemented and verified.
+- The performance gap between Singapore and European users is a **geographic latency + no CDN** issue, not a code issue alone. A CDN with European edge nodes (Cloudflare free tier works) will close most of that gap immediately.
+- The 44% ad drop-off is a direct revenue loss — each 1s improvement in LCP typically recovers 5–10% of mobile conversions.

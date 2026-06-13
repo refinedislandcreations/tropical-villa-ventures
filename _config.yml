@@ -9,7 +9,7 @@ url: "https://www.tvvbali.com" # the base hostname & protocol for your site
 # SEO defaults
 lang: en
 author: Tropical Villa Ventures
-logo: /assets/images/logo/tvv-logo.png
+logo: /assets/images/logo/tvv-logo.webp
 
 # Social
 social:
