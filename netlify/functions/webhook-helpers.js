@@ -603,16 +603,28 @@ async function handlePaid(externalId, webhookData) {
       console.error(
         `[PAID] Failed to fetch invoice from Xendit: ${e.response?.data || e.message}`,
       );
+      throw new Error(`Failed to fetch Xendit invoice: ${e.message}`);
     }
   }
 
   if (!bookingData) {
-    // No booking data from any source. This is a permanent failure —
-    // do NOT throw, since retries won't help.
     console.error(
       `[PAID] ❌ No booking data found for ${externalId} (tried metadata, temp storage, Xendit GET). Cannot create reservation.`,
     );
-    return { success: false, error: "No booking data found" };
+    
+    // Store in dead-letter queue so it's not silently lost
+    try {
+      if (blobsAvailable && getStore) {
+        const store = getStore("dead-letter-queue");
+        await store.set(externalId, JSON.stringify({ invoiceId, externalId, webhookData, timestamp: new Date().toISOString() }));
+        console.log(`[PAID] Saved failed booking ${externalId} to dead-letter-queue`);
+      }
+    } catch (dlqError) {
+      console.error(`[PAID] Failed to save to dead-letter-queue: ${dlqError.message}`);
+    }
+
+    // Throw to trigger webhook retry, just in case it was a transient error where data wasn't ready.
+    throw new Error(`No booking data found for ${externalId}`);
   }
 
   console.log(`[PAID] Booking data loaded from: ${dataSource}`);
@@ -627,6 +639,37 @@ async function handlePaid(externalId, webhookData) {
   // ── Step 3: Get Hostaway token ─────────────────────────────────────────────
   // Throws on failure → webhook handler returns 500 → Xendit retries
   const token = await getHostawayToken();
+
+  // ── Step 3.5: Verify Hostaway doesn't already have this booking ──────────
+  try {
+    const checkRes = await axios.get(
+      `https://api.hostaway.com/v1/reservations?listingMapId=${bookingData.listingId}&arrivalDate=${bookingData.checkin}&departureDate=${bookingData.checkout}`,
+      {
+        timeout: AXIOS_TIMEOUT,
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+    if (checkRes.data?.result) {
+      const existing = checkRes.data.result.find(r => r.hostNote && r.hostNote.includes(externalId));
+      if (existing) {
+        console.log(`[PAID] ⚠️ Reservation already exists in Hostaway: #${existing.id}. Recovering...`);
+        await markAsProcessed(invoiceId, externalId, existing.id);
+        
+        // Release date-hold and clean up temp booking
+        try {
+          const holdKey = buildHoldKey(bookingData.listingId, bookingData.checkin, bookingData.checkout);
+          await releaseHold(holdKey);
+          await cleanupTempBooking(externalId);
+        } catch (cleanupErr) {
+          console.warn(`[PAID] Cleanup failed during recovery: ${cleanupErr.message}`);
+        }
+        
+        return { success: true, reservationId: existing.id, duplicate: true };
+      }
+    }
+  } catch (e) {
+    console.warn(`[PAID] Pre-check for duplicate reservation failed: ${e.message}`);
+  }
 
   // ── Step 4: Create Hostaway reservation ────────────────────────────────────
   // Throws on failure → webhook handler returns 500 → Xendit retries

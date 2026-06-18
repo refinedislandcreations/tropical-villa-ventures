@@ -43,6 +43,21 @@ exports.handler = async (event) => {
       const invoice = invoices[0]; // Most recent invoice with this external_id
       const isPaid = invoice.status === "PAID" || invoice.status === "SETTLED";
 
+      // ── Fallback Sync ──────────────────────────────────────────────────────────
+      // If the webhook from Xendit was delayed or lost, we can trigger the creation 
+      // synchronously here to guarantee the booking is placed before the user leaves.
+      // handlePaid is idempotent, so it won't duplicate if the webhook already ran.
+      if (isPaid) {
+        try {
+          const { handlePaid } = require("./webhook-helpers");
+          console.log(`[VERIFY-FALLBACK] Triggering handlePaid for ${ref}`);
+          const fallbackResult = await handlePaid(ref, invoice);
+          console.log(`[VERIFY-FALLBACK] Result:`, fallbackResult);
+        } catch (fallbackErr) {
+          console.error(`[VERIFY-FALLBACK] Error:`, fallbackErr.message);
+        }
+      }
+
       return {
         statusCode: 200,
         body: JSON.stringify({
