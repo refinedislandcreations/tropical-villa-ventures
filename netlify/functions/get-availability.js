@@ -36,18 +36,8 @@ exports.handler = async (event) => {
       },
     );
 
-    let bookingEngineMarkup = 1;
-    try {
-      const listingResponse = await axios.get(
-        `https://api.hostaway.com/v1/listings/${listingId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      if (listingResponse.data?.result?.bookingEngineMarkup !== undefined) {
-        bookingEngineMarkup = listingResponse.data.result.bookingEngineMarkup;
-      }
-    } catch (e) {
-      console.error("Failed to fetch listing for markup", e.message);
-    }
+    const { getBookingEngineMarkup } = require("./hostaway-markup");
+    let bookingEngineMarkup = await getBookingEngineMarkup(listingId, token);
 
     const data = response.data;
 

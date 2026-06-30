@@ -41,7 +41,7 @@ exports.handler = async (event) => {
         hostawayId: item.listing?.listingMap || item.id,
         listingId: item.listing?.id,
         name: item.listing?.name || "",
-        description: item.listing?.description || "",
+        description: (item.listing?.description || "").substring(0, 150) + "...",
         personCapacity: item.listing?.personCapacity || 0,
         bedrooms: item.listing?.bedroomsNumber || 0,
         bathrooms: item.listing?.bathroomsNumber || 0,

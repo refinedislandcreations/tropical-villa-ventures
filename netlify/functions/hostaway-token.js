@@ -1,12 +1,27 @@
-// netlify/functions/hostaway-token.js
+const { getStore } = require("@netlify/blobs");
 const axios = require("axios");
 
-let cachedToken = null;
-let tokenExpiry = null;
+let memoryCachedToken = null;
+let memoryTokenExpiry = null;
 
 async function getToken() {
-  if (cachedToken && tokenExpiry && Date.now() < tokenExpiry) {
-    return cachedToken;
+  if (memoryCachedToken && memoryTokenExpiry && Date.now() < memoryTokenExpiry) {
+    return memoryCachedToken;
+  }
+
+  let store;
+  try {
+    store = getStore("hostaway-cache");
+    const cachedBlob = await store.get("access-token", { type: "json" });
+    if (cachedBlob && cachedBlob.token && cachedBlob.expiry) {
+      if (Date.now() < cachedBlob.expiry) {
+        memoryCachedToken = cachedBlob.token;
+        memoryTokenExpiry = cachedBlob.expiry;
+        return memoryCachedToken;
+      }
+    }
+  } catch (e) {
+    console.warn("Netlify Blobs not available for token:", e.message);
   }
 
   const clientId = process.env.HOSTAWAY_ACCOUNT_ID;
@@ -34,9 +49,19 @@ async function getToken() {
 
   const data = response.data;
   if (data.access_token) {
-    cachedToken = data.access_token;
-    tokenExpiry = Date.now() + 30 * 24 * 60 * 60 * 1000;
-    return cachedToken;
+    memoryCachedToken = data.access_token;
+    // Set expiry to 29 days (Hostaway token is 30 days)
+    memoryTokenExpiry = Date.now() + 29 * 24 * 60 * 60 * 1000;
+    
+    if (store) {
+      try {
+        await store.setJSON("access-token", {
+          token: memoryCachedToken,
+          expiry: memoryTokenExpiry
+        });
+      } catch (e) {}
+    }
+    return memoryCachedToken;
   }
   throw new Error("Failed to get access token");
 }

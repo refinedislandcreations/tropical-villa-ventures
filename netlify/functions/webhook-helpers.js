@@ -232,39 +232,7 @@ async function fetchXenditInvoice(invoiceId) {
   return response.data;
 }
 
-/**
- * Fetch Hostaway OAuth token directly from Hostaway API.
- * Throws on failure — callers must handle.
- */
-async function getHostawayToken() {
-  console.log(`[HOSTAWAY] Fetching token`);
-  const clientId = process.env.HOSTAWAY_ACCOUNT_ID;
-  const clientSecret = process.env.HOSTAWAY_API_KEY;
-
-  if (!clientId || !clientSecret) {
-    throw new Error("Missing Hostaway API credentials in environment");
-  }
-
-  const params = new URLSearchParams();
-  params.append("grant_type", "client_credentials");
-  params.append("client_id", clientId);
-  params.append("client_secret", clientSecret);
-  params.append("scope", "general");
-
-  const response = await axios.post(
-    "https://api.hostaway.com/v1/accessTokens",
-    params.toString(),
-    {
-      timeout: AXIOS_TIMEOUT,
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    },
-  );
-
-  if (!response.data?.access_token) {
-    throw new Error("Hostaway token response missing access_token");
-  }
-  return response.data.access_token;
-}
+const { getToken: getHostawayToken } = require("./hostaway-token");
 
 /**
  * Create reservation in Hostaway using the documented API format.
