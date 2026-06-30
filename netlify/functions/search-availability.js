@@ -78,7 +78,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       body: JSON.stringify({
         error: "Failed to search availability",
-        details: error.response?.data || error.message,
+        details: "An unexpected error occurred during processing.",
       }),
     };
   }

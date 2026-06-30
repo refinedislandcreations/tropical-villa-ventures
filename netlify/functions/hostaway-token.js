@@ -56,7 +56,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       body: JSON.stringify({
         error: "Authentication failed",
-        details: error.response?.data?.message || error.message,
+        details: "An unexpected error occurred during processing.",
       }),
     };
   }

@@ -80,7 +80,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       body: JSON.stringify({
         error: "Failed to fetch calendar",
-        details: error.response?.data?.result || error.message,
+        details: "An unexpected error occurred during processing.",
       }),
     };
   }

@@ -647,7 +647,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       body: JSON.stringify({
         error: "Failed to create invoice",
-        details: error.response?.data?.message || error.message,
+        details: "An unexpected error occurred during processing.",
       }),
     };
   }

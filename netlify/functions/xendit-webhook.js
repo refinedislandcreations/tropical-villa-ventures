@@ -42,10 +42,10 @@ const {
 function verifyCallbackToken(headers) {
   const expectedToken = process.env.XENDIT_CALLBACK_TOKEN;
 
-  // If no token is configured, skip verification (dev mode safety)
+  // Fail-closed if token is not configured in production
   if (!expectedToken) {
-    console.warn(`[SECURITY] XENDIT_CALLBACK_TOKEN not configured — skipping verification`);
-    return { valid: true };
+    console.error(`[SECURITY] XENDIT_CALLBACK_TOKEN not configured — denying request`);
+    return { valid: false, reason: "Webhook configuration error" };
   }
 
   // Netlify normalizes all header keys to lowercase

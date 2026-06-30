@@ -85,7 +85,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         verified: false,
         status: "ERROR",
-        error: error.message,
+        error: "An unexpected error occurred during verification.",
       }),
     };
   }

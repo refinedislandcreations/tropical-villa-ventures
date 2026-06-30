@@ -112,7 +112,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       body: JSON.stringify({
         error: "Failed to create reservation",
-        details: error.response?.data?.result || error.message,
+        details: "An unexpected error occurred during processing.",
       }),
     };
   }
