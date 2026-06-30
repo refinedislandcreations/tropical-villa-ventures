@@ -54,13 +54,13 @@
     <!-- Output TailwindCSS -->
     <link
       rel="stylesheet"
-      href="{{ '/assets/css/output.css' | relative_url }}"
+      href="{{ '/assets/css/output.css' | relative_url }}?v={{ site.time | date: '%s' }}"
     />
 
     <!-- Custom Styles -->
     <link
       rel="stylesheet"
-      href="{{ '/assets/css/style.css' | relative_url }}"
+      href="{{ '/assets/css/style.css' | relative_url }}?v={{ site.time | date: '%s' }}"
     />
 
     <!-- Google Fonts — preconnect for performance -->
@@ -191,6 +191,6 @@
     ></script>
 
     <!-- Custom Scripts -->
-    <script src="{{ '/assets/js/booking.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/booking.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
   </body>
 </html>
