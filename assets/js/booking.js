@@ -284,6 +284,8 @@ class VillaBookingManager {
   }
 
   async createBooking() {
+    if (this.isLoading) return false;
+
     if (!this.validateForm()) {
       return false;
     }

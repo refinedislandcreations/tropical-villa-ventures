@@ -43,6 +43,9 @@ exports.handler = async (event) => {
       const invoice = invoices[0]; // Most recent invoice with this external_id
       const isPaid = invoice.status === "PAID" || invoice.status === "SETTLED";
 
+      let reservationFailed = false;
+      let reservationError = null;
+
       // ── Fallback Sync ──────────────────────────────────────────────────────────
       // If the webhook from Xendit was delayed or lost, we can trigger the creation 
       // synchronously here to guarantee the booking is placed before the user leaves.
@@ -55,6 +58,8 @@ exports.handler = async (event) => {
           console.log(`[VERIFY-FALLBACK] Result:`, fallbackResult);
         } catch (fallbackErr) {
           console.error(`[VERIFY-FALLBACK] Error:`, fallbackErr.message);
+          reservationFailed = true;
+          reservationError = fallbackErr.message;
         }
       }
 
@@ -62,6 +67,8 @@ exports.handler = async (event) => {
         statusCode: 200,
         body: JSON.stringify({
           verified: isPaid,
+          reservationFailed,
+          reservationError,
           status: invoice.status,
           amount: invoice.amount,
           currency: invoice.currency,

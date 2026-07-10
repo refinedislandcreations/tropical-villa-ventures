@@ -92,6 +92,27 @@ function getCouponSummary(bookingData) {
   };
 }
 
+function sanitizeHtml(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+  });
+}
+
+function sanitizeBookingData(data) {
+  if (!data) return data;
+  data.guestName = sanitizeHtml(data.guestName);
+  data.guestFirstName = sanitizeHtml(data.guestFirstName);
+  data.guestLastName = sanitizeHtml(data.guestLastName);
+  data.guestEmail = sanitizeHtml(data.guestEmail);
+  data.guestPhone = sanitizeHtml(data.guestPhone);
+  data.guestAddress = sanitizeHtml(data.guestAddress);
+  data.guestCity = sanitizeHtml(data.guestCity);
+  data.specialRequests = sanitizeHtml(data.specialRequests);
+  data.villaName = sanitizeHtml(data.villaName);
+  return data;
+}
+
 // ─── Storage Layer ───────────────────────────────────────────────────────────
 
 let blobsAvailable = true;
@@ -597,6 +618,8 @@ async function handlePaid(externalId, webhookData) {
 
   console.log(`[PAID] Booking data loaded from: ${dataSource}`);
 
+  bookingData = sanitizeBookingData(bookingData);
+
   // Attach externalId for the hostNote
   bookingData.externalId = externalId;
 
@@ -637,6 +660,40 @@ async function handlePaid(externalId, webhookData) {
     }
   } catch (e) {
     console.warn(`[PAID] Pre-check for duplicate reservation failed: ${e.message}`);
+  }
+
+  // ── Step 3.6: Verify Availability ──────────
+  try {
+    const calendarRes = await axios.get(
+      `https://api.hostaway.com/v1/listings/${bookingData.listingId}/calendar?startDate=${bookingData.checkin}&endDate=${bookingData.checkout}&includeResources=0`,
+      { timeout: AXIOS_TIMEOUT, headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (calendarRes.data?.result) {
+      const days = calendarRes.data.result.filter(
+        (d) => d.date >= bookingData.checkin && d.date < bookingData.checkout,
+      );
+      const isAvailable =
+        days.length > 0 &&
+        days.every((d) => d.status === "available" || d.isAvailable === 1);
+      if (!isAvailable) {
+        throw new Error("Dates no longer available in Hostaway (double booking detected).");
+      }
+    }
+  } catch (e) {
+    if (e.message.includes("double booking detected")) {
+      console.error(`[PAID] ❌ DOUBLE BOOKING PREVENTED: Dates ${bookingData.checkin}→${bookingData.checkout} are no longer available for listing ${bookingData.listingId}`);
+      
+      try {
+        if (blobsAvailable && getStore) {
+          const store = getStore("dead-letter-queue");
+          await store.set(externalId + "-doublebooked", JSON.stringify({ invoiceId, externalId, webhookData, timestamp: new Date().toISOString() }));
+        }
+      } catch (dlqError) {}
+
+      throw e;
+    } else {
+      console.warn(`[PAID] Availability check failed, proceeding anyway: ${e.message}`);
+    }
   }
 
   // ── Step 4: Create Hostaway reservation ────────────────────────────────────

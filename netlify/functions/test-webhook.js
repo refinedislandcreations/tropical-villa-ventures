@@ -6,9 +6,10 @@
 const { handlePaid, handleSettled, handlePending, handleExpired, handleUnknownStatus } = require("./webhook-helpers");
 
 exports.handler = async (event) => {
-  // Only allow in development
-  if (process.env.NODE_ENV === "production" || process.env.CONTEXT === "production") {
-    return { statusCode: 403, body: JSON.stringify({ error: "Test endpoint disabled in production" }) };
+  // Only allow in development or if explicitly enabled
+  const isDev = process.env.CONTEXT === "dev" || process.env.ENABLE_TEST_WEBHOOK === "true" || process.env.NODE_ENV === "development";
+  if (!isDev) {
+    return { statusCode: 403, body: JSON.stringify({ error: "Test endpoint disabled in this environment" }) };
   }
 
   if (event.httpMethod === "GET") {

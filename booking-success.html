@@ -115,6 +115,24 @@ title: Booking Confirmed | Tropical Villa Ventures
         return;
       }
 
+      if (result.reservationFailed) {
+        document.getElementById("successState").innerHTML = `
+          <div class="absolute inset-0 bg-[#F3F0E7]"></div>
+          <div class="relative z-10 min-h-screen flex items-center justify-center py-20 text-center">
+            <div class="bg-white rounded-2xl p-12 shadow-xl max-w-2xl">
+              <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-4xl">!</div>
+              <h1 class="text-3xl md:text-4xl font-heading font-light text-[#231F20] mb-4">Payment Received, But...</h1>
+              <p class="text-[#231F20]/70 mb-8 font-body leading-relaxed">
+                We received your payment, but there was an issue confirming your reservation with our system.
+                Please contact our support team immediately with your reference number: <strong class="text-[#231F20] font-mono">${bookingRef}</strong>.
+              </p>
+              <a href="https://wa.me/628158819533" class="inline-block bg-[#8B8635] text-white px-8 py-3 rounded-xl hover:bg-[#6B682A] transition font-heading font-medium text-sm">Contact Support</a>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
       // Display reference only
       const bookingRefEl = document.getElementById("bookingRef");
 
@@ -131,9 +149,9 @@ title: Booking Confirmed | Tropical Villa Ventures
         });
       }
 
-      // REMOVE EVERYTHING STORED
-      localStorage.clear();
-      sessionStorage.clear();
+      // ONLY REMOVE BOOKING SPECIFIC DATA
+      localStorage.removeItem("bookingData");
+      sessionStorage.removeItem("sharedDates");
     } catch (error) {
       console.error("Verification failed:", error);
       window.location.href = "/";

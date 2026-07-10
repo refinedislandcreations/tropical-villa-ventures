@@ -69,20 +69,9 @@ async function getToken() {
 exports.getToken = getToken;
 
 exports.handler = async (event) => {
-  try {
-    const token = await getToken();
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ access_token: token }),
-    };
-  } catch (error) {
-    console.error("Hostaway token error:", error.response?.data || error.message);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: "Authentication failed",
-        details: "An unexpected error occurred during processing.",
-      }),
-    };
-  }
+  return {
+    statusCode: 404,
+    body: JSON.stringify({ error: "Not Found" }),
+  };
 };
+

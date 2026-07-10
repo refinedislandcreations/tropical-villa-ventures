@@ -64,7 +64,7 @@ async function getActiveHold(holdKey) {
     return holdData;
   } catch (e) {
     console.warn(`[HOLD] Check failed: ${e.message}`);
-    return null;
+    throw e;
   }
 }
 
@@ -134,9 +134,9 @@ async function checkHostawayAvailability(listingId, checkin, checkout) {
   const clientSecret = process.env.HOSTAWAY_API_KEY;
   if (!clientId || !clientSecret) {
     console.warn(
-      "[INVOICE] Missing Hostaway credentials — skipping availability check",
+      "[INVOICE] Missing Hostaway credentials — failing availability check",
     );
-    return true;
+    return false;
   }
 
   // Get token
@@ -154,7 +154,7 @@ async function checkHostawayAvailability(listingId, checkin, checkout) {
     },
   );
   const token = tokenRes.data?.access_token;
-  if (!token) return true; // fail open if token issues
+  if (!token) return false; // fail closed if token issues
 
   // Check calendar
   const calendarRes = await axios.get(
@@ -190,7 +190,15 @@ async function storeTempBooking(externalId, bookingData) {
     console.log(`[INVOICE] Stored temp booking: ${externalId}`);
   } catch (error) {
     console.error("[INVOICE] Storage failed:", error.message);
+    throw error;
   }
+}
+
+function sanitizeHtml(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+  });
 }
 
 /**
@@ -221,12 +229,7 @@ function formatIDR(amount) {
   })}`;
 }
 
-function shouldSkipAvailabilityRecheck(availabilityVerifiedAt) {
-  if (!availabilityVerifiedAt) return false;
-  const verifiedAt = Number(availabilityVerifiedAt);
-  if (!Number.isFinite(verifiedAt)) return false;
-  return Date.now() - verifiedAt <= AVAILABILITY_CHECK_FRESHNESS_MS;
-}
+
 
 function getCouponSummary({
   couponCode,
@@ -276,29 +279,27 @@ exports.handler = async (event) => {
   let holdKey = null;
 
   try {
-    const {
-      listingId,
-      villaName,
-      checkin,
-      checkout,
-      guests,
-      nights,
-      totalAmount,
-      expectedTotal,
-      firstName,
-      lastName,
-      email,
-      phone,
-      address,
-      city,
-      specialRequests,
-      couponCode,
-      reservationCouponId,
-      financeFields,
-      reservationSubtotal,
-      availabilityVerifiedAt,
-      origin,
-    } = JSON.parse(event.body);
+    const parsedBody = JSON.parse(event.body);
+    const listingId = parsedBody.listingId;
+    const villaName = sanitizeHtml(parsedBody.villaName);
+    const checkin = parsedBody.checkin;
+    const checkout = parsedBody.checkout;
+    const guests = parsedBody.guests;
+    const nights = parsedBody.nights;
+    const totalAmount = parsedBody.totalAmount;
+    const expectedTotal = parsedBody.expectedTotal;
+    const firstName = sanitizeHtml(parsedBody.firstName);
+    const lastName = sanitizeHtml(parsedBody.lastName);
+    const email = sanitizeHtml(parsedBody.email);
+    const phone = sanitizeHtml(parsedBody.phone);
+    const address = sanitizeHtml(parsedBody.address);
+    const city = sanitizeHtml(parsedBody.city);
+    const specialRequests = sanitizeHtml(parsedBody.specialRequests);
+    const couponCode = sanitizeHtml(parsedBody.couponCode);
+    const reservationCouponId = parsedBody.reservationCouponId;
+    const financeFields = parsedBody.financeFields;
+    const reservationSubtotal = parsedBody.reservationSubtotal;
+    const origin = parsedBody.origin;
 
     // totalAmount is the reservation total coming from Hostaway pricing
     // (after coupon handling, before Xendit processing fees).
@@ -349,31 +350,20 @@ exports.handler = async (event) => {
     }
 
     // ── Layer 1: Re-verify Hostaway availability ──
-    // If the frontend just checked availability, skip the duplicate calendar call.
-    const skipAvailabilityRecheck = shouldSkipAvailabilityRecheck(
-      availabilityVerifiedAt,
+    const available = await checkHostawayAvailability(
+      listingId,
+      checkin,
+      checkout,
     );
-
-    if (!skipAvailabilityRecheck) {
-      const available = await checkHostawayAvailability(
-        listingId,
-        checkin,
-        checkout,
-      );
-      if (!available) {
-        return {
-          statusCode: 409,
-          body: JSON.stringify({
-            error: "Dates no longer available",
-            details:
-              "Sorry, these dates were just booked by another guest. Please select different dates.",
-          }),
-        };
-      }
-    } else {
-      console.log(
-        `[INVOICE] Skipping duplicate availability check (verified ${new Date(availabilityVerifiedAt).toISOString()})`,
-      );
+    if (!available) {
+      return {
+        statusCode: 409,
+        body: JSON.stringify({
+          error: "Dates no longer available",
+          details:
+            "Sorry, these dates were just booked by another guest. Please select different dates.",
+        }),
+      };
     }
 
     // ── Layer 2: Acquire date-hold lock ──
@@ -528,7 +518,7 @@ exports.handler = async (event) => {
       currency: "IDR",
       success_redirect_url: `${origin || process.env.URL}/booking-success.html?ref=${externalId}`,
       failure_redirect_url: `${origin || process.env.URL}/booking-failed.html`,
-      invoice_duration: 86400,
+      invoice_duration: 1800,
       customer: customer,
       customer_notification_preference: {
         invoice_created: ["email", "whatsapp"],
@@ -555,8 +545,6 @@ exports.handler = async (event) => {
           nights,
           baseAmount,
           reservationSubtotal: reservationSubtotal || baseAmount,
-          availabilityVerifiedAt: availabilityVerifiedAt || null,
-          availabilityVerifiedAt: availabilityVerifiedAt || null,
           totalFee,
           finalAmount,
           feeBreakdown: {
