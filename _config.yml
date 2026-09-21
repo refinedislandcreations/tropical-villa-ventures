@@ -50,3 +50,6 @@ exclude:
   - Gemfile.lock
   - .gitignore
   - README.md
+  - AGENTS.md
+  - AUDIT_READONLY.md
+  - "*.md"

@@ -74,93 +74,11 @@ exports.getBooking = getBooking;
 exports.saveBooking = saveBooking;
 exports.removeBooking = removeBooking;
 
-exports.handler = async (event) => {
-  const store = await getBlobStore();
-
-  // GET request - retrieve stored booking data
-  if (event.httpMethod === "GET") {
-    const { id } = event.queryStringParameters || {};
-
-    if (!id) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Missing id parameter" }),
-      };
-    }
-
-    try {
-      const bookingData = await getBooking(id);
-      if (!bookingData) {
-        return { statusCode: 404, body: JSON.stringify({ error: "Not found or expired" }) };
-      }
-      return {
-        statusCode: 200,
-        headers: { "Cache-Control": "no-store" },
-        body: JSON.stringify({ bookingData }),
-      };
-    } catch (error) {
-      console.error("Retrieve error:", error);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: error.message }),
-      };
-    }
-  }
-
-  // POST request - store booking data
-  if (event.httpMethod === "POST") {
-    try {
-      const { externalId, bookingData } = JSON.parse(event.body);
-
-      if (!externalId || !bookingData) {
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ error: "Missing externalId or bookingData" }),
-        };
-      }
-
-      await saveBooking(externalId, bookingData);
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ success: true }),
-      };
-    } catch (error) {
-      console.error("Store error:", error);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: error.message }),
-      };
-    }
-  }
-
-  // DELETE request - clean up after reservation creation
-  if (event.httpMethod === "DELETE") {
-    const { id } = event.queryStringParameters || {};
-
-    if (!id) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Missing id parameter" }),
-      };
-    }
-
-    try {
-      await removeBooking(id);
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ success: true }),
-      };
-    } catch (error) {
-      console.error("Delete error:", error);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: error.message }),
-      };
-    }
-  }
-
+// Internal module only — do not expose HTTP endpoints
+exports.handler = async () => {
   return {
-    statusCode: 405,
-    body: JSON.stringify({ error: "Method not allowed" }),
+    statusCode: 404,
+    headers: { "Cache-Control": "no-store" },
+    body: JSON.stringify({ error: "Not Found" }),
   };
 };

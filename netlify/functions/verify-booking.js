@@ -65,6 +65,7 @@ exports.handler = async (event) => {
 
       return {
         statusCode: 200,
+        headers: { "Cache-Control": "no-store" },
         body: JSON.stringify({
           verified: isPaid,
           reservationFailed,
@@ -73,7 +74,6 @@ exports.handler = async (event) => {
           amount: invoice.amount,
           currency: invoice.currency,
           paidAt: invoice.paid_at || null,
-          description: invoice.description || "",
         }),
       };
     }

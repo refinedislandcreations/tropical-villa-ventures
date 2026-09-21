@@ -213,6 +213,31 @@ function sanitizePhone(phone) {
   return "+" + cleaned;
 }
 
+function maskEmail(email) {
+  if (!email || typeof email !== "string") return "";
+  const parts = email.split("@");
+  if (parts.length !== 2) return "***";
+  const name = parts[0];
+  const domain = parts[1];
+  const maskedName = name.length > 2 ? `${name[0]}***${name[name.length - 1]}` : `${name[0]}***`;
+  return `${maskedName}@${domain}`;
+}
+
+function maskPhone(phone) {
+  if (!phone || typeof phone !== "string") return "";
+  const cleaned = phone.trim();
+  if (cleaned.length <= 4) return "****";
+  return `${cleaned.substring(0, 3)}****${cleaned.substring(cleaned.length - 3)}`;
+}
+
+function maskName(name) {
+  if (!name || typeof name !== "string") return "";
+  return name
+    .split(" ")
+    .map((part) => (part.length > 1 ? `${part[0]}***` : part))
+    .join(" ");
+}
+
 function toNumber(value) {
   const numericValue = Number(value);
   return Number.isFinite(numericValue) ? numericValue : 0;
@@ -387,7 +412,7 @@ exports.handler = async (event) => {
 
     console.log(`\n[INVOICE] ── Creating invoice ──────────────────────────`);
     console.log(`[INVOICE] Villa: ${villaName} (listing: ${listingId})`);
-    console.log(`[INVOICE] Guest: ${firstName} ${lastName} <${email}>`);
+    console.log(`[INVOICE] Guest: ${maskName(`${firstName} ${lastName}`.trim())} <${maskEmail(email)}>`);
     console.log(`[INVOICE] Dates: ${checkin} → ${checkout} (${nights} nights)`);
     console.log(`[INVOICE] ── Price Breakdown ──`);
     console.log(`[INVOICE]   Reservation Total:   IDR ${baseAmount}`);
@@ -399,7 +424,7 @@ exports.handler = async (event) => {
     console.log(
       `[INVOICE]   Frontend Expected:   IDR ${expectedTotal || "N/A"}`,
     );
-    console.log(`[INVOICE] Phone: ${phone || "(none)"}`);
+    console.log(`[INVOICE] Phone: ${maskPhone(phone) || "(none)"}`);
     if (couponSummary.hasCoupon) {
       console.log(`[INVOICE] ── Coupon Breakdown ──`);
       console.log(
@@ -569,8 +594,7 @@ exports.handler = async (event) => {
     };
 
     console.log(
-      "[INVOICE] Xendit payload:",
-      JSON.stringify(xenditPayload, null, 2),
+      `[INVOICE] Xendit invoice payload prepared for ${externalId} (amount: IDR ${finalAmount})`,
     );
 
     const secretKey = process.env.XENDIT_SECRET_KEY;

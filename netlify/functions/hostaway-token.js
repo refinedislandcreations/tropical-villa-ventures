@@ -71,6 +71,7 @@ exports.getToken = getToken;
 exports.handler = async (event) => {
   return {
     statusCode: 404,
+    headers: { "Cache-Control": "no-store" },
     body: JSON.stringify({ error: "Not Found" }),
   };
 };

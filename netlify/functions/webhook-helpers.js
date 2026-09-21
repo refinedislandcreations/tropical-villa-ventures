@@ -113,6 +113,31 @@ function sanitizeBookingData(data) {
   return data;
 }
 
+function maskEmail(email) {
+  if (!email || typeof email !== "string") return "";
+  const parts = email.split("@");
+  if (parts.length !== 2) return "***";
+  const name = parts[0];
+  const domain = parts[1];
+  const maskedName = name.length > 2 ? `${name[0]}***${name[name.length - 1]}` : `${name[0]}***`;
+  return `${maskedName}@${domain}`;
+}
+
+function maskPhone(phone) {
+  if (!phone || typeof phone !== "string") return "";
+  const cleaned = phone.trim();
+  if (cleaned.length <= 4) return "****";
+  return `${cleaned.substring(0, 3)}****${cleaned.substring(cleaned.length - 3)}`;
+}
+
+function maskName(name) {
+  if (!name || typeof name !== "string") return "";
+  return name
+    .split(" ")
+    .map((part) => (part.length > 1 ? `${part[0]}***` : part))
+    .join(" ");
+}
+
 // ─── Storage Layer ───────────────────────────────────────────────────────────
 
 let blobsAvailable = true;
@@ -336,10 +361,10 @@ async function createHostawayReservation(token, bookingData) {
   };
 
   console.log(
-    `[HOSTAWAY] Creating reservation for ${reservationData.guestName} at listing ${bookingData.listingId}`,
+    `[HOSTAWAY] Creating reservation for ${maskName(reservationData.guestName)} at listing ${bookingData.listingId}`,
   );
   console.log(
-    `[HOSTAWAY] Guest: ${reservationData.guestEmail} | Phone: ${reservationData.phone} | Address: ${reservationData.guestAddress}, ${reservationData.guestCity}`,
+    `[HOSTAWAY] Guest: ${maskEmail(reservationData.guestEmail)} | Phone: ${maskPhone(reservationData.phone)}`,
   );
   console.log(
     `[HOSTAWAY] Dates: ${bookingData.checkin} → ${bookingData.checkout} | Guests: ${reservationData.numberOfGuests}`,
@@ -416,6 +441,15 @@ function buildConfirmationMessage(bookingData) {
 🌺 Hi ${guestFirstName},
 
 Thank you for choosing Tropical ${villaName} for your upcoming Bali getaway! This message serves as your payment confirmation and receipt. 🌴😊
+
+━━━━━━━━━━━━━━━
+IMPORTANT SECURITY NOTICE
+━━━━━━━━━━━━━━━
+For your safety and peace of mind:
+• Tropical Villa Ventures will NEVER ask for your credit card numbers, CVV, or passwords over WhatsApp, SMS, email, phone, or any other platform.
+• Your reservation is confirmed and paid in full. All payments are processed exclusively through our official secure booking gateway.
+• If you receive any message asking for payment or card details to "secure" your booking, do not reply or provide sensitive information.
+• For any questions or concerns regarding your booking, please contact us directly through our official channels.
 
 ━━━━━━━━━━━━━━━
 CANCELLATION POLICY
@@ -624,7 +658,7 @@ async function handlePaid(externalId, webhookData) {
   bookingData.externalId = externalId;
 
   console.log(
-    `[PAID] Booking loaded: ${bookingData.villaName} | ${bookingData.guestName} | ${bookingData.checkin} → ${bookingData.checkout}`,
+    `[PAID] Booking loaded: ${bookingData.villaName} | ${maskName(bookingData.guestName)} | ${bookingData.checkin} → ${bookingData.checkout}`,
   );
 
   // ── Step 3: Get Hostaway token ─────────────────────────────────────────────

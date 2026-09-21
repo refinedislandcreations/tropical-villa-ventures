@@ -27,11 +27,13 @@ vendor/bundle/
 # Logs
 *.log
 
-# Temporary Files
+# Temporary Files / Local Test Scripts
 *.tmp
 *.temp
 tmp/
 temp/
+test-*.js
+get-listings.js
 
 # OS Files
 .DS_Store
